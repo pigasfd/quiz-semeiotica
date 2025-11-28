@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz Semeiotica - Aterosclerosi, Addome, Esame Neurologico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #222 0, #000 60%);
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(10,10,10,0.9);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #bbb;
+      margin-top: 4px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+    .controls label {
+      font-size: 0.9rem;
+    }
+    .controls input[type="number"] {
+      width: 70px;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #f5f5f5;
+    }
+    button {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00bcd4, #4caf50);
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+      opacity: 0.95;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      opacity: 0.9;
+    }
+    main {
+      max-width: 1000px;
+      margin: 20px auto 60px;
+      padding: 0 15px 40px;
+    }
+    .info-box {
+      background: rgba(20,20,20,0.95);
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      border: 1px solid #333;
+      margin-bottom: 15px;
+    }
+    .info-box strong {
+      color: #8bc34a;
+    }
+    .quiz-container {
+      margin-top: 20px;
+    }
+    .question-block {
+      background: rgba(12,12,12,0.95);
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      border: 1px solid #333;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .question-text {
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      color: #aaa;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #444;
+      white-space: nowrap;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .options input {
+      margin-right: 6px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(10,10,10,0.95);
+      border: 1px solid #444;
+      font-size: 0.9rem;
+    }
+    .correct {
+      border-color: #4caf50 !important;
+    }
+    .incorrect {
+      border-color: #f44336 !important;
+    }
+    .correct-answer {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #a5d6a7;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #777;
+      padding: 12px;
+    }
+    @media (max-width: 600px) {
+      .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quiz Semeiotica Medica</h1>
+    <div class="subtitle">
+      Aterosclerosi & Dieta • Esame Obiettivo Addome • Esame Neurologico
+    </div>
+    <div class="controls">
+      <label for="numQuestions">Numero di domande (max 100):</label>
+      <input type="number" id="numQuestions" min="1" max="100" value="20" />
+      <button onclick="generateQuiz()">Genera quiz</button>
+      <button onclick="gradeQuiz()">Correggi</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="info-box">
+      <strong>Istruzioni:</strong> scegli quante domande vuoi fare, clicca
+      <strong>“Genera quiz”</strong> per estrarre domande casuali dal database
+      (100 in totale). Al termine clicca <strong>“Correggi”</strong> per vedere
+      il punteggio e quali risposte erano corrette.
+    </div>
+
+    <div id="quiz" class="quiz-container"></div>
+
+    <div id="result" class="result" style="display:none;"></div>
+  </main>
+
+  <footer>
+    Quiz basato sui PDF: 17 Aterosclerosi/Dieta/Colesterolo, 18-19 Esame
+    obiettivo addome, 20 Esame obiettivo neurologico.
+  </footer>
+
+  <script>
+    const questionBank = [
+      /* ===== ATEROSCLEROSI / DIETA / COLESTEROLO ===== */
+      {
+        id: 1,
+        topic: "Aterosclerosi",
+        question: "Le arteriopatie periferiche associate a coronaropatia rappresentano:",
+        options: [
+          "Una causa rara di morte nel mondo occidentale",
+          "La causa primaria di morte nel mondo occidentale",
+          "Una causa trascurabile di morbilità",
+          "Esclusivamente una patologia del distretto carotideo"
+        ],
+        answer: "La causa primaria di morte nel mondo occidentale"
+      },
+      {
+        id: 2,
+        topic: "Aterosclerosi",
+        question: "Un fattore di rischio NON modificabile per l’aterosclerosi periferica è:",
+        options: [
+          "Età",
+          "Fumo di sigaretta",
+          "Ipertensione arteriosa",
+          "Dieta ricca di grassi saturi"
+        ],
+        answer: "Età"
+      },
+      {
+        id: 3,
+        topic: "Aterosclerosi",
+        question: "Nell’uomo il range di età più a rischio per arteriopatia periferica è circa:",
+        options: [
+          "25-35 anni",
+          "35-45 anni",
+          "55-65 anni",
+          "75-85 anni"
+        ],
+        answer: "55-65 anni"
+      },
+      {
+        id: 4,
+        topic: "Aterosclerosi",
+        question: "La claudicatio intermittens è dovuta principalmente a:",
+        options: [
+          "Iperproduzione di acido lattico per deficit di ossigeno nel muscolo",
+          "Eccessiva contrazione dei muscoli lisci intestinali",
+          "Iperattività del sistema nervoso simpatico",
+          "Ipotensione sistemica acuta"
+        ],
+        answer: "Iperproduzione di acido lattico per deficit di ossigeno nel muscolo"
+      },
+      {
+        id: 5,
+        topic: "Aterosclerosi",
+        question: "Quale sintomo è tipico di arteriopatia periferica agli arti inferiori?",
+        options: [
+          "Dolore crampiforme ai muscoli durante il cammino che regredisce con il riposo",
+          "Dolore continuo a riposo che migliora camminando",
+          "Dolore solo in posizione supina",
+          "Prurito agli arti inferiori"
+        ],
+        answer: "Dolore crampiforme ai muscoli durante il cammino che regredisce con il riposo"
+      },
+      {
+        id: 6,
+        topic: "Aterosclerosi",
+        question: "L’Ankle-Brachial Index (ABI) è:",
+        options: [
+          "Il rapporto tra la pressione sistolica al braccio e quella alla caviglia",
+          "Il rapporto tra la pressione diastolica al braccio e quella alla caviglia",
+          "Il rapporto tra la pressione sistolica alla caviglia e quella al braccio",
+          "Una misura indiretta dei trigliceridi plasmatici"
+        ],
+        answer: "Il rapporto tra la pressione sistolica alla caviglia e quella al braccio"
+      },
+      {
+        id: 7,
+        topic: "Aterosclerosi",
+        question: "Un ABI inferiore o uguale a 0,9 indica:",
+        options: [
+          "Assenza di malattia vascolare",
+          "Probabile malattia vascolare ostruttiva agli arti inferiori",
+          "Ipotensione sistemica benigna",
+          "Esclusivamente calcificazione delle arterie"
+        ],
+        answer: "Probabile malattia vascolare ostruttiva agli arti inferiori"
+      },
+      {
+        id: 8,
+        topic: "Aterosclerosi",
+        question: "Un ABI superiore a 1,4 fa sospettare:",
+        options: [
+          "Pressione bassa alla caviglia",
+          "Calcificazione della parete vascolare",
+          "Normale elasticità vascolare",
+          "Solo ipertensione arteriosa sistemica"
+        ],
+        answer: "Calcificazione della parete vascolare"
+      },
+      {
+        id: 9,
+        topic: "Aterosclerosi",
+        question: "La malattia di Buerger (tromboangioite obliterante) colpisce tipicamente:",
+        options: [
+          "Anziani ipertesi non fumatori",
+          "Giovani fumatori, soprattutto uomini",
+          "Donne in post-menopausa non fumatrici",
+          "Solo pazienti diabetici di lunga data"
+        ],
+        answer: "Giovani fumatori, soprattutto uomini"
+      },
+      {
+        id: 10,
+        topic: "Aterosclerosi",
+        question: "Nella malattia di Buerger sono principalmente interessate:",
+        options: [
+          "Arterie coronarie di grosso calibro",
+          "Arterie di piccolo e medio calibro periferiche",
+          "Solo vene superficiali degli arti",
+          "Solo arterie renali"
+        ],
+        answer: "Arterie di piccolo e medio calibro periferiche"
+      },
+      {
+        id: 11,
+        topic: "Aterosclerosi",
+        question: "Il fenomeno di Raynaud è:",
+        options: [
+          "Una vasodilatazione marcata delle estremità",
+          "Una vasocostrizione delle estremità con ischemia digitale",
+          "Una neuropatia periferica pura",
+          "Un difetto valvolare cardiaco"
+        ],
+        answer: "Una vasocostrizione delle estremità con ischemia digitale"
+      },
+      {
+        id: 12,
+        topic: "Aterosclerosi",
+        question: "Lo sviluppo della placca aterosclerotica:",
+        options: [
+          "Avviene solo dopo i 60 anni",
+          "Può iniziare in età giovanile e richiede anni",
+          "È sempre un processo acuto",
+          "Non causa mai deformazione della parete vasale"
+        ],
+        answer: "Può iniziare in età giovanile e richiede anni"
+      },
+      {
+        id: 13,
+        topic: "Aterosclerosi",
+        question: "La coronarografia permette di valutare principalmente:",
+        options: [
+          "Il contenuto lipidico della placca",
+          "Il lume del vaso e la sua pervietà",
+          "Esclusivamente lo spessore della parete",
+          "Solo il flusso venoso di ritorno"
+        ],
+        answer: "Il lume del vaso e la sua pervietà"
+      },
+      {
+        id: 14,
+        topic: "Aterosclerosi",
+        question: "L’ecografia intravascolare (IVUS) o l’OCT servono soprattutto per:",
+        options: [
+          "Valutare la funzione renale",
+          "Studiare in dettaglio parete e placca aterosclerotica",
+          "Misurare la pressione arteriosa",
+          "Stimare la frazione di eiezione"
+        ],
+        answer: "Studiare in dettaglio parete e placca aterosclerotica"
+      },
+      {
+        id: 15,
+        topic: "Dieta/Colesterolo",
+        question: "Quale affermazione è corretta sul colesterolo plasmatico?",
+        options: [
+          "È quasi interamente assunto con la dieta",
+          "Circa l’80% è prodotto dal fegato",
+          "Non ha alcun ruolo nella membrana cellulare",
+          "È interamente idrosolubile nel sangue"
+        ],
+        answer: "Circa l’80% è prodotto dal fegato"
+      },
+      {
+        id: 16,
+        topic: "Dieta/Colesterolo",
+        question: "La massima riduzione ottenibile sul colesterolo con una dieta perfetta è circa:",
+        options: [
+          "1-2%",
+          "10%",
+          "30%",
+          "60%"
+        ],
+        answer: "10%"
+      },
+      {
+        id: 17,
+        topic: "Dieta/Colesterolo",
+        question: "La dieta influisce maggiormente:",
+        options: [
+          "Sul colesterolo totale rispetto ai trigliceridi",
+          "Sui trigliceridi rispetto al colesterolo",
+          "Solo sulle HDL",
+          "Solo sulle lipoproteine(a)"
+        ],
+        answer: "Sui trigliceridi rispetto al colesterolo"
+      },
+      {
+        id: 18,
+        topic: "Dieta/Colesterolo",
+        question: "Quale combinazione alimentare è più critica secondo il prof. Zambon?",
+        options: [
+          "Pochi legumi, poche verdure e poca frutta secca",
+          "Eccesso esclusivo di sale",
+          "Solo eccesso di zuccheri semplici",
+          "Solo eccesso di acqua"
+        ],
+        answer: "Pochi legumi, poche verdure e poca frutta secca"
+      },
+      {
+        id: 19,
+        topic: "Dieta/Colesterolo",
+        question: "Il prelievo lipidico non a digiuno è di solito sufficiente per:",
+        options: [
+          "Valutare rischio cardiovascolare e dislipidemie comuni",
+          "Misurare correttamente la glicemia",
+          "Valutare esclusivamente le HDL",
+          "Stimare la funzione renale"
+        ],
+        answer: "Valutare rischio cardiovascolare e dislipidemie comuni"
+      },
+      {
+        id: 20,
+        topic: "Dieta/Colesterolo",
+        question: "La lipoproteina(a) [Lp(a)]:",
+        options: [
+          "È irrilevante per il rischio cardiovascolare",
+          "Se molto elevata può essere fino a 6 volte più dannosa di altre lipoproteine",
+          "Non è mai geneticamente determinata",
+          "È prodotta solo dalla dieta"
+        ],
+        answer: "Se molto elevata può essere fino a 6 volte più dannosa di altre lipoproteine"
+      },
+      {
+        id: 21,
+        topic: "Dieta/Colesterolo",
+        question: "Apo-B è:",
+        options: [
+          "Una proteina tipica solo delle HDL",
+          "La proteina essenziale di tutte le lipoproteine aterogene",
+          "Un enzima epatico",
+          "Un recettore insulinico"
+        ],
+        answer: "La proteina essenziale di tutte le lipoproteine aterogene"
+      },
+      {
+        id: 22,
+        topic: "Dieta/Colesterolo",
+        question: "La formula di Friedewald (colesterolo LDL ≈ CT - HDL - trigliceridi/5) è:",
+        options: [
+          "Inaffidabile in qualsiasi condizione post-prandiale",
+          "Affidabile anche nel non digiuno, salvo trigliceridi molto elevati",
+          "Utilizzabile solo nei bambini",
+          "Ormai completamente abbandonata"
+        ],
+        answer: "Affidabile anche nel non digiuno, salvo trigliceridi molto elevati"
+      },
+      {
+        id: 23,
+        topic: "Dieta/Colesterolo",
+        question: "Un nuovo approccio terapeutico per l’ipercolesterolemia citato dal professore è:",
+        options: [
+          "Infusione endovenosa giornaliera di eparina",
+          "Iniezione sottocutanea semestrale che riduce il colesterolo di circa il 50%",
+          "Solo dieta vegetariana stretta",
+          "Solo attività fisica senza farmaci"
+        ],
+        answer: "Iniezione sottocutanea semestrale che riduce il colesterolo di circa il 50%"
+      },
+      {
+        id: 24,
+        topic: "Dieta/Colesterolo",
+        question: "La prevenzione primaria dell’aterosclerosi si fonda soprattutto su:",
+        options: [
+          "Dieta sana e stile di vita adeguato fin dall’adolescenza",
+          "Solo controlli ecografici annuali",
+          "Uso precoce e indiscriminato di anticoagulanti",
+          "Assenza totale di attività fisica"
+        ],
+        answer: "Dieta sana e stile di vita adeguato fin dall’adolescenza"
+      },
+      {
+        id: 25,
+        topic: "Dieta/Colesterolo",
+        question: "Nei dati epidemiologici Europei citati, l’Italia è passata da:",
+        options: [
+          "Rischio cardiovascolare molto alto a molto basso",
+          "Rischio basso a intermedio",
+          "Rischio alto a basso",
+          "Rischio intermedio a molto alto"
+        ],
+        answer: "Rischio basso a intermedio"
+      },
+
+      /* ===== ESAME OBIETTIVO ADDOME (18-19) ===== */
+      {
+        id: 26,
+        topic: "Addome",
+        question: "Le 4 manovre fondamentali dell’esame obiettivo dell’addome sono:",
+        options: [
+          "Ispezione, palpazione, percussione, auscultazione",
+          "Ispezione, percussione, palpazione profonda, radiografia",
+          "Auscultazione, percussione, TC, RMN",
+          "Ispezione, ecografia, TC, RMN"
+        ],
+        answer: "Ispezione, palpazione, percussione, auscultazione"
+      },
+      {
+        id: 27,
+        topic: "Addome",
+        question: "Nella suddivisione in quadranti addominali, le linee orizzontali sono:",
+        options: [
+          "Transtubercolare e sottocostale",
+          "Transtubercolare e transpilorica",
+          "Transpilorica e bisiliaca",
+          "Bisiliaca e xifoidea"
+        ],
+        answer: "Transtubercolare e transpilorica"
+      },
+      {
+        id: 28,
+        topic: "Addome",
+        question: "Nella fossa iliaca destra si trovano tipicamente:",
+        options: [
+          "Stomaco e duodeno",
+          "Cieco e appendice",
+          "Colon trasverso",
+          "Sigma"
+        ],
+        answer: "Cieco e appendice"
+      },
+      {
+        id: 29,
+        topic: "Addome",
+        question: "La conformazione addominale ‘batraciana’ è tipica di:",
+        options: [
+          "Addome piatto in soggetto magro",
+          "Versamento ascitico importante",
+          "Meteorismo isolato",
+          "Ernia inguinale"
+        ],
+        answer: "Versamento ascitico importante"
+      },
+      {
+        id: 30,
+        topic: "Addome",
+        question: "La cicatrice ombelicale normalmente è:",
+        options: [
+          "Estroflessa",
+          "Introflessa",
+          "Sempre piana",
+          "Assente nell’adulto"
+        ],
+        answer: "Introflessa"
+      },
+      {
+        id: 31,
+        topic: "Addome",
+        question: "L’estroflessione della cicatrice ombelicale può essere dovuta a:",
+        options: [
+          "Ernia ombelicale o aumento della pressione endoaddominale",
+          "Solo a trauma diretto dell’ombelico",
+          "Ipotensione portale",
+          "Infezione renale"
+        ],
+        answer: "Ernia ombelicale o aumento della pressione endoaddominale"
+      },
+      {
+        id: 32,
+        topic: "Addome",
+        question: "La manovra di Valsalva è utile, tra l’altro, per:",
+        options: [
+          "Ridurre un’ernia crurale",
+          "Evidenziare ernie addominali accentuando la pressione intra-addominale",
+          "Valutare la funzione renale",
+          "Misurare la glicemia"
+        ],
+        answer: "Evidenziare ernie addominali accentuando la pressione intra-addominale"
+      },
+      {
+        id: 33,
+        topic: "Addome",
+        question: "In presenza di peritonite acuta, i movimenti respiratori addominali:",
+        options: [
+          "Sono aumentati",
+          "Sono ridotti fino a quasi scomparire",
+          "Restano invariati",
+          "Diventano paradossi con sollevamento dell’ombelico"
+        ],
+        answer: "Sono ridotti fino a quasi scomparire"
+      },
+      {
+        id: 34,
+        topic: "Addome",
+        question: "Il meteorismo è definito come:",
+        options: [
+          "Accumulo di liquido libero in addome",
+          "Presenza eccessiva di gas in addome",
+          "Ipertrofia della parete addominale",
+          "Secrezione eccessiva di succhi gastrici"
+        ],
+        answer: "Presenza eccessiva di gas in addome"
+      },
+      {
+        id: 35,
+        topic: "Addome",
+        question: "Una causa di meteorismo per difettosa eliminazione dei gas è:",
+        options: [
+          "Occlusione intestinale",
+          "Cirrosi epatica",
+          "Meteorismo psicogeno",
+          "Iperaldosteronismo"
+        ],
+        answer: "Occlusione intestinale"
+      },
+      {
+        id: 36,
+        topic: "Addome",
+        question: "All’auscultazione, i borborigmi in un addome meteorico si presentano:",
+        options: [
+          "Assenti in ogni distretto",
+          "Simili a gorgoglii, in genere aumentati",
+          "Come soffi sistolici",
+          "Solo a livello dell’ipogastrio"
+        ],
+        answer: "Simili a gorgoglii, in genere aumentati"
+      },
+      {
+        id: 37,
+        topic: "Addome",
+        question: "L’ileo è definito come:",
+        options: [
+          "Iperperistalsi intestinale",
+          "Arresto del transito intestinale",
+          "Solo diarrea cronica",
+          "Esclusiva infiammazione del tenue"
+        ],
+        answer: "Arresto del transito intestinale"
+      },
+      {
+        id: 38,
+        topic: "Addome",
+        question: "Nell’ileo meccanico si ha:",
+        options: [
+          "Ostruzione del lume intestinale",
+          "Bloccco della peristalsi per paralisi",
+          "Aumento del transito intestinale",
+          "Peristalsi sempre assente fin dall’inizio"
+        ],
+        answer: "Ostruzione del lume intestinale"
+      },
+      {
+        id: 39,
+        topic: "Addome",
+        question: "Nell’ileo paralitico la peristalsi:",
+        options: [
+          "È vivace a monte e assente a valle",
+          "È globalmente assente o molto ridotta",
+          "È aumentata ovunque",
+          "È presente solo nel colon"
+        ],
+        answer: "È globalmente assente o molto ridotta"
+      },
+      {
+        id: 40,
+        topic: "Addome",
+        question: "Il vomito fecaloide è più tipico di:",
+        options: [
+          "Ileo meccanico dei tratti distali",
+          "Gastrite acuta",
+          "Epatite virale",
+          "Colecistite cronica"
+        ],
+        answer: "Ileo meccanico dei tratti distali"
+      },
+      {
+        id: 41,
+        topic: "Addome",
+        question: "La percussione raggiata nell’ascite parte da:",
+        options: [
+          "Ipogastrio verso l’alto",
+          "Regione periombelicale verso la periferia",
+          "Fossa iliaca destra verso sinistra",
+          "Ipocondrio sinistro verso l’inguine"
+        ],
+        answer: "Regione periombelicale verso la periferia"
+      },
+      {
+        id: 42,
+        topic: "Addome",
+        question: "In un versamento ascitico di 500-2000 ml, alla percussione si trova:",
+        options: [
+          "Ottusità centrale periombelicale e timpanismo periferico",
+          "Ottusità a grembiule periferica e timpanismo periombelicale",
+          "Timpanismo diffuso",
+          "Solo ottusità nella regione epigastrica"
+        ],
+        answer: "Ottusità a grembiule periferica e timpanismo periombelicale"
+      },
+      {
+        id: 43,
+        topic: "Addome",
+        question: "Il segno del fiotto ricerca:",
+        options: [
+          "Presenza di gas libero in addome",
+          "Trasmissione di un’onda liquida da un fianco all’altro",
+          "Dolore alla palpazione profonda in fossa iliaca destra",
+          "Ipercontrattilità del muscolo retto"
+        ],
+        answer: "Trasmissione di un’onda liquida da un fianco all’altro"
+      },
+      {
+        id: 44,
+        topic: "Addome",
+        question: "Nel segno del ghiacciolo, il fegato:",
+        options: [
+          "È fisso e rigido senza movimento",
+          "Galleggia sul liquido ascitico e ‘rimbalza’ dopo la pressione",
+          "Scende in modo permanente verso la pelvi",
+          "Non è mai palpabile"
+        ],
+        answer: "Galleggia sul liquido ascitico e ‘rimbalza’ dopo la pressione"
+      },
+      {
+        id: 45,
+        topic: "Addome",
+        question: "Il circolo venoso porta-cava con caput medusae presenta:",
+        options: [
+          "Flusso venoso centripeto dal torace all’ombelico",
+          "Vene che si irradiano a raggiera dall’ombelico verso la periferia",
+          "Vene solo a livello degli arti inferiori",
+          "Assenza di vene superficiali addominali"
+        ],
+        answer: "Vene che si irradiano a raggiera dall’ombelico verso la periferia"
+      },
+      {
+        id: 46,
+        topic: "Addome",
+        question: "Il circolo collaterale cava-cava si associa a:",
+        options: [
+          "Ostruzione della vena porta",
+          "Ostruzione della vena cava inferiore",
+          "Solo insufficienza cardiaca sinistra",
+          "Ipertensione polmonare"
+        ],
+        answer: "Ostruzione della vena cava inferiore"
+      },
+      {
+        id: 47,
+        topic: "Addome",
+        question: "All’auscultazione addominale, i borborigmi aumentati si osservano in:",
+        options: [
+          "Fasi iniziali di ileo meccanico",
+          "Ileo paralitico avanzato",
+          "Assenza completa di peristalsi",
+          "Infarto miocardico"
+        ],
+        answer: "Fasi iniziali di ileo meccanico"
+      },
+      {
+        id: 48,
+        topic: "Addome",
+        question: "I borborigmi sono ridotti o assenti in:",
+        options: [
+          "Ansia marcata",
+          "Diabete, neuropatie e ileo paralitico",
+          "Ipertiroidismo",
+          "Gastrite acuta"
+        ],
+        answer: "Diabete, neuropatie e ileo paralitico"
+      },
+      {
+        id: 49,
+        topic: "Addome",
+        question: "In corso di peritonite, l’addome può apparire:",
+        options: [
+          "Morbido e trattabile ovunque",
+          "A tavola, con ipercontrattura dei muscoli addominali",
+          "Depresso in regione epigastrica",
+          "Piatto e flaccido"
+        ],
+        answer: "A tavola, con ipercontrattura dei muscoli addominali"
+      },
+      {
+        id: 50,
+        topic: "Addome",
+        question: "Per rendere più trattabile l’addome in pazienti molto solletici è utile:",
+        options: [
+          "Palpare con le unghie",
+          "Flettere le ginocchia e mettere le mani dietro la nuca",
+          "Palpare bruscamente il punto dolente",
+          "Usare acqua fredda sulla parete"
+        ],
+        answer: "Flettere le ginocchia e mettere le mani dietro la nuca"
+      },
+
+      /* ===== ESAME OBIETTIVO NEUROLOGICO (20) ===== */
+      {
+        id: 51,
+        topic: "Neurologico",
+        question: "Prima dell’esame neurologico in senso stretto, è fondamentale:",
+        options: [
+          "Eseguire subito una TC encefalo",
+          "Osservare aspetto esteriore, igiene e tono dell’umore del paziente",
+          "Misurare la pressione arteriosa solo in posizione eretta",
+          "Registrare un ECG"
+        ],
+        answer: "Osservare aspetto esteriore, igiene e tono dell’umore del paziente"
+      },
+      {
+        id: 52,
+        topic: "Neurologico",
+        question: "L’esame psichico di base comprende la valutazione di:",
+        options: [
+          "Solo memoria a lungo termine",
+          "Tono dell’umore, funzioni cognitive e presenza di allucinazioni",
+          "Solo linguaggio scritto",
+          "Solo riflessi osteotendinei"
+        ],
+        answer: "Tono dell’umore, funzioni cognitive e presenza di allucinazioni"
+      },
+      {
+        id: 53,
+        topic: "Neurologico",
+        question: "Le Basic Activities Daily Living (BADL) servono soprattutto a:",
+        options: [
+          "Valutare il rischio cardiovascolare",
+          "Valutare l’autonomia funzionale del paziente, in particolare anziano",
+          "Valutare la forza di presa della mano",
+          "Diagnosticare la sclerosi multipla"
+        ],
+        answer: "Valutare l’autonomia funzionale del paziente, in particolare anziano"
+      },
+      {
+        id: 54,
+        topic: "Neurologico",
+        question: "Il livello di vigilanza (attenzione, letargia, coma) è valutato anche tramite:",
+        options: [
+          "Indice caviglia-braccio",
+          "Scala di Glasgow (Glasgow Coma Scale)",
+          "Scala di Conley",
+          "Scala NYHA"
+        ],
+        answer: "Scala di Glasgow (Glasgow Coma Scale)"
+      },
+      {
+        id: 55,
+        topic: "Neurologico",
+        question: "Nella valutazione dei contenuti di coscienza si valuta:",
+        options: [
+          "Solo il riflesso corneale",
+          "Orientamento personale, spaziale e temporale",
+          "Solo la forza muscolare",
+          "Esclusivamente la memoria episodica"
+        ],
+        answer: "Orientamento personale, spaziale e temporale"
+      },
+      {
+        id: 56,
+        topic: "Neurologico",
+        question: "La rigidità nucale associata a febbre e vomito fa sospettare:",
+        options: [
+          "Ipertensione essenziale",
+          "Meningite",
+          "Ipertrofia muscolare",
+          "Solo contrattura cervicale meccanica"
+        ],
+        answer: "Meningite"
+      },
+      {
+        id: 57,
+        topic: "Neurologico",
+        question: "L’opistotono è:",
+        options: [
+          "Una postura con flessione marcata del tronco in avanti",
+          "Un decubito obbligato in iperestensione con spasmo della muscolatura assiale",
+          "Una rotazione del capo verso destra",
+          "Una posizione tipica dell’epilessia assenza"
+        ],
+        answer: "Un decubito obbligato in iperestensione con spasmo della muscolatura assiale"
+      },
+      {
+        id: 58,
+        topic: "Neurologico",
+        question: "La manovra di Lasegue è positiva quando:",
+        options: [
+          "La flessione della coscia provoca bradicardia",
+          "Il sollevamento dell’arto inferiore esteso causa dolore acuto per distensione del nervo sciatico",
+          "Il paziente non riesce a estendere il ginocchio da seduto",
+          "Il piede non può essere dorsiflesso"
+        ],
+        answer: "Il sollevamento dell’arto inferiore esteso causa dolore acuto per distensione del nervo sciatico"
+      },
+      {
+        id: 59,
+        topic: "Neurologico",
+        question: "Il segno di Kernig è:",
+        options: [
+          "Dolore alla flessione passiva del capo sul tronco",
+          "Dolore alla estensione della gamba sulla coscia a coscia flessa",
+          "Contrazione dei muscoli del dorso alla palpazione",
+          "Una parestesia al tocco leggero"
+        ],
+        answer: "Dolore alla estensione della gamba sulla coscia a coscia flessa"
+      },
+      {
+        id: 60,
+        topic: "Neurologico",
+        question: "Il segno di Brudzinski consiste in:",
+        options: [
+          "Flessione passiva del capo che provoca flessione riflessa degli arti inferiori",
+          "Estensione riflessa degli arti superiori alla percussione",
+          "Rotazione forzata del capo con dolore",
+          "Ipoestesia al tocco leggero"
+        ],
+        answer: "Flessione passiva del capo che provoca flessione riflessa degli arti inferiori"
+      },
+      {
+        id: 61,
+        topic: "Neurologico",
+        question: "L’afasia motoria (di Broca) è caratterizzata da:",
+        options: [
+          "Linguaggio fluente ma incomprensibile, con deficit di comprensione",
+          "Difficoltà nella produzione del linguaggio con comprensione relativamente conservata",
+          "Assenza di qualsiasi disturbo del linguaggio",
+          "Deficit esclusivo della scrittura"
+        ],
+        answer: "Difficoltà nella produzione del linguaggio con comprensione relativamente conservata"
+      },
+      {
+        id: 62,
+        topic: "Neurologico",
+        question: "L’afasia sensoriale (di Wernicke) è tipicamente:",
+        options: [
+          "Non fluente, con poche parole articolate",
+          "Fluente, ma con frasi sconnesse e deficit di comprensione",
+          "Assenza di linguaggio ma comprensione intatta",
+          "Disturbo esclusivo della lettura"
+        ],
+        answer: "Fluente, ma con frasi sconnesse e deficit di comprensione"
+      },
+      {
+        id: 63,
+        topic: "Neurologico",
+        question: "La disartria è:",
+        options: [
+          "Un disturbo della comprensione del linguaggio",
+          "Un disturbo motorio della parola dovuto a deficit di controllo dei muscoli fonatori",
+          "Una perdita di memoria semantica",
+          "Un disturbo del calcolo"
+        ],
+        answer: "Un disturbo motorio della parola dovuto a deficit di controllo dei muscoli fonatori"
+      },
+      {
+        id: 64,
+        topic: "Neurologico",
+        question: "L’agnosia tattile (stereoagnosia) è:",
+        options: [
+          "Perdita della vista",
+          "Impossibilità di riconoscere oggetti con il tatto pur avendo sensibilità integra",
+          "Perdita della capacità di deglutire",
+          "Incapacità di orientarsi nello spazio"
+        ],
+        answer: "Impossibilità di riconoscere oggetti con il tatto pur avendo sensibilità integra"
+      },
+      {
+        id: 65,
+        topic: "Neurologico",
+        question: "La prosopoagnosia è:",
+        options: [
+          "Incapacità di riconoscere i volti noti, talvolta anche il proprio",
+          "Perdita della sensibilità dolorifica",
+          "Spasmo dei muscoli facciali",
+          "Paralisi dei muscoli oculari"
+        ],
+        answer: "Incapacità di riconoscere i volti noti, talvolta anche il proprio"
+      },
+      {
+        id: 66,
+        topic: "Neurologico",
+        question: "L’aprassia ideativa è:",
+        options: [
+          "Disturbo del tono muscolare",
+          "Incapacità di organizzare la sequenza di movimenti finalizzati",
+          "Perdita del riflesso rotuleo",
+          "Deficit sensitivo puro"
+        ],
+        answer: "Incapacità di organizzare la sequenza di movimenti finalizzati"
+      },
+      {
+        id: 67,
+        topic: "Neurologico",
+        question: "Nella valutazione del sistema motorio, il trofismo muscolare si riferisce a:",
+        options: [
+          "Turgidità dei muscoli",
+          "Dimensioni e massa dei muscoli",
+          "Velocità di conduzione nervosa",
+          "Capacità di rilassamento psichico"
+        ],
+        answer: "Dimensioni e massa dei muscoli"
+      },
+      {
+        id: 68,
+        topic: "Neurologico",
+        question: "La spasticità è un tipo di ipertono caratterizzato da:",
+        options: [
+          "Distribuzione omogenea su agonisti e antagonisti",
+          "Contrazione patologica selettiva di alcuni muscoli agonisti con fenomeno ‘a coltello di serramanico’",
+          "Resistenza costante in tutte le direzioni",
+          "Assenza di riflessi osteotendinei"
+        ],
+        answer: "Contrazione patologica selettiva di alcuni muscoli agonisti con fenomeno ‘a coltello di serramanico’"
+      },
+      {
+        id: 69,
+        topic: "Neurologico",
+        question: "La rigidità extrapiramidale (es. Parkinson) presenta:",
+        options: [
+          "Ipotono generalizzato",
+          "Ipertono uniforme con fenomeno della ‘ruota dentata’",
+          "Assenza completa di tono",
+          "Solo debolezza distale"
+        ],
+        answer: "Ipertono uniforme con fenomeno della ‘ruota dentata’"
+      },
+      {
+        id: 70,
+        topic: "Neurologico",
+        question: "La paresi è definita come:",
+        options: [
+          "Assenza totale di movimento",
+          "Diminuzione della forza ma non assenza di movimento",
+          "Tremore a riposo",
+          "Iperriflessia segmentaria"
+        ],
+        answer: "Diminuzione della forza ma non assenza di movimento"
+      },
+      {
+        id: 71,
+        topic: "Neurologico",
+        question: "La plegia è:",
+        options: [
+          "Perdita completa della sensibilità",
+          "Assenza di movimento volontario in un distretto",
+          "Disturbo della coordinazione",
+          "Ipertrofia muscolare"
+        ],
+        answer: "Assenza di movimento volontario in un distretto"
+      },
+      {
+        id: 72,
+        topic: "Neurologico",
+        question: "L’emiplegia interessa:",
+        options: [
+          "Due arti inferiori",
+          "Un solo arto",
+          "Entrambi gli arti di un lato del corpo",
+          "Tutti e quattro gli arti"
+        ],
+        answer: "Entrambi gli arti di un lato del corpo"
+      },
+      {
+        id: 73,
+        topic: "Neurologico",
+        question: "La paraplegia indica:",
+        options: [
+          "Perdita motoria dei quattro arti",
+          "Perdita motoria di due arti (in genere inferiori)",
+          "Perdita motoria di un solo arto",
+          "Perdita motoria alternata di arti controlaterali"
+        ],
+        answer: "Perdita motoria di due arti (in genere inferiori)"
+      },
+      {
+        id: 74,
+        topic: "Neurologico",
+        question: "La coordinazione cerebellare viene indagata anche con:",
+        options: [
+          "Prova indice-naso",
+          "Prova di Lasegue",
+          "Test di Valsalva",
+          "Segno di Kernig"
+        ],
+        answer: "Prova indice-naso"
+      },
+      {
+        id: 75,
+        topic: "Neurologico",
+        question: "Per valutare l’anosmia, Galbiati suggerisce di:",
+        options: [
+          "Far sniffare solo caffè",
+          "Alternare boccetta di alcool e mano ‘inodore’ a occhi chiusi",
+          "Usare esclusivamente sostanze dolci",
+          "Valutare la visione di colori"
+        ],
+        answer: "Alternare boccetta di alcool e mano ‘inodore’ a occhi chiusi"
+      },
+      {
+        id: 76,
+        topic: "Neurologico",
+        question: "Per parlare di esoftalmo è necessario:",
+        options: [
+          "palpebra completamente chiusa",
+          "vedere sclera (‘parte bianca’) anche quando il paziente guarda in basso",
+          "solo aumento della lacrimazione",
+          "ptosi bilaterale"
+        ],
+        answer: "vedere sclera (‘parte bianca’) anche quando il paziente guarda in basso"
+      },
+      {
+        id: 77,
+        topic: "Neurologico",
+        question: "La ptosi palpebrale è:",
+        options: [
+          "Incapacità di chiudere l’occhio",
+          "Palpebra cadente",
+          "Movimento rapido della palpebra",
+          "Assenza di ciglia"
+        ],
+        answer: "Palpebra cadente"
+      },
+      {
+        id: 78,
+        topic: "Neurologico",
+        question: "Il lagoftalmo è la condizione in cui:",
+        options: [
+          "Il paziente non riesce ad aprire gli occhi",
+          "Il paziente non riesce a chiudere completamente l’occhio",
+          "La pupilla è permanentemente dilatata",
+          "È presente diplopia costante"
+        ],
+        answer: "Il paziente non riesce a chiudere completamente l’occhio"
+      },
+      {
+        id: 79,
+        topic: "Neurologico",
+        question: "La sindrome di Bernard-Horner comprende tipicamente:",
+        options: [
+          "Miosi, ptosi palpebrale, enoftalmo",
+          "Miosi, midriasi, nistagmo",
+          "Esoftalmo, midriasi, diplopia",
+          "Ipoestesia facciale isolata"
+        ],
+        answer: "Miosi, ptosi palpebrale, enoftalmo"
+      },
+      {
+        id: 80,
+        topic: "Neurologico",
+        question: "La sincope, in ambito neurologico/cardiologico, è considerata:",
+        options: [
+          "Sempre banale e priva di significato",
+          "Un possibile ‘arresto cardiaco abortito’ da indagare",
+          "Solo un episodio ansioso",
+          "Solo un segno di ipotensione ortostatica benigna"
+        ],
+        answer: "Un possibile ‘arresto cardiaco abortito’ da indagare"
+      },
+      {
+        id: 81,
+        topic: "Neurologico",
+        question: "Tra i principali sintomi neurologici elencati NON rientra:",
+        options: [
+          "Cefalea",
+          "Dolore facciale",
+          "Dolore/rigidità nucale",
+          "Aumento isolato della creatinina"
+        ],
+        answer: "Aumento isolato della creatinina"
+      },
+      {
+        id: 82,
+        topic: "Neurologico",
+        question: "Le parestesie e disestesie devono entrare in diagnosi differenziale con:",
+        options: [
+          "Iperparatiroidismo",
+          "Attacco di panico e alcalosi da iperventilazione",
+          "Ipertensione portale",
+          "Colica biliare"
+        ],
+        answer: "Attacco di panico e alcalosi da iperventilazione"
+      },
+      {
+        id: 83,
+        topic: "Neurologico",
+        question: "Un eloquio incerto o assente in un anziano può far sospettare:",
+        options: [
+          "Demenza cerebrale",
+          "Solo depressione lieve",
+          "Ipertensione arteriosa",
+          "Sclerosi sistemica"
+        ],
+        answer: "Demenza cerebrale"
+      },
+      {
+        id: 84,
+        topic: "Neurologico",
+        question: "Una ‘erre moscia’ insorta di recente in un paziente adulto può essere segno di:",
+        options: [
+          "Iperventilazione",
+          "Ictus",
+          "Anemia sideropenica",
+          "Ipotensione"
+        ],
+        answer: "Ictus"
+      },
+      {
+        id: 85,
+        topic: "Neurologico",
+        question: "La disfasia nominale consiste in:",
+        options: [
+          "Incapacità di comprendere parole semplici",
+          "Incapacità di nominare gli oggetti",
+          "Incapacità di ripetere frasi",
+          "Incapacità di leggere"
+        ],
+        answer: "Incapacità di nominare gli oggetti"
+      },
+      {
+        id: 86,
+        topic: "Neurologico",
+        question: "L’afasia di conduzione è caratterizzata da:",
+        options: [
+          "Incapacità di ripetere frasi pur comprendendole",
+          "Perdita della comprensione e produzione di jargon",
+          "Mutismo selettivo",
+          "Disturbo esclusivo della scrittura"
+        ],
+        answer: "Incapacità di ripetere frasi pur comprendendole"
+      },
+      {
+        id: 87,
+        topic: "Neurologico",
+        question: "Nel sistema sensoriale, la propriocezione valuta:",
+        options: [
+          "Percezione del caldo/freddo cutaneo",
+          "Percezione della posizione e movimento degli arti",
+          "Percezione del dolore acuto",
+          "Percezione degli odori"
+        ],
+        answer: "Percezione della posizione e movimento degli arti"
+      },
+      {
+        id: 88,
+        topic: "Neurologico",
+        question: "La valutazione delle vibrazioni si esegue in genere con:",
+        options: [
+          "Cotone idrofilo",
+          "Diapason applicato su prominenze ossee",
+          "Aghi sterili",
+          "Termometro digitale"
+        ],
+        answer: "Diapason applicato su prominenze ossee"
+      },
+      {
+        id: 89,
+        topic: "Neurologico",
+        question: "La prova tallone-ginocchio serve a valutare:",
+        options: [
+          "Tono muscolare",
+          "Coordinazione degli arti inferiori",
+          "Solo riflessi spinali",
+          "Sensibilità tattile fine"
+        ],
+        answer: "Coordinazione degli arti inferiori"
+      },
+      {
+        id: 90,
+        topic: "Neurologico",
+        question: "La ‘paralisi a statua di cera’ è tipica di:",
+        options: [
+          "Catatonia",
+          "Ictus cerebellare",
+          "Polineuropatia diabetica",
+          "Sclerosi multipla"
+        ],
+        answer: "Catatonia"
+      },
+      {
+        id: 91,
+        topic: "Neurologico",
+        question: "La paratonia è definita come:",
+        options: [
+          "Ipotono generalizzato",
+          "Aumento della resistenza che cresce con la rapidità del movimento",
+          "Resistenza costante indipendente dalla velocità",
+          "Assenza di qualsiasi resistenza"
+        ],
+        answer: "Aumento della resistenza che cresce con la rapidità del movimento"
+      },
+      {
+        id: 92,
+        topic: "Neurologico",
+        question: "Una sincope deve essere valutata soprattutto anche dal punto di vista:",
+        options: [
+          "Dermatologico",
+          "Cardiologico",
+          "Ginecologico",
+          "Reumatologico"
+        ],
+        answer: "Cardiologico"
+      },
+      {
+        id: 93,
+        topic: "Neurologico",
+        question: "I farmaci antiparkinsoniani possono talvolta:",
+        options: [
+          "Ridurre del tutto i sintomi neurologici",
+          "Causare sintomi simili a malattia neurologica",
+          "Non avere alcun effetto sul SNC",
+          "Aumentare la pressione portale"
+        ],
+        answer: "Causare sintomi simili a malattia neurologica"
+      },
+      {
+        id: 94,
+        topic: "Neurologico",
+        question: "Tra i sintomi neurologici elencati, il disturbo del controllo sfinterico:",
+        options: [
+          "È irrilevante",
+          "È un possibile segno di patologia neurologica midollare o centrale",
+          "Indica sempre solo infezione urinaria",
+          "Non ha base organica"
+        ],
+        answer: "È un possibile segno di patologia neurologica midollare o centrale"
+      },
+      {
+        id: 95,
+        topic: "Neurologico",
+        question: "Nella valutazione del linguaggio è importante osservare:",
+        options: [
+          "Solo la velocità di parola",
+          "Volume, articolazione, significato e struttura del discorso",
+          "Solo la scrittura",
+          "Solo la lettura silente"
+        ],
+        answer: "Volume, articolazione, significato e struttura del discorso"
+      },
+      {
+        id: 96,
+        topic: "Neurologico",
+        question: "La perdita di sensibilità a un arto è un sintomo che richiede:",
+        options: [
+          "Sempre soltanto analgesici",
+          "Valutazione neurologica approfondita",
+          "Nessun accertamento",
+          "Solo fisioterapia"
+        ],
+        answer: "Valutazione neurologica approfondita"
+      },
+      {
+        id: 97,
+        topic: "Neurologico",
+        question: "La valutazione delle funzioni superiori può includere:",
+        options: [
+          "Sottrazioni seriali dal numero 100 di 7 in 7",
+          "Solo test di sforzo cardiaco",
+          "Solo misurazione della pressione",
+          "Test di spirometria"
+        ],
+        answer: "Sottrazioni seriali dal numero 100 di 7 in 7"
+      },
+      {
+        id: 98,
+        topic: "Neurologico",
+        question: "In caso di sospetta allucinazione visiva si può chiedere al paziente:",
+        options: [
+          "Quanti anni ha",
+          "Quante persone vede nella stanza",
+          "Se sente bruciore gastrico",
+          "Se ha fame"
+        ],
+        answer: "Quante persone vede nella stanza"
+      },
+      {
+        id: 99,
+        topic: "Neurologico",
+        question: "La valutazione dei nervi cranici secondo Galbiati:",
+        options: [
+          "Può limitarsi a pochi nervi selezionati",
+          "Deve includere sistematicamente tutti e 12 i nervi cranici",
+          "Può essere omessa in assenza di cefalea",
+          "È sostituita dall’ECG"
+        ],
+        answer: "Deve includere sistematicamente tutti e 12 i nervi cranici"
+      },
+      {
+        id: 100,
+        topic: "Neurologico",
+        question: "Per la diagnosi corretta in neurologia è essenziale:",
+        options: [
+          "Solo la risonanza magnetica",
+          "Una buona anamnesi e un esame obiettivo neurologico completo",
+          "Solo i test di laboratorio",
+          "Solo la valutazione psichiatrica"
+        ],
+        answer: "Una buona anamnesi e un esame obiettivo neurologico completo"
+      }
+    ];
+
+    let currentQuestions = [];
+
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function generateQuiz() {
+      const quizContainer = document.getElementById("quiz");
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "none";
+      resultDiv.innerHTML = "";
+
+      let num = parseInt(document.getElementById("numQuestions").value, 10);
+      if (isNaN(num) || num < 1) num = 10;
+      if (num > questionBank.length) num = questionBank.length;
+
+      const shuffled = shuffle(questionBank);
+      currentQuestions = shuffled.slice(0, num);
+
+      quizContainer.innerHTML = "";
+      currentQuestions.forEach((q, index) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+        block.dataset.correct = q.answer;
+
+        const header = document.createElement("div");
+        header.className = "question-header";
+
+        const qText = document.createElement("div");
+        qText.className = "question-text";
+        qText.textContent = (index + 1) + ". " + q.question;
+
+        const topic = document.createElement("div");
+        topic.className = "question-topic";
+        topic.textContent = q.topic;
+
+        header.appendChild(qText);
+        header.appendChild(topic);
+        block.appendChild(header);
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+
+        q.options.forEach(opt => {
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "q" + index;
+          input.value = opt;
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(opt));
+          optionsDiv.appendChild(label);
+        });
+
+        block.appendChild(optionsDiv);
+        quizContainer.appendChild(block);
+      });
+    }
+
+    function gradeQuiz() {
+      const quizContainer = document.getElementById("quiz");
+      const blocks = quizContainer.getElementsByClassName("question-block");
+      if (!blocks.length) {
+        alert("Prima genera il quiz!");
+        return;
+      }
+
+      let score = 0;
+      let attempted = 0;
+
+      Array.from(blocks).forEach(block => {
+        const correct = block.dataset.correct;
+        const inputs = block.querySelectorAll("input[type='radio']");
+        let selected = null;
+        inputs.forEach(inp => {
+          if (inp.checked) selected = inp.value;
+        });
+
+        block.classList.remove("correct", "incorrect");
+        const oldInfo = block.querySelector(".correct-answer");
+        if (oldInfo) oldInfo.remove();
+
+        if (selected !== null) {
+          attempted++;
+          if (selected === correct) {
+            score++;
+            block.classList.add("correct");
+          } else {
+            block.classList.add("incorrect");
+            const info = document.createElement("div");
+            info.className = "correct-answer";
+            info.textContent = "Risposta corretta: " + correct;
+            block.appendChild(info);
+          }
+        }
+      });
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      const total = blocks.length;
+      const perc = total ? Math.round((score / total) * 100) : 0;
+      resultDiv.innerHTML =
+        "Domande totali: <strong>" + total +
+        "</strong> | Risposte date: <strong>" + attempted +
+        "</strong> | Corrette: <strong>" + score +
+        "</strong> (" + perc + "%)";
+    }
+  </script>
+</body>
+</html>

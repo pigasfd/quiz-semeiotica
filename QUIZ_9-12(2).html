@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Semeiotica – Nuovi 4 PDF (Set B)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050609;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: radial-gradient(circle at top, #1f2833, #050609);
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 5px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1050px;
+      margin: 20px auto 40px;
+      padding: 0 15px 30px;
+      background: rgba(10, 14, 22, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 15px 15px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+    .controls input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #45a29e, #66fcf1);
+      color: #0b0c10;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #c5c6c7, #9fa6b2);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      opacity: 0.96;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    #quizContainer {
+      padding: 10px 15px 20px;
+    }
+    .question-block {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(102,252,241,0.07), rgba(0,0,0,0.85));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .question-text {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .option-item {
+      margin: 3px 0;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 6px;
+    }
+    .option-item label {
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-block;
+      transition: background 0.12s ease, box-shadow 0.12s ease, border-bottom-color 0.12s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .correct-selected {
+      background: rgba(76, 175, 80, 0.16);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.7);
+    }
+    .incorrect-selected {
+      background: rgba(244, 67, 54, 0.18);
+      box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.7);
+    }
+    .correct-answer {
+      border-bottom-color: rgba(102, 252, 241, 0.9);
+    }
+    #result {
+      padding: 12px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.96rem;
+    }
+    #result strong {
+      color: #66fcf1;
+    }
+    .small-note {
+      font-size: 0.76rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 15px 8px 30px;
+        padding: 0 10px 20px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica – Nuovi 4 PDF (Set B)</h1>
+  <p>Integrazione finale: 20 domande cliniche su EO generale, respiro, capo/torace, percussione/auscultazione, dolore toracico</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label for="numQuestions">
+      Numero di domande per quiz (1–20):
+    </label>
+    <input type="number" id="numQuestions" min="1" max="20" value="20">
+    <button type="button" onclick="generateQuiz()">Genera nuovo quiz</button>
+    <button type="button" class="secondary" onclick="gradeQuiz()">Correggi</button>
+    <div class="small-note">
+      Questo set integra il primo (80 domande): insieme fanno ~100 domande complete sui 4 PDF.
+    </div>
+  </section>
+
+  <section id="quizContainer"></section>
+  <section id="result"></section>
+</main>
+
+<script>
+  const questionBank = [
+    /* ====== EO GENERALE / RESPIRO AVANZATO (1–5) ====== */
+    {
+      id: 1,
+      text: `Un paziente in PS è soporoso, con respiro di Kussmaul, alito chetonico, ipotensione e polso rapido. Quale quadro semeiotico globale ti viene in mente?`,
+      options: [
+        `Cefalea tensiva`,
+        `Chetoacidosi diabetica con acidosi metabolica grave`,
+        `Colica biliare semplice`,
+        `Sindrome ansiosa acuta`
+      ],
+      correctIndex: 1,
+      topic: `EO generale / Respiro`
+    },
+    {
+      id: 2,
+      text: `La presenza di marcatissima dispnea a riposo, tachipnea, uso dei muscoli accessori e ortopnea in un paziente cardiopatico suggerisce:`,
+      options: [
+        `Stato di compenso cardiaco stabile`,
+        `Scompenso cardiaco acuto con edema polmonare incipiente`,
+        `Solo infezione urinaria`,
+        `Appendicite acuta non complicata`
+      ],
+      correctIndex: 1,
+      topic: `EO generale / Respiro`
+    },
+    {
+      id: 3,
+      text: `In un paziente con febbre, tosse produttiva, respiro accelerato e stato generale compromesso, perché è importante misurare la frequenza respiratoria e non solo la saturazione?`,
+      options: [
+        `Per curiosità clinica`,
+        `Perché la tachipnea è un indicatore precoce di gravità e di possibile insufficienza respiratoria, anche prima del calo di saturazione`,
+        `Per calcolare il BMI`,
+        `Per valutare la funzionalità renale`
+      ],
+      correctIndex: 1,
+      topic: `EO generale / Respiro`
+    },
+    {
+      id: 4,
+      text: `In un paziente obeso, la valutazione del respiro e dei segni di sforzo respiratorio deve considerare soprattutto:`,
+      options: [
+        `Solo il peso corporeo`,
+        `Eventuale sindrome delle apnee notturne, ipoventilazione, presenza di edema e uso dei muscoli accessori`,
+        `Solo la glicemia`,
+        `Solo il colore degli occhi`
+      ],
+      correctIndex: 1,
+      topic: `EO generale / Respiro`
+    },
+    {
+      id: 5,
+      text: `La comparsa di confusione mentale improvvisa in un paziente dispnoico può indicare:`,
+      options: [
+        `Solo stress psicologico`,
+        `Ipossia cerebrale e possibile insufficienza respiratoria grave o shock`,
+        `Otite media`,
+        `Morbo celiaco`
+      ],
+      correctIndex: 1,
+      topic: `EO generale / Respiro`
+    },
+
+    /* ====== CAPO / COLLO / TORACE (6–10) ====== */
+    {
+      id: 6,
+      text: `Per distinguere clinicamente un gozzo diffuso (es. Basedow) da una linfoadenomegalia laterocervicale, quale dettaglio è più utile alla palpazione?`,
+      options: [
+        `Il colore della cute soprastante`,
+        `La mobilità alla deglutizione: la tiroide sale e scende con la deglutizione, i linfonodi no`,
+        `La presenza di febbre`,
+        `La presenza di dolore addominale`
+      ],
+      correctIndex: 1,
+      topic: `Collo / Tiroide / Linfonodi`
+    },
+    {
+      id: 7,
+      text: `Una linfoadenopatia dura, fissa ai piani profondi, non dolente è più sospetta per:`,
+      options: [
+        `Processo infiammatorio acuto benigno`,
+        `Possibile interessamento neoplastico`,
+        `Allergia alimentare semplice`,
+        `Piede diabetico`
+      ],
+      correctIndex: 1,
+      topic: `Collo / Linfonodi`
+    },
+    {
+      id: 8,
+      text: `Un linfonodo dolente, aumentato di volume, morbido ed evidente dopo un'infezione delle prime vie aeree è più suggestivo di:`,
+      options: [
+        `Linfoma maligno`,
+        `Adenite reattiva infiammatoria`,
+        `Tumore tiroideo avanzato`,
+        `Ernia diaframmatica`
+      ],
+      correctIndex: 1,
+      topic: `Collo / Linfonodi`
+    },
+    {
+      id: 9,
+      text: `Nel sospetto di meningismo, la semeiotica del capo/collo prevede la ricerca di:`,
+      options: [
+        `Segno di Babinski`,
+        `Rigidità nucale e segni di Kernig/Brudzinski`,
+        `Segno di Murphy`,
+        `Segno di Blumberg`
+      ],
+      correctIndex: 1,
+      topic: `Capo / Collo`
+    },
+    {
+      id: 10,
+      text: `In un torace enfisematoso avanzato, quali caratteristiche semeiotiche si associano più frequentemente?`,
+      options: [
+        `Torace piatto, murmurio vescicolare amplificato`,
+        `Torace "a botte", iperfonesi diffusa, MV ridotto e prolungamento dell'espirazione`,
+        `Torace normale, MV normale`,
+        `Ottusità diffusa a livello basale`
+      ],
+      correctIndex: 1,
+      topic: `Torace`
+    },
+
+    /* ====== PERCUSSIONE / AUSCULTAZIONE AVANZATA (11–15) ====== */
+    {
+      id: 11,
+      text: `Il fremito vocale tattile (FVT) è:`,
+      options: [
+        `La vibrazione percepita sul torace quando il paziente parla`,
+        `Un rumore auscultatorio cardiaco`,
+        `Il rumore del flusso arterioso`,
+        `La sensazione di calore a livello cutaneo`
+      ],
+      correctIndex: 0,
+      topic: `Percussione / FVT`
+    },
+    {
+      id: 12,
+      text: `Il fremito vocale tattile risulta AUMENTATO tipicamente su:`,
+      options: [
+        `Polmone normale`,
+        `Parenchima consolidato (es. polmonite lobare) con vie aeree pervie`,
+        `Versamento pleurico massivo`,
+        `Pneumotorace completo`
+      ],
+      correctIndex: 1,
+      topic: `Percussione / FVT`
+    },
+    {
+      id: 13,
+      text: `Il fremito vocale tattile risulta RIDOTTO o assente in caso di:`,
+      options: [
+        `Consolidamento polmonare pieno`,
+        `Versamento pleurico, pneumotorace, enfisema marcato`,
+        `Bronchite cronica lieve`,
+        `Torace normale in giovane adulto`
+      ],
+      correctIndex: 1,
+      topic: `Percussione / FVT`
+    },
+    {
+      id: 14,
+      text: `La broncofonia consiste in:`,
+      options: [
+        `Percezione tattile del fremito vocale`,
+        `Trasmissione nitida della voce all'auscultazione (“33”, “novanta nove”) in zone periferiche dove normalmente è ovattata`,
+        `Rumore respiratorio normale`,
+        `Rumore intestinale proiettato sul torace`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione / Broncofonia`
+    },
+    {
+      id: 15,
+      text: `La pectoriloquia (simplex o aphona) indica:`,
+      options: [
+        `L'assenza completa di MV`,
+        `La trasmissione molto chiara della parola sussurrata o parlata all'auscultazione, tipica di consolidamento parenchimale`,
+        `Solo la presenza di sibili espiratori`,
+        `Rantoli grossolani basali`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione / Pectoriloquia`
+    },
+
+    /* ====== DOLORE TORACICO / CASI CLINICI (16–20) ====== */
+    {
+      id: 16,
+      text: `Uomo di 65 anni, forte fumatore, dolore toracico improvviso con emitorace destro iperespanso, MV abolito a destra, iperfonesi alla percussione. Primo sospetto:`,
+      options: [
+        `Versamento pleurico massivo destro`,
+        `Pneumotorace iperteso destro`,
+        `Polmonite lobare destra`,
+        `Pericardite acuta`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico / Torace`
+    },
+    {
+      id: 17,
+      text: `Donna di 40 anni, dolore toracico puntorio basale sinistro, che peggiora con inspirazione profonda e tosse, febbre 38°C; all'auscultazione sfregamento pleurico. Il quadro è compatibile con:`,
+      options: [
+        `Pleurite secca basale sinistra`,
+        `Angina stabile`,
+        `Reflusso gastro-esofageo`,
+        `Colica renale sinistra`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico / Pleurite`
+    },
+    {
+      id: 18,
+      text: `Uomo di 55 anni, dolore toracico costrittivo insorto a riposo da 30 minuti, irradiazione al braccio sinistro, sudorazione fredda, nausea. Qual è il comportamento corretto?`,
+      options: [
+        `Aspettare che passi e poi fare una visita programmata`,
+        `Inviare urgentemente in PS con sospetto di sindrome coronarica acuta`,
+        `Somministrare solo gastroprotettore`,
+        `Consigliare riposo e acqua zuccherata`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico / Cardiaco`
+    },
+    {
+      id: 19,
+      text: `Paziente giovane con dolore toracico retrosternale bruciante dopo i pasti, rigurgito acido in bocca, miglioramento con antiacidi, nessuna dispnea. Il quadro orienta verso:`,
+      options: [
+        `Infarto miocardico inferiore`,
+        `Reflusso gastro-esofageo`,
+        `Embolia polmonare massiva`,
+        `Pleurite basale bilaterale`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico / Reflusso`
+    },
+    {
+      id: 20,
+      text: `Uomo di 70 anni, iperteso, dolore toracico lacerante, improvviso, irradiato al dorso, con polsi radiali asimmetrici e possibile deficit neurologico. Il sospetto più grave è:`,
+      options: [
+        `Embolia polmonare segmentaria`,
+        `Aneurisma dissecante dell'aorta`,
+        `Colica biliare`,
+        `Ernia iatale da scivolamento`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico / Aorta`
+    }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestions = [];
+
+  function generateQuiz() {
+    const input = document.getElementById('numQuestions');
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) n = 20;
+    if (n < 1) n = 1;
+    if (n > questionBank.length) n = questionBank.length;
+    input.value = n;
+
+    const shuffled = shuffle([...questionBank]);
+    currentQuestions = shuffled.slice(0, n);
+    renderQuiz();
+    document.getElementById('result').innerHTML = '';
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, qIndex) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.textContent = (qIndex + 1) + '. ' + q.text;
+
+      const topic = document.createElement('div');
+      topic.className = 'question-topic';
+      topic.textContent = q.topic;
+
+      header.appendChild(title);
+      header.appendChild(topic);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      const indices = q.options.map((_, i) => i);
+      shuffle(indices);
+
+      indices.forEach((optIndex, optPos) => {
+        const optWrapper = document.createElement('div');
+        optWrapper.className = 'option-item';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_opt' + optPos;
+        input.dataset.correct = (optIndex === q.correctIndex) ? 'true' : 'false';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = q.options[optIndex];
+
+        optWrapper.appendChild(input);
+        optWrapper.appendChild(label);
+        optionsDiv.appendChild(optWrapper);
+      });
+
+      block.appendChild(header);
+      block.appendChild(optionsDiv);
+      container.appendChild(block);
+    });
+  }
+
+  function gradeQuiz() {
+    if (currentQuestions.length === 0) {
+      alert('Genera prima il quiz.');
+      return;
+    }
+
+    let correctCount = 0;
+
+    currentQuestions.forEach((q, qIndex) => {
+      const options = document.querySelectorAll('input[name="q' + qIndex + '"]');
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        label.classList.remove('correct-selected', 'incorrect-selected', 'correct-answer');
+      });
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        if (input.dataset.correct === 'true') {
+          label.classList.add('correct-answer');
+        }
+        if (input.checked) {
+          if (input.dataset.correct === 'true') {
+            correctCount++;
+            label.classList.add('correct-selected');
+          } else {
+            label.classList.add('incorrect-selected');
+          }
+        }
+      });
+    });
+
+    const total = currentQuestions.length;
+    const perc = Math.round((correctCount / total) * 100);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML =
+      `Hai risposto correttamente a <strong>${correctCount}</strong> su <strong>${total}</strong> domande (${perc}%).`;
+  }
+
+  window.addEventListener('DOMContentLoaded', generateQuiz);
+</script>
+</body>
+</html>

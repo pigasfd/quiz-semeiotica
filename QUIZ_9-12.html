@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Semeiotica – Nuovi 4 PDF</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050609;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: radial-gradient(circle at top, #1f2833, #050609);
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 5px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1050px;
+      margin: 20px auto 40px;
+      padding: 0 15px 30px;
+      background: rgba(10, 14, 22, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 15px 15px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+    .controls input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #45a29e, #66fcf1);
+      color: #0b0c10;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #c5c6c7, #9fa6b2);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      opacity: 0.96;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    #quizContainer {
+      padding: 10px 15px 20px;
+    }
+    .question-block {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(102,252,241,0.07), rgba(0,0,0,0.85));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .question-text {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .option-item {
+      margin: 3px 0;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 6px;
+    }
+    .option-item label {
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-block;
+      transition: background 0.12s ease, box-shadow 0.12s ease, border-bottom-color 0.12s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .correct-selected {
+      background: rgba(76, 175, 80, 0.16);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.7);
+    }
+    .incorrect-selected {
+      background: rgba(244, 67, 54, 0.18);
+      box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.7);
+    }
+    .correct-answer {
+      border-bottom-color: rgba(102, 252, 241, 0.9);
+    }
+    #result {
+      padding: 12px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.96rem;
+    }
+    #result strong {
+      color: #66fcf1;
+    }
+    .small-note {
+      font-size: 0.76rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 15px 8px 30px;
+        padding: 0 10px 20px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica – Nuovi 4 PDF</h1>
+  <p>Esame obiettivo generale, respiro, capo/torace, percussione/auscultazione, dolore toracico</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label for="numQuestions">
+      Numero di domande per quiz (1–80):
+    </label>
+    <input type="number" id="numQuestions" min="1" max="80" value="25">
+    <button type="button" onclick="generateQuiz()">Genera nuovo quiz</button>
+    <button type="button" class="secondary" onclick="gradeQuiz()">Correggi</button>
+    <div class="small-note">
+      Domande tratte dai 4 PDF: EO generale, respiro, capo/torace, percussione/auscultazione, dolore toracico.
+    </div>
+  </section>
+
+  <section id="quizContainer"></section>
+  <section id="result"></section>
+</main>
+
+<script>
+  const questionBank = [
+    /* ====== EO GENERALE & POLSO / RESPIRO (1–20) ====== */
+    {
+      id: 1,
+      text: `Nell'esame obiettivo in urgenza, quali parametri vengono valutati per primi per capire se il paziente è stabile?`,
+      options: [
+        `Solo temperatura e peso`,
+        `Pressione, polso, respiro, stato di coscienza, temperatura corporea`,
+        `Solo auscultazione cardiaca`,
+        `Solo anamnesi farmacologica`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 2,
+      text: `Il polso radiale viene palpato di solito:`,
+      options: [
+        `Con un solo dito per evitare di confondersi`,
+        `Con due o tre dita, confrontando i due lati per valutarne la simmetria`,
+        `Solo con il pollice`,
+        `Solo con il fonendoscopio`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 3,
+      text: `Come si definisce la frequenza cardiaca normale nell'adulto a riposo (normosfigmia)?`,
+      options: [
+        `20–40 bpm`,
+        `60–80 bpm`,
+        `90–110 bpm`,
+        `130–140 bpm`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 4,
+      text: `Quando si parla di "deficit del polso"?`,
+      options: [
+        `Quando il polso è troppo ampio`,
+        `Quando la frequenza cardiaca centrale è maggiore di quella percepita perifericamente`,
+        `Quando i polsi periferici sono simmetrici`,
+        `Quando il polso è ritmico ma lento`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 5,
+      text: `Un polso aritmico "totale" è tipicamente espressione di:`,
+      options: [
+        `Extrasistoli isolate`,
+        `Fibrillazione atriale`,
+        `Bradicardia sinusale fisiologica`,
+        `Tachicardia sinusale da sforzo`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 6,
+      text: `Il "polso paradosso" di Kussmaul consiste in:`,
+      options: [
+        `Aumento della pressione sistolica all'inspirazione`,
+        `Caduta eccessiva della pressione arteriosa all'inspirazione (20–40 mmHg)`,
+        `Aritmia respiratoria fisiologica del giovane`,
+        `Scomparsa del polso in ortostatismo`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 7,
+      text: `In quali condizioni si può osservare un polso paradosso marcato?`,
+      options: [
+        `Vitiligine`,
+        `Asma grave, enfisema, versamento pericardico importante`,
+        `Gastrite`,
+        `Colelitiasi semplice`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 8,
+      text: `Il polso filiforme è tipico di:`,
+      options: [
+        `Emorragia massiva o shock`,
+        `Tachicardia sinusale da ansia lieve`,
+        `Sportivo allenato in riposo`,
+        `Pressione arteriosa normale`
+      ],
+      correctIndex: 0,
+      topic: `EO generale`
+    },
+    {
+      id: 9,
+      text: `L'anisosfigmia (differenza di ampiezza o ritardo tra i due polsi radiali) può essere un segno di:`,
+      options: [
+        `Dissecazione dell'aorta`,
+        `Celiachia`,
+        `Pancreatite acuta`,
+        `Otite media`
+      ],
+      correctIndex: 0,
+      topic: `EO generale`
+    },
+    {
+      id: 10,
+      text: `La frequenza respiratoria normale nell'adulto a riposo è circa:`,
+      options: [
+        `4–6 atti/min`,
+        `12–18 atti/min`,
+        `25–30 atti/min`,
+        `40–50 atti/min`
+      ],
+      correctIndex: 1,
+      topic: `Respiro`
+    },
+    {
+      id: 11,
+      text: `La tachipnea è:`,
+      options: [
+        `Riduzione della frequenza respiratoria`,
+        `Aumento della frequenza respiratoria sopra i valori normali`,
+        `Respiro periodico alterno`,
+        `Respiro con pausa apnoica prolungata`
+      ],
+      correctIndex: 1,
+      topic: `Respiro`
+    },
+    {
+      id: 12,
+      text: `Il respiro di Cheyne-Stokes è caratterizzato da:`,
+      options: [
+        `Atti respiratori regolari e profondi`,
+        `Fasi di respiro che aumenta e diminuisce gradualmente di ampiezza, alternate ad apnee`,
+        `Complete apnee senza fase di compenso`,
+        `Soli sibili espiratori`
+      ],
+      correctIndex: 1,
+      topic: `Respiro`
+    },
+    {
+      id: 13,
+      text: `In quali condizioni si può osservare respiro di Cheyne-Stokes?`,
+      options: [
+        `Solo in polmonite lobare`,
+        `Insufficienza cardiaca sinistra, patologie neurologiche, intossicazioni`,
+        `Colecistite acuta`,
+        `Appendicite non complicata`
+      ],
+      correctIndex: 1,
+      topic: `Respiro`
+    },
+    {
+      id: 14,
+      text: `Il respiro di Kussmaul è tipico di:`,
+      options: [
+        `Acidosi metabolica grave (es. chetoacidosi diabetica)`,
+        `Ansia lieve`,
+        `Otite media`,
+        `Gastrite erosiva`
+      ],
+      correctIndex: 0,
+      topic: `Respiro`
+    },
+    {
+      id: 15,
+      text: `Il respiro di Kussmaul è descritto come:`,
+      options: [
+        `Superficiale e rapido`,
+        `Profondo, regolare, spesso rumoroso, con iperventilazione`,
+        `Irregolare con pause apnoiche`,
+        `Solo inspiratorio, senza espirazione`
+      ],
+      correctIndex: 1,
+      topic: `Respiro`
+    },
+    {
+      id: 16,
+      text: `La dispnea ortopnoica (necessità di stare seduto per respirare meglio) è tipica di:`,
+      options: [
+        `Insufficienza cardiaca sinistra`,
+        `Appendicite`,
+        `Cefalea tensiva`,
+        `Cistite`
+      ],
+      correctIndex: 0,
+      topic: `Respiro`
+    },
+    {
+      id: 17,
+      text: `Un segno di allarme importante è la presenza di dolore toracico associato a:`,
+      options: [
+        `Prurito cutaneo isolato`,
+        `Sudorazione fredda, pallore, bradicardia o ipotensione`,
+        `Febbre serotina isolata`,
+        `Solo tosse secca cronica`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 18,
+      text: `Nella valutazione dello stato di coscienza, la scala comunemente usata in pronto soccorso è:`,
+      options: [
+        `Scala di Braden`,
+        `Glasgow Coma Scale`,
+        `Scala di Apgar`,
+        `Scala di Karnofsky`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+    {
+      id: 19,
+      text: `L'ipotensione associata a tachicardia, estremità fredde e confusione mentale fa pensare a:`,
+      options: [
+        `Stato di shock`,
+        `Ipertensione essenziale`,
+        `Colite spastica`,
+        `Otite esterna`
+      ],
+      correctIndex: 0,
+      topic: `EO generale`
+    },
+    {
+      id: 20,
+      text: `Nel diabete avanzato con neuropatia autonomica, come può comportarsi la frequenza cardiaca nel passaggio da supino a ortostatismo?`,
+      options: [
+        `Aumenta sempre molto`,
+        `Rimane quasi invariata per mancata modulazione autonomica`,
+        `Diminuisce sempre del 50%`,
+        `Diventa immediatamente aritmica totale`
+      ],
+      correctIndex: 1,
+      topic: `EO generale`
+    },
+
+    /* ====== CAPO, OCCHI, BOCCA, COLLO, TORACE (21–40) ====== */
+    {
+      id: 21,
+      text: `La rima palpebrale asimmetrica può essere espressione di:`,
+      options: [
+        `Solo miopia`,
+        `Paralisi del facciale, ptosi congenita, esiti di ictus o traumi`,
+        `Vitiligine`,
+        `Otite media cronica`
+      ],
+      correctIndex: 1,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 22,
+      text: `Le pupille anisocoriche (diametro diverso) possono essere dovute a:`,
+      options: [
+        `Solo deficit di ferro`,
+        `Irite, lesioni del SNC, tabe dorsale, siringomielia`,
+        `Appendicite`,
+        `Colecistite`
+      ],
+      correctIndex: 1,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 23,
+      text: `Il riflesso fotomotore diretto consiste in:`,
+      options: [
+        `Dilatazione pupillare quando si illumina un occhio`,
+        `Miosi (costrizione) nella pupilla dello stesso occhio illuminato`,
+        `Miosi nell'occhio controlaterale a quello illuminato`,
+        `Assenza di modificazioni pupillari`
+      ],
+      correctIndex: 1,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 24,
+      text: `Il riflesso fotomotore consensuale consiste in:`,
+      options: [
+        `Miosi nell'occhio non illuminato quando si illumina l'altro`,
+        `Miosi solo nell'occhio illuminato`,
+        `Miosi bilaterale solo al buio totale`,
+        `Midriasi bilaterale alla luce`
+      ],
+      correctIndex: 0,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 25,
+      text: `Il riflesso di accomodazione si valuta chiedendo al paziente di:`,
+      options: [
+        `Fare uno sforzo fisico`,
+        `Passare da fissare un oggetto lontano a uno vicino (30–40 cm) e osservare la miosi bilaterale`,
+        `Chiudere gli occhi con forza`,
+        `Guardare verso l'alto senza muovere gli occhi`
+      ],
+      correctIndex: 1,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 26,
+      text: `Nel glaucoma acuto, il quadro tipico comprende:`,
+      options: [
+        `Dolore intenso, arrossamento oculare, pupilla semi-dilatata e rigida, edema corneale`,
+        `Solo lieve prurito oculare`,
+        `Visus normale e nessun dolore`,
+        `Esofago dilatato`
+      ],
+      correctIndex: 0,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 27,
+      text: `L'anello di Kayser-Fleischer è:`,
+      options: [
+        `Un anello giallo-brunastro alla giunzione sclero-corneale, tipico della malattia di Wilson`,
+        `Un anello bianco da ipocalcemia`,
+        `Un segno di cataratta senile`,
+        `Una lesione infiammatoria dell'iride`
+      ],
+      correctIndex: 0,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 28,
+      text: `Nel cavo orale, la lingua secca e poco umida è indice di:`,
+      options: [
+        `Idratazione ottimale`,
+        `Possibile disidratazione`,
+        `Infezione urinaria`,
+        `Polmonite obbligatoria in atto`
+      ],
+      correctIndex: 1,
+      topic: `Cavo orale`
+    },
+    {
+      id: 29,
+      text: `Un aspetto cianotico delle labbra e del letto ungueale indica:`,
+      options: [
+        `Iperglicemia`,
+        `Ridotta ossigenazione ematica (cianosi)`,
+        `Solo anemia lieve`,
+        `Ipertensione portale`
+      ],
+      correctIndex: 1,
+      topic: `Capo/torace`
+    },
+    {
+      id: 30,
+      text: `Nella paralisi periferica del facciale (es. paralisi di Bell):`,
+      options: [
+        `È colpita solo la metà inferiore del volto controlaterale`,
+        `È colpito l'intero emivolto omolaterale (superiore e inferiore)`,
+        `Non c'è alcun deficit visibile`,
+        `Si hanno solo segni oculari senza asimmetria del volto`
+      ],
+      correctIndex: 1,
+      topic: `Nervo facciale`
+    },
+    {
+      id: 31,
+      text: `Nella paralisi centrale del facciale:`,
+      options: [
+        `È colpito l'intero emivolto omolaterale`,
+        `È colpita soprattutto la metà inferiore del volto controlaterale, con risparmio relativo della fronte`,
+        `Non c'è differenza tra parte superiore e inferiore`,
+        `È interessato solo il nervo trigemino`
+      ],
+      correctIndex: 1,
+      topic: `Nervo facciale`
+    },
+    {
+      id: 32,
+      text: `Il lagoftalmo è:`,
+      options: [
+        `Occhio troppo piccolo`,
+        `Impossibilità di chiudere completamente le palpebre`,
+        `Visione doppia`,
+        `Perdita del riflesso fotomotore`
+      ],
+      correctIndex: 1,
+      topic: `Capo/occhi`
+    },
+    {
+      id: 33,
+      text: `Nel mixedema (ipotiroidismo avanzato), il collo può apparire:`,
+      options: [
+        `Molto sottile e scavato`,
+        `Globalmente rigonfio, con ispessimento dei tessuti molli`,
+        `Normale`,
+        `Solo asimmetrico per tumefazione laterale`
+      ],
+      correctIndex: 1,
+      topic: `Collo`
+    },
+    {
+      id: 34,
+      text: `Nel morbo di Cushing, il collo può assumere un aspetto:`,
+      options: [
+        `Molto lungo e sottile`,
+        `Con "gobba di bufalo" per accumulo di tessuto adiposo`,
+        `Con retrazione cicatriziale`,
+        `A barilotto enfisematoso`
+      ],
+      correctIndex: 1,
+      topic: `Collo`
+    },
+    {
+      id: 35,
+      text: `Per valutare il fascio vascolo-nervoso del collo si ricercano:`,
+      options: [
+        `Solo linfonodi`,
+        `Pulsazioni carotidee e turgore delle giugulari`,
+        `Solo tiroide`,
+        `Solo muscolo trapezio`
+      ],
+      correctIndex: 1,
+      topic: `Collo`
+    },
+    {
+      id: 36,
+      text: `Perché non si devono palpare contemporaneamente le due carotidi?`,
+      options: [
+        `Perché è doloroso`,
+        `Perché si può ridurre il flusso cerebrale e provocare sincope`,
+        `Perché non serve clinicamente`,
+        `Perché le carotidi non sono palpabili`
+      ],
+      correctIndex: 1,
+      topic: `Collo`
+    },
+    {
+      id: 37,
+      text: `In condizioni fisiologiche la tiroide:`,
+      options: [
+        `È sempre evidente e palpabile`,
+        `Non è palpabile alla normale ispezione/palpazione`,
+        `È visibile solo a bocca aperta`,
+        `È dura come un osso`
+      ],
+      correctIndex: 1,
+      topic: `Collo`
+    },
+    {
+      id: 38,
+      text: `Il turgore delle giugulari in ortostatismo è:`,
+      options: [
+        `Sempre presente e fisiologico`,
+        `Ridotto o assente in condizioni normali; aumentato nello scompenso destro o in sindrome mediastinica`,
+        `Segno di anemia`,
+        `Segno di insufficienza renale acuta isolata`
+      ],
+      correctIndex: 1,
+      topic: `Collo/torace`
+    },
+    {
+      id: 39,
+      text: `L'ispezione del torace valuta tra l'altro:`,
+      options: [
+        `Solo colore della pelle`,
+        `Forma del torace, simmetria dei movimenti respiratori, uso dei muscoli accessori`,
+        `Solo presenza di cicatrici addominali`,
+        `Solo battito cardiaco`
+      ],
+      correctIndex: 1,
+      topic: `Torace`
+    },
+    {
+      id: 40,
+      text: `Un torace "a botte" è tipico di:`,
+      options: [
+        `Enfisema polmonare avanzato`,
+        `Appendicite`,
+        `Ulcera gastrica`,
+        `Colelitiasi`
+      ],
+      correctIndex: 0,
+      topic: `Torace`
+    },
+
+    /* ====== PERCUSSIONE & AUSCULTAZIONE RESPIRATORIA (41–60) ====== */
+    {
+      id: 41,
+      text: `La percussione del torace va eseguita preferibilmente su:`,
+      options: [
+        `Coste`,
+        `Spazi intercostali`,
+        `Addome`,
+        `Clavicole soltanto`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 42,
+      text: `Il "chiaro polmonare" alla percussione corrisponde a:`,
+      options: [
+        `Suono tipico del polmone normalmente ventilato`,
+        `Suono di organo solido`,
+        `Silenzio percussorio`,
+        `Suono timpanico intestinale`
+      ],
+      correctIndex: 0,
+      topic: `Percussione`
+    },
+    {
+      id: 43,
+      text: `Alle basi polmonari, procedendo dall'alto verso il basso alla percussione, il passaggio da suono chiaro a ottuso indica:`,
+      options: [
+        `Passaggio da polmone ad organi addominali sottostanti`,
+        `Solo presenza di aria intestinale`,
+        `Solo ispessimento cutaneo`,
+        `Una frattura costale`
+      ],
+      correctIndex: 0,
+      topic: `Percussione`
+    },
+    {
+      id: 44,
+      text: `Per valutare la mobilità delle basi polmonari si chiede al paziente di:`,
+      options: [
+        `Trattenere il respiro in espirio e poi tossire`,
+        `Inspirare profondamente, trattenere il respiro e si percuote cranio-caudalmente segnando lo spostamento del limite`,
+        `Parlare a voce alta`,
+        `Bere acqua durante la percussione`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 45,
+      text: `Una base polmonare ipomobile può essere dovuta a:`,
+      options: [
+        `Esiti cicatriziali di pleurite, versamento, enfisema, ascite, epatosplenomegalia`,
+        `Otite media`,
+        `Emicrania semplice`,
+        `Nevralgia del trigemino`
+      ],
+      correctIndex: 0,
+      topic: `Percussione`
+    },
+    {
+      id: 46,
+      text: `La percussione degli apici polmonari si effettua:`,
+      options: [
+        `Solo a livello dei piedi`,
+        `In regione sopraclaveare, sul trapezio e cingolo scapolare`,
+        `Solo sull'addome`,
+        `Solo sulla colonna lombare`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 47,
+      text: `Il suono iperfonetico (molto più risonante) alla percussione di un emitorace è tipico di:`,
+      options: [
+        `Versamento pleurico massivo`,
+        `Pneumotorace o enfisema marcato`,
+        `Consolidamento polmonare completo`,
+        `Fibrosi interstiziale diffusa`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 48,
+      text: `L'ottusità assoluta alla percussione di un emitorace indica:`,
+      options: [
+        `Aria libera in pleura`,
+        `Sostituzione del parenchima con liquido (versamento importante) o massa solida`,
+        `Torace normale`,
+        `Solo enfisema polmonare`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 49,
+      text: `La linea di Damoiseau-Ellis descrive:`,
+      options: [
+        `Il margine superiore di un versamento pleurico, a convessità superiore`,
+        `Il margine diaframmatico cardiaco`,
+        `Il bordo del fegato`,
+        `La linea mediana sternale`
+      ],
+      correctIndex: 0,
+      topic: `Percussione`
+    },
+    {
+      id: 50,
+      text: `Il triangolo di Grocco è:`,
+      options: [
+        `Area di iperfonesi controlaterale al versamento`,
+        `Area paravertebrale controlaterale con subottusità per spostamento del mediastino`,
+        `Area timpanica intestinale`,
+        `Area di massima impulsività cardiaca`
+      ],
+      correctIndex: 1,
+      topic: `Percussione`
+    },
+    {
+      id: 51,
+      text: `Il murmure vescicolare (MV) è:`,
+      options: [
+        `Rumore respiratorio fisiologico, frusciante, prevalente in inspirazione`,
+        `Rumore cardiaco diastolico`,
+        `Rumore intestinale`,
+        `Rumore prodotto solo dalla trachea`
+      ],
+      correctIndex: 0,
+      topic: `Auscultazione`
+    },
+    {
+      id: 52,
+      text: `All'auscultazione, il murmure vescicolare si apprezza meglio:`,
+      options: [
+        `In espirazione forzata`,
+        `In inspirazione e prima parte dell'espirazione, con pz a bocca aperta`,
+        `Solo in apnea`,
+        `Solo in decubito supino con respiro trattenuto`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+    {
+      id: 53,
+      text: `Il MV può risultare diminuito o assente in caso di:`,
+      options: [
+        `Iperventilazione da ansia`,
+        `Enfisema, versamento pleurico, pneumotorace, ostruzione bronchiale importante`,
+        `Torace normale`,
+        `Otite esterna`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+    {
+      id: 54,
+      text: `Il "soffio bronchiale" udibile in periferia indica:`,
+      options: [
+        `Passaggio di aria nell'alveolo normale`,
+        `Trasmissione del rumore bronchiale attraverso un parenchima consolidato o sopra un versamento se i bronchi sono pervi`,
+        `Torace normale in soggetto sano`,
+        `Solo presenza di aria intestinale`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+    {
+      id: 55,
+      text: `I crepitii fini tele-inspiratori sono tipici di:`,
+      options: [
+        `Asma bronchiale pura`,
+        `Patologie interstiziali e alveolari (es. fibrosi, edema polmonare, fasi iniziali polmonite)`,
+        `Otite media`,
+        `Colite ulcerosa`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+    {
+      id: 56,
+      text: `I ronchi e i sibili espiratori sono più caratteristici di:`,
+      options: [
+        `Malattie ostruttive delle vie aeree (asma, BPCO, bronchite cronica)`,
+        `Versamento pleurico puro`,
+        `Pneumotorace iperteso`,
+        `Ictus ischemico`
+      ],
+      correctIndex: 0,
+      topic: `Auscultazione`
+    },
+    {
+      id: 57,
+      text: `Lo sfregamento pleurico è:`,
+      options: [
+        `Rumore secco, simile a passi nella neve, udibile in inspirazione ed espirazione, che indica pleurite fibrinosa`,
+        `Un soffio cardiaco sistolico`,
+        `Un rantolo grossolano`,
+        `Rumore di aria intestinale`
+      ],
+      correctIndex: 0,
+      topic: `Auscultazione`
+    },
+    {
+      id: 58,
+      text: `Lo sfregamento pleurico tende a scomparire quando:`,
+      options: [
+        `Si sviluppa un versamento pleurico che separa le due fogliette di pleura`,
+        `Il paziente tossisce`,
+        `Si aumenta il flusso respiratorio`,
+        `Si appoggia più forte il fonendoscopio`
+      ],
+      correctIndex: 0,
+      topic: `Auscultazione`
+    },
+    {
+      id: 59,
+      text: `Nell'esame del torace, perché è importante auscultare in modo simmetrico sui due emitoraci?`,
+      options: [
+        `Per risparmiare tempo`,
+        `Per confrontare direttamente eventuali differenze di MV o rumori patologici tra i lati`,
+        `Per ascoltare meglio il cuore`,
+        `Per ascoltare l'addome`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+    {
+      id: 60,
+      text: `Per evitare artefatti acustici, all'auscultazione del torace è importante:`,
+      options: [
+        `Lasciare i vestiti addosso al paziente`,
+        `Togliere gli indumenti tra fonendoscopio e cute e far respirare il paziente a bocca aperta`,
+        `Far respirare solo dal naso`,
+        `Far parlare il paziente durante l'ascolto`
+      ],
+      correctIndex: 1,
+      topic: `Auscultazione`
+    },
+
+    /* ====== DOLORE TORACICO (61–80) ====== */
+    {
+      id: 61,
+      text: `Per "dolore toracico" si intende un dolore compreso:`,
+      options: [
+        `Solo a livello precordiale`,
+        `Tra base del collo ed epigastrio`,
+        `Solo tra ombelico e pube`,
+        `Solo nella regione scapolare`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 62,
+      text: `Il dolore toracico con dolorabilità alla digitopressione della parete è in genere:`,
+      options: [
+        `Dolore di parete (cutaneo, muscolo-scheletrico, costale)`,
+        `Dolore ischemico cardiaco tipico`,
+        `Sempre gastroesofageo`,
+        `Sempre da embolia polmonare`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 63,
+      text: `Il dolore toracico che si accentua con gli atti respiratori può essere dovuto a:`,
+      options: [
+        `Pleurite, frattura costale, periostite, miosite intercostale`,
+        `Otite media`,
+        `Emicrania con aura`,
+        `Cistite acuta`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 64,
+      text: `Nella pleurite, la sintomatologia dolorosa è presente soprattutto:`,
+      options: [
+        `Nella fase fibrinosa iniziale, prima del versamento`,
+        `Solo dopo grande versamento`,
+        `Solo in assenza di respirazione`,
+        `Mai, la pleurite è indolore`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 65,
+      text: `Il dolore da calcolosi della colecisti può irradiarsi:`,
+      options: [
+        `Solo all'inguine`,
+        `Posteriormente e alla regione sovraclaveare destra, lungo lo sternocleidomastoideo`,
+        `Solo alla mano destra`,
+        `Alla regione glutea`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 66,
+      text: `Il dolore di origine cardiaca ischemica tipica (angina/infarto) è descritto come:`,
+      options: [
+        `Puntorio ben localizzato, che cambia con la digitopressione`,
+        `Costrittivo, gravativo, retrosternale o alla regione supero-sinistra del torace, con possibile irradiazione al braccio sinistro`,
+        `Bruciore superficiale cutaneo`,
+        `Dolore trafittivo che dura pochi secondi`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 67,
+      text: `Nell'aneurisma dissecante dell'aorta, il dolore toracico è:`,
+      options: [
+        `Lieve e fugace`,
+        `Improvviso, molto intenso, lacerante, spesso irradiato al dorso`,
+        `Solo puntorio all'angolo sternale`,
+        `Presente solo a riposo notturno, sempre lieve`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 68,
+      text: `Il dolore toracico da embolia polmonare importante può essere associato a:`,
+      options: [
+        `Dispnea acuta, tachicardia, possibile emoftoe`,
+        `Otalgia destra`,
+        `Meteorismo addominale`,
+        `Bradicardia marcata in soggetto giovane sano`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 69,
+      text: `Il reflusso gastro-esofageo può simulare un dolore:`,
+      options: [
+        `Identico al dolore da infarto miocardico, con localizzazione precordiale`,
+        `Solo al fianco sinistro`,
+        `Solo alla regione occipitale`,
+        `Solo alla regione lombare`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 70,
+      text: `Quale elemento anamnestico orienta verso reflusso piuttosto che infarto in un dolore toracico?`,
+      options: [
+        `Dolore che peggiora col movimento del braccio`,
+        `Rigurgiti acidi post-prandiali, pirosi, miglioramento con antiacidi`,
+        `Dolore che compare solo a riposo notturno senza altri segni`,
+        `Comparsa solo dopo un trauma toracico`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 71,
+      text: `Un dolore toracico da origine subfrenica (es. ascesso sottodiaframmatico) può essere proiettato:`,
+      options: [
+        `Alla regione sovraclaveare o alle basi del torace corrispondenti`,
+        `Solo ai piedi`,
+        `Solo al gomito`,
+        `Alla regione occipitale`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 72,
+      text: `Nel dolore toracico, tra le caratteristiche da indagare ci sono:`,
+      options: [
+        `Solo la durata`,
+        `Quantità/qualità, intensità, durata, epoca d'insorgenza, relazione con sforzo/pasto, irradiazione, fattori di risoluzione, segni associati`,
+        `Solo la sede`,
+        `Solo l'orario notturno`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 73,
+      text: `Un dolore toracico di settimane, non modificato nel tempo, difficilmente sarà:`,
+      options: [
+        `Di origine cardiaca ischemica acuta`,
+        `Di origine muscolo-scheletrica`,
+        `Di origine gastroesofagea`,
+        `Di origine pleurica`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 74,
+      text: `Nel dolore toracico cardiaco tipico, un elemento che ne supporta la natura ischemica è:`,
+      options: [
+        `Comparsa solo in inspirazione profonda`,
+        `Scomparsa rapida dopo nitrati sublinguali`,
+        `Peggioramento alla digitopressione della parete`,
+        `Comparsa solo in rotazione del tronco`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 75,
+      text: `Quale tra questi sintomi accessori può accompagnare un dolore da infarto miocardico, soprattutto nel diabetico in cui il dolore può essere atipico?`,
+      options: [
+        `Sudorazione algida, nausea, astenia marcata`,
+        `Solo prurito cutaneo`,
+        `Solo otalgia bilaterale`,
+        `Tosse secca isolata`
+      ],
+      correctIndex: 0,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 76,
+      text: `Nel sospetto di pericardite acuta, il dolore toracico è spesso:`,
+      options: [
+        `Costrittivo, solo da sforzo`,
+        `Pleuritico, peggiora in inspirazione profonda e in clinostatismo, migliora seduto in avanti`,
+        `Solo puntorio al fianco destro`,
+        `Solo post-prandiale`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 77,
+      text: `Quale localizzazione è più tipica del dolore da origine cardiaca ischemica?`,
+      options: [
+        `Regione infero-destra del torace`,
+        `Regione supero-sinistra del torace, retrosternale`,
+        `Regione lombosacrale`,
+        `Regione sovrapubica`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 78,
+      text: `Nell'embolia polmonare massiva, l'ECG può mostrare:`,
+      options: [
+        `Segni specifici di infarto inferiore`,
+        `Sovraccarico del cuore destro (ad es. onda P aumentata, deviazioni assiali)`,
+        `Tracciato completamente normale in ogni caso`,
+        `Soltanto bradicardia sinusale`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 79,
+      text: `Nel valutare un dolore toracico, è importante sempre chiedere al paziente:`,
+      options: [
+        `Se preferisce dolce o salato`,
+        `Quando è iniziato, come è iniziato, quanto dura, se è associato a sforzo, se si irradia, cosa lo allevia o peggiora`,
+        `Solo se ha febbre`,
+        `Solo se fuma`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    },
+    {
+      id: 80,
+      text: `Un dolore toracico puntorio, ben localizzato con un dito, che peggiora alla pressione in un punto preciso, è più probabilmente:`,
+      options: [
+        `Dolore cardiaco ischemico`,
+        `Dolore muscolo-scheletrico di parete`,
+        `Dolore da aneurisma dissecante`,
+        `Dolore da embolia polmonare`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico`
+    }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestions = [];
+
+  function generateQuiz() {
+    const input = document.getElementById('numQuestions');
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) n = 25;
+    if (n < 1) n = 1;
+    if (n > questionBank.length) n = questionBank.length;
+    input.value = n;
+
+    const shuffled = shuffle([...questionBank]);
+    currentQuestions = shuffled.slice(0, n);
+    renderQuiz();
+    document.getElementById('result').innerHTML = '';
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, qIndex) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.textContent = (qIndex + 1) + '. ' + q.text;
+
+      const topic = document.createElement('div');
+      topic.className = 'question-topic';
+      topic.textContent = q.topic;
+
+      header.appendChild(title);
+      header.appendChild(topic);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      const indices = q.options.map((_, i) => i);
+      shuffle(indices);
+
+      indices.forEach((optIndex, optPos) => {
+        const optWrapper = document.createElement('div');
+        optWrapper.className = 'option-item';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_opt' + optPos;
+        input.dataset.correct = (optIndex === q.correctIndex) ? 'true' : 'false';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = q.options[optIndex];
+
+        optWrapper.appendChild(input);
+        optWrapper.appendChild(label);
+        optionsDiv.appendChild(optWrapper);
+      });
+
+      block.appendChild(header);
+      block.appendChild(optionsDiv);
+      container.appendChild(block);
+    });
+  }
+
+  function gradeQuiz() {
+    if (currentQuestions.length === 0) {
+      alert('Genera prima il quiz.');
+      return;
+    }
+
+    let correctCount = 0;
+
+    currentQuestions.forEach((q, qIndex) => {
+      const options = document.querySelectorAll('input[name="q' + qIndex + '"]');
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        label.classList.remove('correct-selected', 'incorrect-selected', 'correct-answer');
+      });
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        if (input.dataset.correct === 'true') {
+          label.classList.add('correct-answer');
+        }
+        if (input.checked) {
+          if (input.dataset.correct === 'true') {
+            correctCount++;
+            label.classList.add('correct-selected');
+          } else {
+            label.classList.add('incorrect-selected');
+          }
+        }
+      });
+    });
+
+    const total = currentQuestions.length;
+    const perc = Math.round((correctCount / total) * 100);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML =
+      `Hai risposto correttamente a <strong>${correctCount}</strong> su <strong>${total}</strong> domande (${perc}%).`;
+  }
+
+  window.addEventListener('DOMContentLoaded', generateQuiz);
+</script>
+</body>
+</html>

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Semeiotica – Set 3 (Mini Hard)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050609;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: radial-gradient(circle at top, #1f2833, #050609);
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 5px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1050px;
+      margin: 20px auto 40px;
+      padding: 0 15px 30px;
+      background: rgba(10, 14, 22, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 15px 15px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+    .controls input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #45a29e, #66fcf1);
+      color: #0b0c10;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #c5c6c7, #9fa6b2);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      opacity: 0.96;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    #quizContainer {
+      padding: 10px 15px 20px;
+    }
+    .question-block {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(102,252,241,0.07), rgba(0,0,0,0.85));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .question-text {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .option-item {
+      margin: 3px 0;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 6px;
+    }
+    .option-item label {
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-block;
+      transition: background 0.12s ease, box-shadow 0.12s ease, border-bottom-color 0.12s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .correct-selected {
+      background: rgba(76, 175, 80, 0.16);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.7);
+    }
+    .incorrect-selected {
+      background: rgba(244, 67, 54, 0.18);
+      box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.7);
+    }
+    .correct-answer {
+      border-bottom-color: rgba(102, 252, 241, 0.9);
+    }
+    #result {
+      padding: 12px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.96rem;
+    }
+    #result strong {
+      color: #66fcf1;
+    }
+    .small-note {
+      font-size: 0.76rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 15px 8px 30px;
+        padding: 0 10px 20px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica – Set 3 (Mini Hard)</h1>
+  <p>Casi clinici e domande “trappola” su anamnesi, cute, addome, mediastino</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label for="numQuestions">
+      Numero di domande per quiz (1–50):
+    </label>
+    <input type="number" id="numQuestions" min="1" max="50" value="20">
+    <button type="button" onclick="generateQuiz()">Genera nuovo quiz</button>
+    <button type="button" class="secondary" onclick="gradeQuiz()">Correggi</button>
+    <div class="small-note">
+      Domande più difficili, orientate al ragionamento clinico, sempre basate sugli stessi 4 PDF.
+    </div>
+  </section>
+
+  <section id="quizContainer"></section>
+  <section id="result"></section>
+</main>
+
+<script>
+  const questionBank = [
+    /* ====== ANAMNESI HARD (1–12) ====== */
+    {
+      id: 1,
+      text: `Donna di 35 anni con palpitazioni, calo di peso, intolleranza al caldo. In anamnesi lavorativa riferisce stress ma nessuna esposizione tossica. Quale domanda aggiuntiva è più utile per orientare la diagnosi?`,
+      options: [
+        `“Che tipo di auto guida?”`,
+        `“Ha tremori fini alle mani, diarrea, familiarità per patologie tiroidee?”`,
+        `“Beve caffè tutti i giorni?”`,
+        `“Ha mai viaggiato all’estero?”`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 2,
+      text: `Uomo di 60 anni, ex-fumatore, con tosse cronica e dispnea da sforzo. Quale combinazione di anamnesi è più mirata a definire il rischio respiratorio?`,
+      options: [
+        `Età, stato civile, hobby`,
+        `Numero di pacchetti/anno, esposizione lavorativa a polveri/fumi, pregresse bronchiti o BPCO`,
+        `Solo familiarità per diabete`,
+        `Solo consumo di alcolici`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 3,
+      text: `Un paziente anziano con decadimento cognitivo riferito dai familiari non sa collocarsi nel tempo. Quale dato anamnestico funzionale è più importante documentare?`,
+      options: [
+        `Livello di scolarità in gioventù`,
+        `Autonomia nelle ADL/IADL (es. vestirsi, fare la spesa, gestire denaro)`,
+        ` Stato vaccinale da bambino`,
+        `Numero di telefonate al giorno`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 4,
+      text: `Un dolore toracico riferito come “oppressione retrosternale costrittiva, irradiata al braccio sinistro, insorto sotto sforzo e regredito a riposo” è più compatibile con:`,
+      options: [
+        `Dolore muscoloscheletrico aspecifico`,
+        `Dolore di origine cardiaca ischemica`,
+        `Dolore da reflusso gastroesofageo certo`,
+        `Dolore d’ansia esclusivo`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 5,
+      text: `In anamnesi farmacologica, quale informazione è più critica prima di prescrivere un FANS?`,
+      options: [
+        `Se il paziente ha animali domestici`,
+        `Pregressa ulcera gastroduodenale, nefropatia, terapia anticoagulante o antiaggregante`,
+        `Se fuma sigarette elettroniche`,
+        `Se pratica attività fisica`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 6,
+      text: `Paziente con dolore addominale acuto: quale informazione anamnestica è PIÙ utile per distinguere colica biliare da colica renale?`,
+      options: [
+        `Colore degli occhi`,
+        `Tipo di irradiazione del dolore e presenza di sintomi urinari vs digestivi`,
+        `Numero di pasti al giorno`,
+        `Presenza di cefalea associata`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 7,
+      text: `Le domande sull’uso di sostanze stupefacenti rientrano principalmente in:`,
+      options: [
+        `Anamnesi fisiologica`,
+        `Anamnesi patologica remota`,
+        `Anamnesi tossicologica e abitudini voluttuarie`,
+        `Anamnesi familiare`
+      ],
+      correctIndex: 2,
+      topic: `Anamnesi`
+    },
+    {
+      id: 8,
+      text: `In urgenza, un paziente confuso senza documenti. Chi fornisce l’anamnesi?`,
+      options: [
+        `Solo il paziente, anche se confuso`,
+        `Anamnesi etero-raccolta da familiari/testimoni + documentale (referti, braccialetti, farmaci portati)`,
+        `Nessuno, non serve`,
+        `Solo il medico di medicina generale`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 9,
+      text: `Un dolore addominale riferito come “migrante”, iniziato periombelicale e poi localizzato in fossa iliaca destra, è tipico di:`,
+      options: [
+        `Pancreatite acuta`,
+        `Appendicite acuta`,
+        `Colica renale sinistra`,
+        `Ileo paralitico`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 10,
+      text: `Paziente giovane con sincope durante esercizio fisico intenso. Quale domanda anamnestica è più importante per valutare rischio cardiaco ereditario?`,
+      options: [
+        `Numero di ore passate al PC`,
+        `Familiarità per morte improvvisa, cardiomiopatie, canalopatie`,
+        `Consumo di latte`,
+        `Viaggi recenti in aereo`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 11,
+      text: `Un paziente con dolore toracico acuto e dispnea racconta recente chirurgia ortopedica con immobilizzazione prolungata. Questo dato in anamnesi orienta verso:`,
+      options: [
+        `Rischio aumentato di embolia polmonare`,
+        `Rischio increased di gastrite`,
+        `Rischio di dermatite atopica`,
+        `Nessuna correlazione clinica`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 12,
+      text: `In anamnesi, il concetto di “fattori scatenanti” di un sintomo riguarda:`,
+      options: [
+        `Solo gli alimenti ingeriti`,
+        `Eventi o condizioni che precedono costantemente la comparsa del sintomo (es. sforzo, posizione, farmaco)`,
+        `Esclusivamente i traumi`,
+        `Solo situazioni di stress psicologico`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+
+    /* ====== CUTE/MUCOSE HARD (13–22) ====== */
+    {
+      id: 13,
+      text: `Paziente con prurito intenso generalizzato, soprattutto notturno, senza lesioni cutanee evidenti. Quale quadro sistemico va considerato?`,
+      options: [
+        `Semplice xerosi cutanea e basta`,
+        `Patologia epatobiliare colestatica, nefropatia, linfoma o policitemia`,
+        `Solo dermatite atopica`,
+        `Solo allergia alimentare acuta`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 14,
+      text: `Le petecchie diffuse a livello cutaneo e mucoso, con piastrine molto basse, si associano più tipicamente a:`,
+      options: [
+        `Difetto dei fattori della coagulazione con INR molto alto`,
+        `Trombocitopenia o piastrinopatia`,
+        `Ipercolesterolemia`,
+        `Solo trauma locale`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 15,
+      text: `Il riscontro di spider nevi, eritema palmare e ginecomastia in un paziente con astenia e ittero depone per:`,
+      options: [
+        `Insufficienza renale cronica`,
+        `Epatopatia cronica avanzata (es. cirrosi)`,
+        `Patologia polmonare cronica`,
+        `Patologia tiroidea ipofunzionale`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 16,
+      text: `In un soggetto anziano, la presenza di ulcere malleolari mediali, dolenti, con cute iperpigmentata a “calza”, suggerisce:`,
+      options: [
+        `Arteriopatia obliterante severa`,
+        `Insufficienza venosa cronica`,
+        `Malattia di Raynaud`,
+        `Vitiligine`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 17,
+      text: `Le lesioni “a porpora palpabile” orientano verso:`,
+      options: [
+        `Vasculiti dei piccoli vasi (es. porpora di Schönlein-Henoch)`,
+        `Carotenodermia benigna`,
+        `Eczema da contatto`,
+        `Alopecia areata`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 18,
+      text: `In un paziente itterico, la distinzione clinica tra ittero e carotenodermia si basa soprattutto su:`,
+      options: [
+        `Colore dei capelli`,
+        `Presenza o meno di colorazione gialla delle sclere`,
+        `Presenza di prurito`,
+        `Età del paziente`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 19,
+      text: `Una policitemia vera può dare un aspetto cutaneo:`,
+      options: [
+        `Marcato pallore`,
+        `Colorito rubicondo, cianosi periferica, prurito post-bagno caldo`,
+        `Ittero marcato`,
+        `Colorito grigiastro cereo tipico dell’insufficienza renale`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 20,
+      text: `La presenza di livedo reticularis (rete violacea reticolare) può essere espressione di:`,
+      options: [
+        `Solo problema estetico`,
+        `Connettiviti, vasculiti, sindromi da iperviscosità o microembolie`,
+        `Esclusivamente dermatofitosi`,
+        `Solo deficit vitaminico B12`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 21,
+      text: `In un soggetto con cianosi periferica ma mucose rosee, il reperto è compatibile con:`,
+      options: [
+        `Cianosi centrale severa`,
+        `Vasocostrizione periferica (freddo, shock, scompenso periferico) con ossigenazione centrale relativamente conservata`,
+        `Grave anemia`,
+        `Ittero ostruttivo`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 22,
+      text: `La cheilite angolare (ragadi commessurali) in soggetto malnutrito può essere correlata a:`,
+      options: [
+        `Solo trauma da masticazione`,
+        `Deficit di vitamine del gruppo B, ferro, infezioni micotiche locali`,
+        `Patologia renale acuta`,
+        `Solo reflusso gastroesofageo`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+
+    /* ====== ADDOME HARD (23–37) ====== */
+    {
+      id: 23,
+      text: `Dolore addominale improvviso, violento, con addome “a tavola”, Blumberg++ e difesa globale. Qual è il sospetto principale?`,
+      options: [
+        `Colica renale semplice`,
+        `Peritonite acuta da perforazione di viscere cavo`,
+        `Ileo paralitico post-operatorio banale`,
+        `Stipsi cronica funzionale`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 24,
+      text: `In un paziente con sospetta ascite moderata, quale combinazione di reperti è più tipica?`,
+      options: [
+        `Timpanismo diffuso fisso`,
+        `Ottusità declive ai fianchi con timpanismo centrale periombelicale e shifting dullness positivo`,
+        `Ottusità solo in ipocondrio destro`,
+        `Silenzio auscultatorio intestinale senza modifiche alla percussione`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 25,
+      text: `In ileo meccanico iniziale da occlusione, il quadro auscultatorio classico è:`,
+      options: [
+        `Rumori assenti fin dall’inizio`,
+        `Peristalsi accentuata, a tratti “a colpi di frusta”, con suoni metallici`,
+        `Rumori respiratori patologici`,
+        `Solo sfregamenti pericardici udibili in addome`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 26,
+      text: `In ileo paralitico (ad esempio post-operatorio), il reperto più caratteristico è:`,
+      options: [
+        `Peristalsi aumentata`,
+        `Silenzio auscultatorio o peristalsi molto ridotta su tutto l’addome`,
+        `Rumori metallici intermittenti`,
+        `Sfregamenti pleurici`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 27,
+      text: `Al Rx addome in ortostatismo, la presenza di più livelli idroaerei a scala è indicativa di:`,
+      options: [
+        `Ascite massiva`,
+        `Occlusione intestinale meccanica`,
+        `Epatomegalia`,
+        `Pancreatite cronica senza complicanze`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 28,
+      text: `Una calcolosi colecistica complicata da colecistite acuta si manifesta più tipicamente con:`,
+      options: [
+        `Dolore in fossa iliaca destra, Blumberg++`,
+        `Dolore in ipocondrio destro, segno di Murphy positivo, febbre e leucocitosi`,
+        `Dolore epigastrico urente post-prandiale senza segni di flogosi`,
+        `Dolore colico al fianco con macroematuria`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 29,
+      text: `In una pancreatite acuta tipica, il dolore è:`,
+      options: [
+        `Sordo in ipogastrio, non irradiato`,
+        `Epigastrico intenso, irradiato a barra al dorso, spesso alleviato dal busto flesso in avanti`,
+        `Colico in fossa iliaca destra`,
+        `Solo periombelicale e fugace`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 30,
+      text: `Una ernia crurale incarcerata in donna anziana può presentarsi con:`,
+      options: [
+        `Piccola tumefazione dolente sotto il legamento inguinale, segni di occlusione intestinale e rischio di strozzamento`,
+        `Tumefazione sovraombelicale riducibile, indolente`,
+        `Dolore toracico irradiato al collo`,
+        `Solo meteorismo diffuso senza tumefazioni`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 31,
+      text: `Il laparocele è:`,
+      options: [
+        `Un’ernia congenita della linea alba`,
+        `Un’ernia su cicatrice chirurgica pregressa (porta iatrogena)`,
+        `Una ernia diaframmatica congenita`,
+        `Un’ernia ombelicale del lattante`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 32,
+      text: `Nello studio di sospetta colangite o ostruzione delle vie biliari principali, quale esame di imaging è particolarmente utile?`,
+      options: [
+        `Rx diretto addome`,
+        `Colangio-RM`,
+        `Clisma opaco a doppio contrasto`,
+        `Scintigrafia tiroidea`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 33,
+      text: `La presenza di aria libera sottodiaframmatica in Rx torace in ortostatismo, dopo dolore improvviso epigastrico, orienta fortemente verso:`,
+      options: [
+        `Pancreatite cronica`,
+        `Perforazione di ulcera gastrica o duodenale`,
+        `Colica renale`,
+        `Appendicite cronica`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 34,
+      text: `Al clisma opaco, “immagine a torsolo di mela” di un tratto colico è suggestiva per:`,
+      options: [
+        `Diverticolosi non complicata`,
+        `Stenosi neoplastica del colon`,
+        `Volvolo del sigma in fase iniziale`,
+        `Polipi adenomatosi multipli non stenosanti`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 35,
+      text: `Una calprotectina fecale persistentemente elevata è più tipica di:`,
+      options: [
+        `Sindrome dell’intestino irritabile funzionale`,
+        `Malattia infiammatoria cronica intestinale (IBD) attiva`,
+        `Intolleranza al lattosio isolata`,
+        `Colelitiasi non complicata`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 36,
+      text: `Gli anticorpi anti-transglutaminasi IgA positivi, con quadro clinico di malassorbimento, orientano verso:`,
+      options: [
+        `Morbo di Crohn colico`,
+        `Celiachia`,
+        `Colite ischemica`,
+        `Appendicite subacuta`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 37,
+      text: `Un addome globoso, con circoli venosi collaterali periombelicali (“caput medusae”), ittero e ascite suggerisce:`,
+      options: [
+        `Ipertensione portale su cirrosi epatica`,
+        `Ernia crurale bilaterale`,
+        `Pancreatite acuta edematosa isolata`,
+        `Ileo paralitico post-operatorio semplice`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+
+    /* ====== MEDIASTINO HARD (38–50) ====== */
+    {
+      id: 38,
+      text: `Paziente con edema del volto e del collo, turgore giugulare, circoli venosi collaterali toraco-addominali, dispnea a ortopnea. Qual è la sindrome più probabile?`,
+      options: [
+        `Sindrome mediastinica respiratoria alta`,
+        `Sindrome della vena cava superiore`,
+        `Sindrome di Horner`,
+        `Ipertensione portale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 39,
+      text: `Una causa frequente e “moderna” di sindrome della vena cava superiore è:`,
+      options: [
+        `Ulcera peptica perforata`,
+        `Tumore polmonare del lobo superiore destro o linfoma mediastinico`,
+        `Ernia ombelicale strozzata`,
+        `Pancreatite acuta edematosa`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 40,
+      text: `Nella sindrome mediastinica respiratoria grave, il tirage e il cornage indicano:`,
+      options: [
+        `Iperventilazione psicogena`,
+        `Ostruzione significativa delle vie aeree extratoraciche o tracheali`,
+        `Asma lieve ben controllata`,
+        `Solo versamento pleurico basale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 41,
+      text: `La sindrome di Claude-Bernard-Horner (miosi, ptosi, enoftalmo, anidrosi) in un fumatore con tosse cronica può essere espressione di:`,
+      options: [
+        `Tumore apicale polmonare (tumore di Pancoast) con interessamento simpatico`,
+        `Asma bronchiale lieve`,
+        `Ernia inguinale incarcerata`,
+        `Ipertensione portale`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 42,
+      text: `La sindrome di Parfour-Depetit (opposta alla Horner) è dovuta a:`,
+      options: [
+        `Lesione completa della catena simpatica cervicale`,
+        `Irritazione della catena simpatica (midriasi, esoftalmo, vasocostrizione cutanea, tachicardia)`,
+        `Lesione del nervo faciale periferico`,
+        `Compressone del nervo oculomotore`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 43,
+      text: `Una lesione del nervo laringeo ricorrente sinistro può manifestarsi con:`,
+      options: [
+        `Disfonia o voce rauca persistente`,
+        `Cecità improvvisa`,
+        `Emiplegia destra`,
+        `Parestesie alle mani`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 44,
+      text: `Il nervo frenico, se compresso da una massa mediastinica, determina più tipicamente:`,
+      options: [
+        `Diplopia e strabismo`,
+        `Paralisi diaframmatica omolaterale con dispnea e elevazione cupola diaframmatica alla radiografia`,
+        `Afonia completa`,
+        `Solo prurito al torace`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 45,
+      text: `Il coinvolgimento del circolo azygos in una sindrome mediastinica può determinare:`,
+      options: [
+        `Varici esofagee nel terzo superiore e circoli venosi collaterali`,
+        `Ipertensione portale senza varici esofagee`,
+        `Esofagite lieve da reflusso`,
+        `Solo ernia iatale da scivolamento`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 46,
+      text: `Una massa mediastinica anteriore in giovane adulto, con sintomi costituzionali (febbre, sudorazioni notturne, calo ponderale) fa pensare soprattutto a:`,
+      options: [
+        `Patologia muscolare benigna`,
+        `Linfoma mediastinico o timoma`,
+        `Ernia diaframmatica congenita`,
+        `Pancreatite acuta`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 47,
+      text: `Una mediastinite acuta discendente da infezione del collo (es. ascesso dentario complicato) è una condizione:`,
+      options: [
+        `Benigna, autolimitante`,
+        `Potenzialmente letale con rischio di sepsi e shock`,
+        `Esclusivamente virale`,
+        `Solo estetica`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 48,
+      text: `Nel gozzo cervico-mediastinico, quali sintomi da compressione possono coesistere?`,
+      options: [
+        `Solo ipocalcemia`,
+        `Dispnea da compressione tracheale, disfagia da compressione esofagea, disturbo del ritorno venoso dal collo`,
+        `Dolore lombare irradiato all’arto inferiore`,
+        `Cefalea frontale isolata`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 49,
+      text: `La scintigrafia tiroidea in un gozzo immerso serve soprattutto a:`,
+      options: [
+        `Valutare la funzione renale`,
+        `Distinguere tessuto tiroideo ectopico funzionante da altre masse mediastiniche`,
+        `Valutare il reflusso gastroesofageo`,
+        `Valutare l’ipertensione portale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 50,
+      text: `Nella valutazione strumentale del mediastino, quali esami sono più utili per definire natura e rapporti di una massa?`,
+      options: [
+        `Solo Rx torace in proiezione postero-anteriore`,
+        `TC con mezzo di contrasto e, se indicato, RM e/o PET`,
+        `Solo ecografia addominale`,
+        `Solo scintigrafia ossea`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestions = [];
+
+  function generateQuiz() {
+    const input = document.getElementById('numQuestions');
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) n = 20;
+    if (n < 1) n = 1;
+    if (n > questionBank.length) n = questionBank.length;
+    input.value = n;
+
+    const shuffled = shuffle([...questionBank]);
+    currentQuestions = shuffled.slice(0, n);
+    renderQuiz();
+    document.getElementById('result').innerHTML = '';
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, qIndex) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.textContent = (qIndex + 1) + '. ' + q.text;
+
+      const topic = document.createElement('div');
+      topic.className = 'question-topic';
+      topic.textContent = q.topic;
+
+      header.appendChild(title);
+      header.appendChild(topic);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      const indices = q.options.map((_, i) => i);
+      shuffle(indices);
+
+      indices.forEach((optIndex, optPos) => {
+        const optWrapper = document.createElement('div');
+        optWrapper.className = 'option-item';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_opt' + optPos;
+        input.dataset.correct = (optIndex === q.correctIndex) ? 'true' : 'false';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = q.options[optIndex];
+
+        optWrapper.appendChild(input);
+        optWrapper.appendChild(label);
+        optionsDiv.appendChild(optWrapper);
+      });
+
+      block.appendChild(header);
+      block.appendChild(optionsDiv);
+      container.appendChild(block);
+    });
+  }
+
+  function gradeQuiz() {
+    if (currentQuestions.length === 0) {
+      alert('Genera prima il quiz.');
+      return;
+    }
+
+    let correctCount = 0;
+
+    currentQuestions.forEach((q, qIndex) => {
+      const options = document.querySelectorAll('input[name="q' + qIndex + '"]');
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        label.classList.remove('correct-selected', 'incorrect-selected', 'correct-answer');
+      });
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        if (input.dataset.correct === 'true') {
+          label.classList.add('correct-answer');
+        }
+        if (input.checked) {
+          if (input.dataset.correct === 'true') {
+            correctCount++;
+            label.classList.add('correct-selected');
+          } else {
+            label.classList.add('incorrect-selected');
+          }
+        }
+      });
+    });
+
+    const total = currentQuestions.length;
+    const perc = Math.round((correctCount / total) * 100);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML =
+      `Hai risposto correttamente a <strong>${correctCount}</strong> su <strong>${total}</strong> domande (${perc}%).`;
+  }
+
+  window.addEventListener('DOMContentLoaded', generateQuiz);
+</script>
+</body>
+</html>

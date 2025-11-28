@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Semeiotica – Set 2 (100 domande nuove)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050609;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: radial-gradient(circle at top, #1f2833, #050609);
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 5px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1050px;
+      margin: 20px auto 40px;
+      padding: 0 15px 30px;
+      background: rgba(10, 14, 22, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 15px 15px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+    .controls input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #45a29e, #66fcf1);
+      color: #0b0c10;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #c5c6c7, #9fa6b2);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      opacity: 0.96;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    #quizContainer {
+      padding: 10px 15px 20px;
+    }
+    .question-block {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(102,252,241,0.07), rgba(0,0,0,0.85));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .question-text {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .option-item {
+      margin: 3px 0;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 6px;
+    }
+    .option-item label {
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-block;
+      transition: background 0.12s ease, box-shadow 0.12s ease, border-bottom-color 0.12s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .correct-selected {
+      background: rgba(76, 175, 80, 0.16);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.7);
+    }
+    .incorrect-selected {
+      background: rgba(244, 67, 54, 0.18);
+      box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.7);
+    }
+    .correct-answer {
+      border-bottom-color: rgba(102, 252, 241, 0.9);
+    }
+    #result {
+      padding: 12px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.96rem;
+    }
+    #result strong {
+      color: #66fcf1;
+    }
+    .small-note {
+      font-size: 0.76rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 15px 8px 30px;
+        padding: 0 10px 20px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica – Set 2 (100 domande nuove)</h1>
+  <p>Argomenti: Anamnesi, Cute e mucose, Esame obiettivo addome, Mediastino</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label for="numQuestions">
+      Numero di domande per quiz (1–100):
+    </label>
+    <input type="number" id="numQuestions" min="1" max="100" value="20">
+    <button type="button" onclick="generateQuiz()">Genera nuovo quiz</button>
+    <button type="button" class="secondary" onclick="gradeQuiz()">Correggi</button>
+    <div class="small-note">
+      Domande diverse dal primo file, estratte e mescolate a caso (database interno: 100 domande).
+    </div>
+  </section>
+
+  <section id="quizContainer"></section>
+  <section id="result"></section>
+</main>
+
+<script>
+  const questionBank = [
+    /* ====== ANAMNESI (1–25) ====== */
+    {
+      id: 1,
+      text: `La definizione più corretta di anamnesi è:`,
+      options: [
+        `La sola raccolta dei dati anagrafici del paziente`,
+        `L’insieme sistematico delle informazioni riferite dal paziente e/o da terzi sulla sua storia clinica e personale`,
+        `L’elenco degli esami strumentali precedenti`,
+        `La descrizione dei soli sintomi acuti`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 2,
+      text: `Quale affermazione descrive meglio il rapporto tra anamnesi ed esame obiettivo?`,
+      options: [
+        `Sono due momenti indipendenti che non si influenzano`,
+        `L’anamnesi orienta l’esame obiettivo e l’esame obiettivo completa e verifica quanto emerso dall’anamnesi`,
+        `L’esame obiettivo sostituisce l’anamnesi nei pazienti giovani`,
+        `È sufficiente l’anamnesi senza esame obiettivo se il paziente è collaborante`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 3,
+      text: `Quale elemento NON appartiene all’anamnesi generale?`,
+      options: [
+        `Età e sesso`,
+        `Luogo di nascita e residenza`,
+        `Valori pressori dell’ultima settimana`,
+        `Stato civile`
+      ],
+      correctIndex: 2,
+      topic: `Anamnesi`
+    },
+    {
+      id: 4,
+      text: `Un sintomo “aspecifico” è:`,
+      options: [
+        `Un sintomo che orienta in modo molto preciso verso un solo organo`,
+        `Un sintomo che può essere comune a numerose patologie diverse`,
+        `Un sintomo che compare solo nei bambini`,
+        `Un sintomo che è sempre di natura psichiatrica`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 5,
+      text: `Esempio di sintomo specifico/localizzato secondo quanto spiegato a lezione:`,
+      options: [
+        `Astenia persistente`,
+        `Dolore colico in fossa iliaca destra con irradiazione al fianco`,
+        `Malessere generale`,
+        `Prurito diffuso senza altre caratteristiche`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 6,
+      text: `Il “tipo” del dolore, nella descrizione anamnestica, include:`,
+      options: [
+        `Solo la sede`,
+        `Puntorio, oppressivo, urente, colico…`,
+        `Solo l’intensità da 0 a 10`,
+        `Solo se continuo o intermittente`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 7,
+      text: `In anamnesi, l’informazione sulla “irradiazione” del dolore serve a:`,
+      options: [
+        `Valutare la presenza di febbre`,
+        `Valutare lo stato nutrizionale`,
+        `Rendere più specifico il sospetto di origine del dolore (es. cardiaca, renale, ecc.)`,
+        `Escludere qualunque causa viscerale`
+      ],
+      correctIndex: 2,
+      topic: `Anamnesi`
+    },
+    {
+      id: 8,
+      text: `Quando si parla di anamnesi in urgenza, rispetto a quella in elezione:`,
+      options: [
+        `Si raccolgono più dati perché c’è più tempo`,
+        `Si usano esclusivamente questionari scritti`,
+        `Le domande sono poche, focalizzate e mirate all’evento acuto`,
+        `Non si raccoglie alcuna anamnesi`
+      ],
+      correctIndex: 2,
+      topic: `Anamnesi`
+    },
+    {
+      id: 9,
+      text: `L’acronimo SAMPLE è usato per:`,
+      options: [
+        `Memorizzare i valori di laboratorio`,
+        `Guidare la raccolta anamnestica rapida in emergenza/urgenza`,
+        `Classificare i tipi di dolore`,
+        `Valutare le scale del dolore in pediatria`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 10,
+      text: `Nell’anamnesi familiare si indagano soprattutto:`,
+      options: [
+        `Solo i traumi subiti dai familiari`,
+        `Patologie ereditarie, metaboliche, cardiovascolari, neoplastiche e abitudini ricorrenti in famiglia`,
+        `Solo malattie infettive dei parenti`,
+        `Solo l’età di morte dei nonni`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 11,
+      text: `In presenza di un giovane con episodi di anemia emolitica ricorrente e proveniente dalla Sardegna, in anamnesi è importante pensare a:`,
+      options: [
+        `Favismo e deficit di G6PD`,
+        `Anemia perniciosa`,
+        `Solo carenza di ferro`,
+        `Ipertensione arteriosa`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 12,
+      text: `La distinzione tra anamnesi patologica remota e prossima si basa su:`,
+      options: [
+        `Remota = patologie pregresse stabilizzate; prossima = evento attuale per cui il paziente consulta`,
+        `Remota = patologie dei familiari; prossima = patologie del paziente`,
+        `Remota = abitudini; prossima = lavoro attuale`,
+        `Non esiste questa distinzione`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 13,
+      text: `In quale sezione rientra la domanda “quali farmaci assume regolarmente?”`,
+      options: [
+        `Anamnesi fisiologica`,
+        `Anamnesi farmacologica`,
+        `Anamnesi familiare`,
+        `Anamnesi funzionale`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 14,
+      text: `Nell’anamnesi lavorativa è particolarmente rilevante chiedere:`,
+      options: [
+        `Solo il titolo di studio`,
+        `Se il lavoro comporta esposizione a sostanze tossiche, polveri, rumore, posture forzate`,
+        `Solo l’orario di inizio del turno`,
+        `Se il paziente fa smart working`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 15,
+      text: `Quale tra questi è un esempio di “abitudine voluttuaria” da indagare sempre?`,
+      options: [
+        `Uso di dispositivi elettronici`,
+        `Abitudine tabagica e consumo di alcol`,
+        `Ore di studio giornaliere`,
+        `Tipo di automobile posseduta`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 16,
+      text: `Perché è importante chiedere da quanto tempo è iniziata la sintomatologia?`,
+      options: [
+        `Per capire se il paziente ha buona memoria`,
+        `Per distinguere quadri acuti, subacuti o cronici e orientare la diagnosi`,
+        `Per motivi assicurativi`,
+        `Per decidere il tipo di stanza di ricovero`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 17,
+      text: `Un dolore che compare sempre dopo i pasti e migliora a digiuno suggerisce:`,
+      options: [
+        `Possibile correlazione con patologie del tratto gastrointestinale superiore`,
+        `Patologia renale esclusiva`,
+        `Solo ansia`,
+        `Patologia cardiaca certa`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 18,
+      text: `La scala numerica 0–10 usata durante l’anamnesi del dolore serve a:`,
+      options: [
+        `Valutare l’intensità percepita dal paziente`,
+        `Valutare la durata del dolore`,
+        `Classificare la causa del dolore`,
+        `Misurare la temperatura corporea`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 19,
+      text: `Nell’anamnesi funzionale dell’anziano si utilizzano scale come ADL e IADL per:`,
+      options: [
+        `Valutare le capacità di svolgere attività di base e strumentali della vita quotidiana`,
+        `Valutare l’intensità del dolore`,
+        `Misurare la saturazione di ossigeno`,
+        `Quantificare il rischio di cadute solo in ospedale`
+      ],
+      correctIndex: 0,
+      topic: `Anamnesi`
+    },
+    {
+      id: 20,
+      text: `Nel contesto di anamnesi, “polipatologia” indica:`,
+      options: [
+        `Presenza di una sola patologia molto severa`,
+        `Presenza contemporanea di più patologie croniche nello stesso paziente`,
+        `Presenza di una patologia acuta`,
+        `Presenza di una sola patologia ereditaria`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 21,
+      text: `Perché è fondamentale evitare di minimizzare la condizione del paziente durante il colloquio anamnestico?`,
+      options: [
+        `Perché il paziente potrebbe arrabbiarsi e andarsene`,
+        `Perché rischia di compromettere il rapporto di fiducia e ridurre le informazioni che il paziente riferisce`,
+        `Perché allunga i tempi di visita`,
+        `Perché è vietato da tutte le linee guida`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 22,
+      text: `In un paziente disorientato, la domanda “sa che giorno è oggi?” serve a:`,
+      options: [
+        `Valutare la memoria remota`,
+        `Valutare l’orientamento temporale`,
+        `Valutare la vista`,
+        `Valutare il tono dell’umore`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 23,
+      text: `Quando si parla di anamnesi indiretta “documentale” si intende:`,
+      options: [
+        `Solo ciò che il paziente scrive`,
+        `Le informazioni ricavate da lettere di dimissione, referti, cartelle cliniche precedenti`,
+        `Le informazioni presenti sui social del paziente`,
+        `I dati anagrafici del comune`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 24,
+      text: `Domanda tipica per esplorare fattori predisponenti e di rischio è:`,
+      options: [
+        `Che lavoro fa suo padre?`,
+        `Ha in famiglia casi di infarto precoce, diabete, neoplasie?`,
+        `Quanto spesso viaggia all’estero per turismo?`,
+        `Qual è il suo piatto preferito?`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+    {
+      id: 25,
+      text: `Nel sistema SAMPLE, la lettera “L” (Last oral intake) è importante soprattutto perché:`,
+      options: [
+        `Serve solo a calcolare le calorie assunte`,
+        `Permette di capire se il paziente può essere sottoposto a intervento o anestesia in sicurezza`,
+        `Serve a valutare lo stato vaccinale`,
+        `Serve a valutare il rischio trombotico`
+      ],
+      correctIndex: 1,
+      topic: `Anamnesi`
+    },
+
+    /* ====== CUTE E MUCOSE (26–50) ====== */
+    {
+      id: 26,
+      text: `In un soggetto con anemia severa, quale reperto cutaneo/mucoso ci si può aspettare?`,
+      options: [
+        `Eritema violaceo diffuso`,
+        `Pallore cutaneo e delle mucose`,
+        `Colorito verde delle unghie`,
+        `Colorito francamente bluastro delle mucose`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 27,
+      text: `L’ittero è dovuto principalmente a:`,
+      options: [
+        `Deposito di sali biliari e bilirubina nei tessuti`,
+        `Carenza di melanina nell’epidermide`,
+        `Accumulo di ferro nella cute`,
+        `Difetto di carnitina muscolare`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 28,
+      text: `Quale quadro suggerisce una carotenodermia da eccesso di beta-carotene?`,
+      options: [
+        `Colorito giallo di cute e sclere`,
+        `Colorito giallastro di palmi e piante con sclere risparmiate`,
+        `Colorito bluastro delle labbra`,
+        `Macchie iperpigmentate irregolari al dorso`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 29,
+      text: `Nella valutazione clinica della disidratazione, oltre alla plica cutanea, è utile osservare:`,
+      options: [
+        `Soltanto la temperatura corporea`,
+        `Lingua, mucosa orale e possibile enoftalmo`,
+        `Dimensione della pupilla`,
+        `Presenza di eritema nodoso`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 30,
+      text: `Il dermografismo rosso consiste in:`,
+      options: [
+        `Comparsa di un solco biancastro dopo la trazione cutanea`,
+        `Comparsa di una stria eritematosa rilevata in sede di strofinamento della cute`,
+        `Comparsa di petecchie multiple da trauma`,
+        `Comparsa di vescicole sierose lineari`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 31,
+      text: `Le teleangectasie “spider” sono:`,
+      options: [
+        `Macchie ipopigmentate isolate`,
+        `Capillari superficiali dilatati con aspetto a raggiera, tipici anche di epatopatia cronica`,
+        `Lesioni purpuriche palpabili`,
+        `Cicatrici lineari post-chirurgiche`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 32,
+      text: `Gli angiomi rubino del tronco sono:`,
+      options: [
+        `Lesioni maligne a rapida evoluzione`,
+        `Neoformazioni benigne costituite da agglomerati di capillari superficiali`,
+        `Cisti sebacee profonde`,
+        `Lesioni esclusivamente mucose`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 33,
+      text: `Una macula, in semeiotica cutanea, è:`,
+      options: [
+        `Lesione rilevata, palpabile, con contenuto liquido`,
+        `Alterazione del colore della cute senza rilievo palpabile`,
+        `Una bolla sierosa > 1 cm`,
+        `Una raccolta ematica profonda`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 34,
+      text: `Le roseole sono:`,
+      options: [
+        `Piccole macule eritematose, spesso multiple`,
+        `Grossi noduli sottocutanei`,
+        `Lesioni ulcerate infette`,
+        `Macchie da tatuaggio`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 35,
+      text: `Quale combinazione descrive correttamente vescicola e bolla?`,
+      options: [
+        `Entrambe solide e non palpabili`,
+        `Entrambe cavitarie a contenuto sieroso; la bolla è più grande della vescicola`,
+        `La vescicola è purulenta e la bolla sierosa`,
+        `La vescicola è sempre maligna, la bolla benigna`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 36,
+      text: `Le petecchie cutanee sono:`,
+      options: [
+        `Piccole emorragie puntiformi non scomparibili alla pressione`,
+        `Teleangectasie benigne`,
+        `Sempre causate da trauma intenso`,
+        `Lesioni da micosi superficiale`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 37,
+      text: `Un quadro di petecchie mucose e INR normale fa pensare più facilmente a:`,
+      options: [
+        `Piastrinopenia o difetto piastrinico`,
+        `Deficit dei fattori della coagulazione vitamina K-dipendenti`,
+        `Eccesso di vitamina C`,
+        `Esclusivamente trauma locale`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 38,
+      text: `Con INR marcatamente elevato (in paziente anticoagulato) ci aspettiamo:`,
+      options: [
+        `Tendenza al tromboembolismo`,
+        `Tendenza al sanguinamento, anche con minimi traumi`,
+        `Nessun rischio emorragico`,
+        `Rischio esclusivo di infarto miocardico`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 39,
+      text: `Il prurito cronico generalizzato può essere espressione di:`,
+      options: [
+        `Solo allergia cutanea acuta`,
+        `Patologie dermatologiche, epatiche, ematologiche o renali`,
+        `Solo infezioni batteriche locali`,
+        `Sempre e solo psicosi`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 40,
+      text: `L’iperidrosi è definita come:`,
+      options: [
+        `Mancata sudorazione`,
+        `Sudorazione eccessiva rispetto al necessario`,
+        `Sudorazione solo notturna`,
+        `Sudorazione con sangue`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 41,
+      text: `La presenza di cicatrici chirurgiche addominali va sempre segnalata perché:`,
+      options: [
+        `Non ha alcun valore clinico`,
+        `Può indicare pregressi interventi e possibili aderenze, laparoceli o patologie pregresse`,
+        `Serve solo per fini estetici`,
+        `Serve a riconoscere il paziente in reparto`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 42,
+      text: `Una cicatrice ipertrofica che rimane entro i margini della ferita iniziale è diversa dal cheloide perché:`,
+      options: [
+        `Il cheloide non contiene collagene`,
+        `Nel cheloide la cicatrice supera i margini cutanei originali`,
+        `Il cheloide è sempre infetto`,
+        `Non c’è differenza, sono sinonimi`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 43,
+      text: `La presenza di “spider nevi” multipli al torace in un paziente con astenia e ittero fa pensare a:`,
+      options: [
+        `Patologia cardiaca acuta`,
+        `Epatopatia cronica (es. cirrosi)`,
+        `Patologia renale acuta`,
+        `Dermatite atopica`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 44,
+      text: `L’assenza di sudorazione (anidrosi) può essere riscontrata in:`,
+      options: [
+        `Grave disidratazione o alcune neuropatie`,
+        `Solo stati febbrili acuti`,
+        `Esclusivamente in soggetti ansiosi`,
+        `Solo in corso di ipertiroidismo`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 45,
+      text: `Il colore normale delle mucose orali in un soggetto sano è:`,
+      options: [
+        `Bianco gessoso`,
+        `Rosato uniforme`,
+        `Verde oliva`,
+        `Blu violaceo`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 46,
+      text: `La presenza di fissurazioni dolorose agli angoli della bocca (cheiliti, ragadi) può essere correlata a:`,
+      options: [
+        `Solo trauma meccanico`,
+        `Deficit vitaminici, infezioni micotiche o irritazioni croniche`,
+        `Sempre tumore del labbro`,
+        `Solo anemia falciforme`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 47,
+      text: `Nelle etnie con cute molto scura, per valutare il pallore o l’ittero è particolarmente importante osservare:`,
+      options: [
+        `Dorso delle mani`,
+        `Sclere e mucose visibili`,
+        `Capelli`,
+        `Unghie dei piedi`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 48,
+      text: `Un’eritema localizzato caldo e dolente, con febbre, a livello di arto inferiore può suggerire:`,
+      options: [
+        `Erisipela`,
+        `Vitiligine`,
+        `Carotenodermia`,
+        `Anidrosi localizzata`
+      ],
+      correctIndex: 0,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 49,
+      text: `L’alopecia può essere:`,
+      options: [
+        `Solo congenita`,
+        `Cicatriziale o non cicatriziale, con cause locali o sistemiche`,
+        `Sempre autoimmune`,
+        `Esclusivamente da chemioterapia`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+    {
+      id: 50,
+      text: `Le alterazioni delle unghie (strie, fragilità, colore) possono fornire indizi su:`,
+      options: [
+        `Solo abitudini estetiche`,
+        `Patologie endocrine, carenziali, epatiche o cardiache`,
+        `Solo traumi acuti`,
+        `Solo infezioni virali sistemiche`
+      ],
+      correctIndex: 1,
+      topic: `Cute e mucose`
+    },
+
+    /* ====== ADDOME (51–75) ====== */
+    {
+      id: 51,
+      text: `La parete addominale presenta punti di debolezza “anatomicamente preformati” perché:`,
+      options: [
+        `È più sottile per caso`,
+        `In quei punti transitano strutture (vasi, visceri, cordone spermatico, ecc.) che interrompono la continuità muscolo-aponevrotica`,
+        `Sono zone dove la cute è più fragile`,
+        `Sono zone sempre cicatriziali`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 52,
+      text: `Un orifizio chirurgicamente creato, che in seguito diventa sede di ernia, viene definito:`,
+      options: [
+        `Porta congenita`,
+        `Porta erniaria iatrogena (laparocele)`,
+        `Forame di Bochdalek`,
+        `Linea alba`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 53,
+      text: `Nelle ernie addominali, il “sacco erniario” è costituito da:`,
+      options: [
+        `Muscolo scheletrico`,
+        `Peritoneo parietale che si estroflette attraverso la porta erniaria`,
+        `Solo tessuto adiposo`,
+        `Cute e sottocute`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 54,
+      text: `L’ernia inguinale si sviluppa in corrispondenza di:`,
+      options: [
+        `Linea mediana sternale`,
+        `Canale inguinale, dove passa il funicolo spermatico nell’uomo`,
+        `Anello ombelicale`,
+        `Quadrato lombare`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 55,
+      text: `L’ernia crurale (femorale) è localizzata:`,
+      options: [
+        `Sopra il legamento inguinale`,
+        `Nello iato esofageo del diaframma`,
+        `Al di sotto del legamento inguinale, in corrispondenza del passaggio dell’arteria femorale`,
+        `In regione lombare alta`
+      ],
+      correctIndex: 2,
+      topic: `Addome`
+    },
+    {
+      id: 56,
+      text: `Quale ernia ha maggior tendenza alla strozzatura (strozzamento erniario)?`,
+      options: [
+        `Ombelicale del lattante`,
+        `Crurale (femorale) in adulti, soprattutto donne`,
+        `Diaframmatica congenita`,
+        `Epigastrica della linea alba`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 57,
+      text: `Nell’ernia “strozzata” (strangolata) si ha:`,
+      options: [
+        `Solo dolore ma buona vascolarizzazione`,
+        `Compromissione del ritorno venoso e poi dell’afflusso arterioso al viscere erniato, con rischio di necrosi`,
+        `Solo incarceramento del contenuto adiposo`,
+        `Una situazione sempre benigna e reversibile spontaneamente`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 58,
+      text: `La manovra di Valsalva durante l’ispezione delle fosse erniarie serve a:`,
+      options: [
+        `Ridurre l’ernia`,
+        `Evidenziare o aumentare la protrusione erniaria aumentando la pressione endoaddominale`,
+        `Valutare la percussione epatica`,
+        `Auscultare il cuore`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 59,
+      text: `In un paziente con sospetta ernia riducibile, la riducibilità si verifica:`,
+      options: [
+        `Solo con l’intervento chirurgico`,
+        `Con lieve pressione manuale che riporta il contenuto nella cavità addominale`,
+        `Solo facendo camminare il paziente`,
+        `Solo in posizione seduta`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 60,
+      text: `L’ispezione dell’addome comprende, tra le altre cose:`,
+      options: [
+        `Solo la misura della circonferenza`,
+        `Valutazione di profilo, simmetria, cicatrici, peristalsi visibile, pulsazioni, ernie`,
+        `Solo la ricerca dell’itto cardiaco`,
+        `Solo il colore della cute`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 61,
+      text: `Nella percussione addominale, un suono “ottuso” in ipocondrio destro è normalmente dovuto a:`,
+      options: [
+        `Fegato`,
+        `Polmone aerato`,
+        `Stomaco pieno d’aria`,
+        `Colonna vertebrale`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 62,
+      text: `Nel sospetto di ascite, la percussione in posizione supina mostra:`,
+      options: [
+        `Timpanismo ai fianchi e ottusità centrale`,
+        `Ottusità ai fianchi e timpanismo centrale periombelicale`,
+        `Ottusità omogenea in tutto l’addome`,
+        `Solo timpanismo diffuso`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 63,
+      text: `Il “segno dello spostamento dell’ottusità” (shifting dullness) è tipico di:`,
+      options: [
+        `Ascite, perché il liquido si sposta con i cambi di posizione`,
+        `Pneumoperitoneo`,
+        `Meteorismo intestinale senza liquido`,
+        `Colecistite acuta`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 64,
+      text: `L’addome “a tavola” (rigido), difensivo, fa sospettare:`,
+      options: [
+        `Patologia funzionale banale`,
+        `Irritazione peritoneale (peritonite)`,
+        `Ascite non complicata`,
+        `Colica renale semplice`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 65,
+      text: `La presenza radiologica di aria libera sottodiaframmatica (pneumoperitoneo) è tipica di:`,
+      options: [
+        `Perforazione di un viscere cavo`,
+        `Ascite massiva`,
+        `Epatomegalia`,
+        `Ernia inguinale semplice`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 66,
+      text: `In un ileo meccanico iniziale, la peristalsi intestinale risulta:`,
+      options: [
+        `Assente fin da subito`,
+        `Aumentata, talvolta con rumori tipo “metallico”`,
+        `Normale e costante`,
+        `Udibile solo dopo i pasti`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 67,
+      text: `Quale quadro di auscultazione è più compatibile con ileo paralitico?`,
+      options: [
+        `Rumori vivaci e metallici`,
+        `Silenzio auscultatorio o peristalsi molto ridotta`,
+        `Rumori forti dopo ogni deglutizione`,
+        `Fischi continui di tipo respiratorio`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 68,
+      text: `L’esame radiologico Rx addome in ortostatismo, in caso di occlusione intestinale, può mostrare:`,
+      options: [
+        `Solo fegato aumentato di volume`,
+        `Livelli idroaerei multipli`,
+        `Solo calcoli renali`,
+        `Aorta addominale calcifica`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 69,
+      text: `Nel clisma opaco, le “immagini di plus” indicano:`,
+      options: [
+        `Difetto di riempimento del lume`,
+        `Estroflessione del mezzo di contrasto oltre il profilo intestinale (tasche, diverticoli)`,
+        `Assenza di mezzo di contrasto`,
+        `Presenza di aria intraperitoneale`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 70,
+      text: `Le “immagini di minus” al clisma opaco sono dovute a:`,
+      options: [
+        `Polipi, masse o calcoli che occupano il lume intestinale creando difetto di riempimento`,
+        `Diverticoli esterni`,
+        `Semplice aria nel colon`,
+        `Liquido peritoneale libero`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 71,
+      text: `Un “aspetto a torsolo di mela” al clisma opaco è associato a:`,
+      options: [
+        `Stenosi neoplastica del colon`,
+        `Colecistite acuta`,
+        `Ernia inguinale`,
+        `Ascite`
+      ],
+      correctIndex: 0,
+      topic: `Addome`
+    },
+    {
+      id: 72,
+      text: `La colangio-RM è particolarmente utile per:`,
+      options: [
+        `Valutare le cavità cardiache`,
+        `Valutare vie biliari e coledoco (e dotto pancreatico principale)`,
+        `Valutare lesioni ossee delle vertebre`,
+        `Valutare infiltrati polmonari`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 73,
+      text: `Tra gli esami di laboratorio utili nello studio dell’addome e delle vie biliari troviamo:`,
+      options: [
+        `Solo emocromo`,
+        `Transaminasi, fosfatasi alcalina, bilirubina, PCR`,
+        `Solo glicemia`,
+        `Solo creatinchinasi`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 74,
+      text: `Gli anticorpi anti-transglutaminasi vengono richiesti in sospetto di:`,
+      options: [
+        `Appendicite acuta`,
+        `Celiachia (enteropatia glutine-sensibile)`,
+        `Colecistite acuta`,
+        `Pancreatite acuta alcolica`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+    {
+      id: 75,
+      text: `La calprotectina fecale è un marker utile per:`,
+      options: [
+        `Patologie ossee`,
+        `Infiammazione intestinale (es. IBD)`,
+        `Patologie renali`,
+        `Patologie tiroidee`
+      ],
+      correctIndex: 1,
+      topic: `Addome`
+    },
+
+    /* ====== MEDIASTINO (76–100) ====== */
+    {
+      id: 76,
+      text: `Il mediastino è situato:`,
+      options: [
+        `Nella cavità addominale`,
+        `Nella cavità toracica, tra i due polmoni`,
+        `Nella cavità cranica`,
+        `Nella pelvi`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 77,
+      text: `Tra le strutture che limitano il mediastino NON troviamo:`,
+      options: [
+        `Sterno anteriormente`,
+        `Colonna vertebrale posteriormente`,
+        `Pleure parietali medialmente ai lati`,
+        `Muscolo psoas`
+      ],
+      correctIndex: 3,
+      topic: `Mediastino`
+    },
+    {
+      id: 78,
+      text: `La continuità tra collo e mediastino spiega perché:`,
+      options: [
+        `Le infezioni del collo possono propagarsi in basso causando mediastiniti`,
+        `Le ernie addominali salgono al collo`,
+        `Non esistono patologie mediastiniche`,
+        `L’aorta non passa nel mediastino`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 79,
+      text: `La suddivisione classica del mediastino è:`,
+      options: [
+        `Superiore, medio, inferiore`,
+        `Antero-superiore, medio, posteriore`,
+        `Anteriore, centrale, laterale`,
+        `Solo anteriore e posteriore`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 80,
+      text: `Le sindromi mediastiniche sono:`,
+      options: [
+        `Quadri clinici dovuti agli effetti compressivi di una massa sulle strutture mediastiniche`,
+        `Infezioni acute sempre batteriche del mediastino`,
+        `Patologie benigne senza sintomi`,
+        `Solo malattie congenite del cuore`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 81,
+      text: `Percentualmente, la causa più frequente di sindrome mediastinica è:`,
+      options: [
+        `Mediastiniti post-traumatiche`,
+        `Tumori polmonari che comprimono il mediastino`,
+        `Cisti congenite del dotto toracico`,
+        `Gozzo immerso`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 82,
+      text: `Tra le neoplasie primitive del mediastino anteriore troviamo:`,
+      options: [
+        `Timomi e linfomi`,
+        `Tumori neurogeni`,
+        `Cisti esofagee`,
+        `Tumori renali`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 83,
+      text: `Tumori neurogeni e cisti enteriche si localizzano più frequentemente nel:`,
+      options: [
+        `Mediastino anteriore`,
+        `Mediastino posteriore`,
+        `Mediastino medio`,
+        `Diaframma`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 84,
+      text: `La sindrome della vena cava superiore è un esempio di sindrome mediastinica:`,
+      options: [
+        `Neurologica`,
+        `Respiratoria`,
+        `Vascolare`,
+        `Digestiva`
+      ],
+      correctIndex: 2,
+      topic: `Mediastino`
+    },
+    {
+      id: 85,
+      text: `Tra le manifestazioni cliniche della sindrome della vena cava superiore NON è tipica:`,
+      options: [
+        `Edema a mantellina`,
+        `Turgore giugulare`,
+        `Circoli venosi collaterali toraco-addominali`,
+        `Edema esclusivo alle caviglie senza alterazioni del volto`
+      ],
+      correctIndex: 3,
+      topic: `Mediastino`
+    },
+    {
+      id: 86,
+      text: `Una causa iatrogena di sindrome della vena cava superiore è:`,
+      options: [
+        `Posizionamento prolungato di cateteri venosi centrali con trombosi della vena cava superiore`,
+        `Iniezioni intramuscolari ripetute`,
+        `Somministrazione orale di antibiotici`,
+        `Terapia inalatoria con broncodilatatori`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 87,
+      text: `Il ruolo della vena azygos in caso di ostruzione della vena cava superiore è:`,
+      options: [
+        `Nessuno, è un vaso terminale`,
+        `Costituire un importante circolo collaterale di scarico venoso`,
+        `Portare sangue arterioso al cuore`,
+        `Portare bile al fegato`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 88,
+      text: `La presenza di varici esofagee nel terzo superiore dell’esofago, in assenza di cirrosi epatica, orienta verso:`,
+      options: [
+        `Ipertensione portale`,
+        `Sindrome mediastinica con coinvolgimento del circolo azygos`,
+        `Reflusso gastroesofageo semplice`,
+        `Colelitiasi non complicata`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 89,
+      text: `La sindrome mediastinica neurologica può coinvolgere tutti i seguenti nervi TRANNE:`,
+      options: [
+        `Nervo vago`,
+        `Nervi laringei ricorrenti`,
+        `Nervo frenico`,
+        `Nervo ottico`
+      ],
+      correctIndex: 3,
+      topic: `Mediastino`
+    },
+    {
+      id: 90,
+      text: `La lesione del nervo laringeo ricorrente sinistro è frequente in patologie o interventi su:`,
+      options: [
+        `Arco aortico e regione para-aortica`,
+        `Rene destro`,
+        `Articolazione del ginocchio`,
+        `Colonna lombare`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 91,
+      text: `La sindrome di Claude-Bernard-Horner comprende:`,
+      options: [
+        `Midriasi, esoftalmo, sudorazione aumentata`,
+        `Miosi, enoftalmo, ptosi palpebrale omolaterale`,
+        `Diplopia e nistagmo`,
+        `Afonia e disfonia`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 92,
+      text: `La sindrome di Parfour-Depetit è dovuta a:`,
+      options: [
+        `Lesione completa del simpatico cervicale`,
+        `Irritazione della catena simpatica con midriasi, esoftalmo, vasocostrizione cutanea e tachicardia`,
+        `Lesione del nervo faciale`,
+        `Insufficienza mitralica`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 93,
+      text: `Una massa mediastinica che comprime il nervo frenico può determinare:`,
+      options: [
+        `Diplopia`,
+        `Paralisi diaframmatica omolaterale con dispnea`,
+        `Parestesie alle mani`,
+        `Dolore lombare irradiato alla coscia`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 94,
+      text: `La sindrome mediastinica respiratoria è caratterizzata da:`,
+      options: [
+        `Disturbi della deglutizione senza dispnea`,
+        `Ostruzione di trachea/bronchi con dispnea, tirage, cornage, cianosi`,
+        `Solo dolore dorsale`,
+        `Solo cefalea frontale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 95,
+      text: `Il tirage (rientramenti intercostali, giugulari, epigastrici in inspirazione) indica:`,
+      options: [
+        `Espansione polmonare aumentata`,
+        `Ostruzione significativa del lume tracheale o dei grossi bronchi`,
+        `Iperventilazione psicogena senza patologia organica`,
+        `Solo patologia addominale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 96,
+      text: `Il cornage è:`,
+      options: [
+        `Un rumore metallico intestinale`,
+        `Uno stridore respiratorio da ostruzione delle vie aeree superiori`,
+        `Il soffio sistolico aortico`,
+        `Il rumore di sfregamento pleurico`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 97,
+      text: `Il gozzo cervico-mediastinico può causare contemporaneamente:`,
+      options: [
+        `Solo ipocalcemia`,
+        `Compressione tracheale, compressione esofagea e disturbo del ritorno venoso`,
+        `Solo ipertensione arteriosa`,
+        `Solo cefalea frontale`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 98,
+      text: `La scintigrafia tiroidea in un gozzo immerso serve principalmente a:`,
+      options: [
+        `Distinguere tessuto tiroideo funzionante da altre masse mediastiniche`,
+        `Valutare la funzione renale`,
+        `Valutare le varici esofagee`,
+        `Valutare la peristalsi intestinale`
+      ],
+      correctIndex: 0,
+      topic: `Mediastino`
+    },
+    {
+      id: 99,
+      text: `La mediastinite acuta può originare da:`,
+      options: [
+        `Solo trauma cranico`,
+        `Perforazione esofagea, ascessi del collo o flogosi broncopneumoniche complicate`,
+        `Cistite batterica semplice`,
+        `Otite media acuta`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    },
+    {
+      id: 100,
+      text: `La complicanza più temibile di una mediastinite acuta non trattata è:`,
+      options: [
+        `Eritema nodoso`,
+        `Shock settico e morte`,
+        `Ipertensione lieve transitoria`,
+        `Solo tosse cronica`
+      ],
+      correctIndex: 1,
+      topic: `Mediastino`
+    }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestions = [];
+
+  function generateQuiz() {
+    const input = document.getElementById('numQuestions');
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) n = 20;
+    if (n < 1) n = 1;
+    if (n > questionBank.length) n = questionBank.length;
+    input.value = n;
+
+    const shuffled = shuffle([...questionBank]);
+    currentQuestions = shuffled.slice(0, n);
+    renderQuiz();
+    document.getElementById('result').innerHTML = '';
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, qIndex) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.textContent = (qIndex + 1) + '. ' + q.text;
+
+      const topic = document.createElement('div');
+      topic.className = 'question-topic';
+      topic.textContent = q.topic;
+
+      header.appendChild(title);
+      header.appendChild(topic);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      const indices = q.options.map((_, i) => i);
+      shuffle(indices);
+
+      indices.forEach((optIndex, optPos) => {
+        const optWrapper = document.createElement('div');
+        optWrapper.className = 'option-item';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_opt' + optPos;
+        input.dataset.correct = (optIndex === q.correctIndex) ? 'true' : 'false';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = q.options[optIndex];
+
+        optWrapper.appendChild(input);
+        optWrapper.appendChild(label);
+        optionsDiv.appendChild(optWrapper);
+      });
+
+      block.appendChild(header);
+      block.appendChild(optionsDiv);
+      container.appendChild(block);
+    });
+  }
+
+  function gradeQuiz() {
+    if (currentQuestions.length === 0) {
+      alert('Genera prima il quiz.');
+      return;
+    }
+
+    let correctCount = 0;
+
+    currentQuestions.forEach((q, qIndex) => {
+      const options = document.querySelectorAll('input[name="q' + qIndex + '"]');
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        label.classList.remove('correct-selected', 'incorrect-selected', 'correct-answer');
+      });
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        if (input.dataset.correct === 'true') {
+          label.classList.add('correct-answer');
+        }
+        if (input.checked) {
+          if (input.dataset.correct === 'true') {
+            correctCount++;
+            label.classList.add('correct-selected');
+          } else {
+            label.classList.add('incorrect-selected');
+          }
+        }
+      });
+    });
+
+    const total = currentQuestions.length;
+    const perc = Math.round((correctCount / total) * 100);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML =
+      `Hai risposto correttamente a <strong>${correctCount}</strong> su <strong>${total}</strong> domande (${perc}%).`;
+  }
+
+  window.addEventListener('DOMContentLoaded', generateQuiz);
+</script>
+</body>
+</html>

@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz Semeiotica Medica – Zambon & Polese (Database Esteso)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0b1020;
+      color: #f5f5f5;
+    }
+    header {
+      background: linear-gradient(135deg, #111827, #020617);
+      padding: 16px 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    header p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    main {
+      max-width: 1100px;
+      margin: 16px auto 32px;
+      padding: 0 16px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      background: rgba(15,23,42,0.9);
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      margin-bottom: 18px;
+    }
+    .controls label {
+      font-size: 0.9rem;
+    }
+    .controls input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #f9fafb;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: radial-gradient(circle at 0 0, #22c55e, #15803d);
+      color: #e5e7eb;
+      box-shadow: 0 8px 20px rgba(34,197,94,0.4);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s;
+      white-space: nowrap;
+    }
+    button.secondary {
+      background: radial-gradient(circle at 0 0, #3b82f6, #1d4ed8);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.8);
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(15,23,42,0.7);
+    }
+    #stats {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-left: auto;
+    }
+    .info {
+      font-size: 0.85rem;
+      color: #a5b4fc;
+      margin-bottom: 12px;
+    }
+    .question-card {
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.9), rgba(15,23,42,0.96));
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(148,163,184,0.3);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .question-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .question-number {
+      font-weight: 600;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      background: rgba(37,99,235,0.22);
+      color: #bfdbfe;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,0.5);
+    }
+    .question-text {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .options {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .options li {
+      margin: 3px 0;
+    }
+    .options label {
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .options input[type="radio"] {
+      margin-right: 6px;
+    }
+    .feedback {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      padding: 6px 8px;
+      border-radius: 10px;
+      display: none;
+    }
+    .feedback.show {
+      display: block;
+    }
+    .question-card.correct {
+      border-color: rgba(52,211,153,0.9);
+      box-shadow: 0 0 0 1px rgba(16,185,129,0.6), 0 12px 28px rgba(5,150,105,0.6);
+    }
+    .question-card.correct .feedback {
+      background: rgba(22,163,74,0.18);
+      color: #bbf7d0;
+    }
+    .question-card.incorrect {
+      border-color: rgba(248,113,113,0.9);
+      box-shadow: 0 0 0 1px rgba(248,113,113,0.7), 0 12px 28px rgba(127,29,29,0.7);
+    }
+    .question-card.incorrect .feedback {
+      background: rgba(239,68,68,0.16);
+      color: #fecaca;
+    }
+    #result {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+    #result strong {
+      font-size: 1.05rem;
+    }
+    .tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+      margin-left: 4px;
+    }
+    @media (max-width: 700px) {
+      header h1 {
+        font-size: 1.1rem;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #stats {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica Medica – Zambon &amp; Polese (Esteso)</h1>
+  <p>Domande su: introduzione, metodologia, diuresi e alvo, esame obiettivo generale, dolore ed addome.</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label>
+      Numero di domande da estrarre:
+      <input type="number" id="numQuestions" min="1" value="30">
+    </label>
+    <button id="generateBtn">Genera quiz</button>
+    <button id="gradeBtn" class="secondary">Correggi quiz</button>
+    <span id="stats"></span>
+  </section>
+
+  <p class="info">
+    💡 Ogni volta che clicchi <strong>“Genera quiz”</strong> le domande vengono mischiate e ne vengono estratte
+    quante ne hai scelto dal database. Rifacendo il quiz alleni memoria e ragionamento clinico.
+  </p>
+
+  <div id="questionsContainer"></div>
+  <div id="result"></div>
+</main>
+
+<script>
+  // ==========================
+  // DATABASE DOMANDE (100)
+  // ==========================
+
+  const questionBank = [
+    // --- INTRODUZIONE / SEMEIOTICA ---
+    {
+      id: 1,
+      topic: "Introduzione / semeiotica",
+      question: "Secondo la definizione data a lezione, la semeiotica medica è:",
+      options: [
+        "Lo studio esclusivo delle immagini radiologiche",
+        "Lo studio dei segni e sintomi del malato e la loro interpretazione ai fini diagnostici",
+        "L’insieme delle sole analisi di laboratorio",
+        "La branca che si occupa unicamente delle terapie farmacologiche"
+      ],
+      correctIndex: 1,
+      explanation: "La semeiotica deriva da 'semeion' (segno) ed è lo studio di segni e sintomi e della loro interpretazione per formulare ipotesi diagnostiche."
+    },
+    {
+      id: 2,
+      topic: "Introduzione / semeiotica",
+      question: "Quale delle seguenti affermazioni sulla semeiotica fisica è CORRETTA?",
+      options: [
+        "Comprende solo le indagini radiologiche (RX, TC, RM)",
+        "Comprende anamnesi ed esame obiettivo",
+        "Comprende esclusivamente prelievi di sangue",
+        "È sinonimo di semeiotica di laboratorio"
+      ],
+      correctIndex: 1,
+      explanation: "La semeiotica fisica è costituita da anamnesi ed esame obiettivo; la semeiotica di laboratorio e quella radiologica sono altre branche distinte."
+    },
+    {
+      id: 3,
+      topic: "Introduzione / semeiotica",
+      question: "La semeiotica di laboratorio si avvale di:",
+      options: [
+        "Solo TC e RM ad alta risoluzione",
+        "Prelievi di liquidi biologici (sangue, urine, liquor ecc.) e analisi ematochimiche",
+        "Solo dell’ecografia",
+        "Esclusivamente dell’elettrocardiogramma"
+      ],
+      correctIndex: 1,
+      explanation: "Utilizza prelievi di sangue, urine, feci, liquor, versamenti, tessuti ecc. per esami ematologici, ormonali, immunologici, microbiologici…"
+    },
+    {
+      id: 4,
+      topic: "Introduzione / metodologia clinica",
+      question: "Per metodologia clinica si intende:",
+      options: [
+        "La sola capacità di instaurare un buon rapporto empatico col paziente",
+        "L’insieme delle procedure cliniche, di laboratorio e strumentali per definire e interpretare segni e sintomi",
+        "Esclusivamente l’utilizzo delle linee guida internazionali",
+        "La raccolta casuale di esami strumentali per aumentare la sensibilità diagnostica"
+      ],
+      correctIndex: 1,
+      explanation: "La metodologia clinica integra anamnesi, esame obiettivo, esami di laboratorio e strumentali in un percorso logico per arrivare alla diagnosi."
+    },
+    {
+      id: 5,
+      topic: "Introduzione / obiettivi del corso",
+      question: "Quale tra questi NON rientra tra gli obiettivi specifici del corso di semeiotica e metodologia clinica?",
+      options: [
+        "Raccogliere accuratamente l’anamnesi",
+        "Effettuare l’esame obiettivo generale e dei singoli apparati",
+        "Definire e prescrivere autonomamente tutti i piani terapeutici",
+        "Valutare criticamente il significato di sintomi, segni e dati laboratoristici"
+      ],
+      correctIndex: 2,
+      explanation: "La terapia è di competenza delle cliniche; il corso si focalizza su anamnesi, esame obiettivo, interpretazione di segni/sintomi e ragionamento diagnostico."
+    },
+    {
+      id: 6,
+      topic: "Introduzione / diagnosi differenziale",
+      question: "Nel criterio possibilistico di diagnosi differenziale:",
+      options: [
+        "Si sceglie sempre per prima la diagnosi più grave",
+        "Si testano tutte le ipotesi diagnostiche in modo indiscriminato",
+        "Si considerano solo le ipotesi più economiche dal punto di vista dei costi degli esami",
+        "Si escludono le malattie rare a priori"
+      ],
+      correctIndex: 1,
+      explanation: "Tutte le ipotesi vengono considerate ugualmente probabili e testate, con rischio di eccesso di esami, costi e rischi non necessari."
+    },
+    {
+      id: 7,
+      topic: "Introduzione / diagnosi differenziale",
+      question: "Nel criterio selettivo di diagnosi differenziale il medico:",
+      options: [
+        "Sceglie le ipotesi in base a probabilità, gravità e possibilità di trattamento",
+        "Sceglie a caso una diagnosi e la tratta",
+        "Si affida solo alla sua esperienza personale senza considerare l’evidenza",
+        "Ignora completamente la prevalenza delle malattie"
+      ],
+      correctIndex: 0,
+      explanation: "Il criterio selettivo considera probabilità (approccio probabilistico), gravità (prognostico) e risposta al trattamento (pragmatico)."
+    },
+    {
+      id: 8,
+      topic: "Introduzione / EBM",
+      question: "La medicina basata sull’evidenza (EBM) prevede che:",
+      options: [
+        "Si seguano solo le opinioni del singolo esperto",
+        "Si integrino evidenze scientifiche, esperienza clinica e caratteristiche/valori del paziente",
+        "Si evitino completamente le linee guida",
+        "Si tratti ogni paziente con gli stessi farmaci indipendentemente dal contesto"
+      ],
+      correctIndex: 1,
+      explanation: "L’EBM integra le migliori evidenze disponibili con l’esperienza del medico e le caratteristiche/valori del paziente."
+    },
+    {
+      id: 9,
+      topic: "Introduzione / segni e sintomi",
+      question: "Quale tra le seguenti è la definizione CORRETTA di sintomo?",
+      options: [
+        "Qualsiasi dato misurabile oggettivamente",
+        "Manifestazione soggettiva riferita dal paziente (es. dolore, nausea)",
+        "Segno osservato dal medico (es. febbre, ittero)",
+        "Sinonimo di reperto strumentale"
+      ],
+      correctIndex: 1,
+      explanation: "Il sintomo è ciò che il paziente riferisce (soggettivo); il segno è ciò che il medico rileva (oggettivo)."
+    },
+    {
+      id: 10,
+      topic: "Introduzione / segni e sintomi",
+      question: "Quale tra i seguenti esempi rappresenta un SEGNO e non un sintomo?",
+      options: [
+        "Cefalea pulsante",
+        "Sensazione di palpitazioni",
+        "Dispnea percepita sotto sforzo",
+        "Temperatura corporea di 38,5°C rilevata al termometro"
+      ],
+      correctIndex: 3,
+      explanation: "La febbre rilevata al termometro è un dato oggettivo (segno), gli altri sono sintomi riferiti dal paziente."
+    },
+    {
+      id: 11,
+      topic: "Introduzione / semeiotica",
+      question: "La semeiotica radiologica comprende:",
+      options: [
+        "Solo radiografia standard (RX)",
+        "RX, TC, RM e medicina nucleare (scintigrafia, PET)",
+        "Solo ecografia",
+        "Solo RM ad alto campo"
+      ],
+      correctIndex: 1,
+      explanation: "Include RX, TC (spirale/multistrato), RM e medicina nucleare (PET, scintigrafia)."
+    },
+    {
+      id: 12,
+      topic: "Introduzione / semeiotica",
+      question: "La semeiotica strumentale organica, secondo la lezione, comprende tra l’altro:",
+      options: [
+        "Solo ECG",
+        "ECG, EEG, ecografia, endoscopia, spirometria",
+        "Solo spirometria",
+        "Solo endoscopia digestiva"
+      ],
+      correctIndex: 1,
+      explanation: "Sono esempi di semeiotica strumentale organica: ECG, EEG, ecografia, endoscopia, esami funzionali (spirometria, impedenzometria…)."
+    },
+    {
+      id: 13,
+      topic: "Introduzione / ruolo del medico",
+      question: "Secondo il prof. Zambon, 'curare' significa soprattutto:",
+      options: [
+        "Garantire sempre la guarigione completa",
+        "Capire i problemi del paziente, prendersene cura e dargli conforto, anche quando non si può guarire",
+        "Applicare rigidamente le linee guida senza valutare il singolo paziente",
+        "Limitarsi a prescrivere farmaci"
+      ],
+      correctIndex: 1,
+      explanation: "Curare non è sinonimo di guarire: il medico deve capire, accompagnare e prendersi cura della persona malata."
+    },
+    {
+      id: 14,
+      topic: "Introduzione / test diagnostici",
+      question: "Prima di richiedere un test diagnostico costoso è importante:",
+      options: [
+        "Richiederlo comunque perché aumenta la quantità di dati",
+        "Valutare se il risultato può modificare la probabilità di una diagnosi e l’iter decisionale",
+        "Richiederlo solo perché disponibile in ospedale",
+        "Usarlo al posto dell’anamnesi"
+      ],
+      correctIndex: 1,
+      explanation: "Un test va richiesto se può aumentare o ridurre significativamente la probabilità di una diagnosi e modificare la gestione clinica."
+    },
+
+    // --- ESAME OBIETTIVO GENERALE ---
+    {
+      id: 15,
+      topic: "Esame obiettivo / primo sguardo",
+      question: "Appena si incontra il paziente, quali elementi vanno valutati già al primo sguardo?",
+      options: [
+        "Solo la pressione arteriosa",
+        "Età apparente, sesso apparente, stato di nutrizione, facies, statura, andatura/decubito, stato psichico",
+        "Esclusivamente il colore della pelle",
+        "Solo la presenza di cicatrici addominali"
+      ],
+      correctIndex: 1,
+      explanation: "Già al primo impatto si valutano età e sesso apparenti, stato nutrizionale, facies, statura, andatura/decubito e stato psicologico."
+    },
+    {
+      id: 16,
+      topic: "Esame obiettivo / età apparente",
+      question: "Perché l’età apparente è importante in semeiotica?",
+      options: [
+        "Per decidere la simpatia del paziente",
+        "Perché condiziona le ipotesi diagnostiche (es. infarto in 20enni vs >40 anni)",
+        "Per stabilire la dose di anestetico locale",
+        "Non ha alcuna rilevanza clinica"
+      ],
+      correctIndex: 1,
+      explanation: "Età anagrafica e apparente guidano la probabilità di alcune patologie (es. infarto miocardico più probabile dopo i 40 anni)."
+    },
+    {
+      id: 17,
+      topic: "Esame obiettivo / sesso",
+      question: "Il sesso psicologico, nelle definizioni proposte a lezione, è:",
+      options: [
+        "Determinato solo dai cromosomi sessuali",
+        "La percezione psichica dell’identità sessuale del paziente",
+        "Sinonimo di sesso somatico",
+        "Indifferente per la relazione medico-paziente"
+      ],
+      correctIndex: 1,
+      explanation: "È come il paziente percepisce la propria identità sessuale; fondamentale per una corretta relazione medico-paziente."
+    },
+    {
+      id: 18,
+      topic: "Esame obiettivo / costituzione corporea",
+      question: "Caratteristica tipica dei soggetti longilinei (microsplancnici) è:",
+      options: [
+        "Collo corto, arti brevi, addome voluminoso",
+        "Prevalenza dei diametri trasversali su quelli longitudinali",
+        "Collo e arti lunghi, scapole sporgenti, maggiore dispersione di calore",
+        "Tendenza marcata all’obesità addominale"
+      ],
+      correctIndex: 2,
+      explanation: "I longilinei hanno collo e arti lunghi, costole oblique, scapole sporgenti e prevalenza di fenomeni catabolici con elevata dispersione di calore."
+    },
+    {
+      id: 19,
+      topic: "Esame obiettivo / costituzione corporea",
+      question: "Quale tra queste coppie di sinonimi è corretta?",
+      options: [
+        "Microsplancnico = brevilineo",
+        "Megalosplancnico = longilineo",
+        "Normosplancnico = costituzione armonica (mesomorfo)",
+        "Mesomorfo = longilineo"
+      ],
+      correctIndex: 2,
+      explanation: "Normosplancnico corrisponde alla costituzione armonica o mesomorfa; microsplancnico = longilineo, megalosplancnico = brevilineo/brachitipo."
+    },
+    {
+      id: 20,
+      topic: "Esame obiettivo / obesità & BMI",
+      question: "L’obesità androide è caratterizzata da:",
+      options: [
+        "Prevalenza della circonferenza fianchi su quella addominale (obesità a pera)",
+        "Prevalenza della circonferenza addominale su quella dei fianchi (obesità a mela)",
+        "Distribuzione uniforme del grasso su tutto il corpo",
+        "Assenza di rischio cardiovascolare aumentato"
+      ],
+      correctIndex: 1,
+      explanation: "L’obesità androide ('a mela') presenta prevalenza del grasso addominale ed è associata a maggior rischio cardiovascolare."
+    },
+    {
+      id: 21,
+      topic: "Esame obiettivo / obesità & BMI",
+      question: "Il BMI (Body Mass Index) si calcola come:",
+      options: [
+        "Peso (kg) × altezza (m)",
+        "Peso (kg) / altezza (m)",
+        "Peso (kg) / [altezza (m)]²",
+        "Altezza (m) / peso (kg)"
+      ],
+      correctIndex: 2,
+      explanation: "BMI = peso in kg diviso altezza in metri al quadrato (kg/m²)."
+    },
+    {
+      id: 22,
+      topic: "Esame obiettivo / magrezza",
+      question: "La cachessia si differenzia dal semplice dimagrimento perché:",
+      options: [
+        "Riguarda solo il tessuto adiposo",
+        "Comporta una riduzione sia del tessuto adiposo che della massa muscolare",
+        "È sempre dovuta a dieta drastica volontaria",
+        "Non ha mai cause neoplastiche"
+      ],
+      correctIndex: 1,
+      explanation: "Nella cachessia si perde sia grasso che massa muscolare; può essere senile o neoplastica."
+    },
+
+    // --- FACIES ---
+    {
+      id: 23,
+      topic: "Esame obiettivo / facies",
+      question: "Una facies normale viene definita:",
+      options: [
+        "Facies sclerodermica",
+        "Facies composita",
+        "Facies cushingoide",
+        "Facies adenoidea"
+      ],
+      correctIndex: 1,
+      explanation: "Il volto senza caratteristiche patologiche evidenti si definisce facies composita."
+    },
+    {
+      id: 24,
+      topic: "Esame obiettivo / facies",
+      question: "Quale tra le seguenti caratteristiche è tipica della facies mongoloide (trisomia 21)?",
+      options: [
+        "Volto lunare con obesità tronculare",
+        "Occhi a mandorla con epicanto, radice del naso appiattita, lingua grande e solcata",
+        "Esoftalmo con sguardo fisso e gozzo tiroideo",
+        "Cute ispessita e secca con sopracciglia rarefatte"
+      ],
+      correctIndex: 1,
+      explanation: "Nella sindrome di Down: occhi a mandorla, epicanto, radice del naso appiattita, lingua grossa 'scrotale'."
+    },
+    {
+      id: 25,
+      topic: "Esame obiettivo / facies",
+      question: "La facies basedowiana è associata tipicamente a:",
+      options: [
+        "Ipotiroidismo",
+        "Iperparatiroidismo",
+        "Ipersurrenalismo",
+        "Morbo di Basedow (ipertiroidismo autoimmune)"
+      ],
+      correctIndex: 3,
+      explanation: "Tipica del morbo di Basedow, con esoftalmo, gozzo, mimica vivace, irritabilità."
+    },
+    {
+      id: 26,
+      topic: "Esame obiettivo / facies",
+      question: "Quale reperto NON è tipico della facies mixedematosa (ipotiroidismo)?",
+      options: [
+        "Cute secca, ispessita e giallastra",
+        "Edema duro (mixedema) sottocutaneo",
+        "Lingua e labbra ingrossate, espressione apatica",
+        "Esoftalmo con sguardo fisso e palpebre retratte"
+      ],
+      correctIndex: 3,
+      explanation: "Esoftalmo e sguardo fisso sono caratteristici della facies basedowiana, non di quella mixedematosa."
+    },
+    {
+      id: 27,
+      topic: "Esame obiettivo / facies",
+      question: "La facies cushingoide (lunare) può essere dovuta a:",
+      options: [
+        "Morbo di Cushing o terapia protratta con corticosteroidi",
+        "Morbo di Addison",
+        "Ipotiroidismo grave",
+        "Artrite reumatoide"
+      ],
+      correctIndex: 0,
+      explanation: "Volto lunare, cute tesa e lucente, obesità tronculare possono derivare da ipercortisolismo endogeno o esogeno."
+    },
+    {
+      id: 28,
+      topic: "Esame obiettivo / facies",
+      question: "La facies acromegalica è caratterizzata da:",
+      options: [
+        "Volto affilato con occhi infossati",
+        "Ipertrofia delle ossa facciali, mandibola prominente, ispessimento dei tessuti molli",
+        "Labbra sottili, naso piccolo, occhi infossati",
+        "Cute pallida e cerea"
+      ],
+      correctIndex: 1,
+      explanation: "Nell’acromegalia vi è ingrossamento delle ossa facciali, mandibola prominente e ispessimento della cute."
+    },
+
+    // --- ANDATURA & DECUBITO & STATO ---
+    {
+      id: 29,
+      topic: "Esame obiettivo / andatura",
+      question: "L’andatura atassica è tipicamente:",
+      options: [
+        "A passi corti, trascinati, tronco inclinato in avanti",
+        "Scoordinata, instabile, con base allargata, tipica di patologia cerebellare",
+        "A grandi falcate con iperestensione delle ginocchia",
+        "Impossibile per paralisi completa degli arti inferiori"
+      ],
+      correctIndex: 1,
+      explanation: "Andatura atassica: scoordinata, instabile, con oscillazioni del tronco, tipica di interessamento cerebellare."
+    },
+    {
+      id: 30,
+      topic: "Esame obiettivo / andatura",
+      question: "L’andatura falciante (emocinetica) è spesso esito di:",
+      options: [
+        "Morbo di Parkinson",
+        "Emiparesi post-ictus",
+        "Artrosi dell’anca bilaterale",
+        "Polineuropatia sensitiva"
+      ],
+      correctIndex: 1,
+      explanation: "L’arto plegico compie un movimento a 'falce' in semicerchio, tipico esito di emiparesi."
+    },
+    {
+      id: 31,
+      topic: "Esame obiettivo / decubito",
+      question: "Il decubito obbligato è definito come:",
+      options: [
+        "La posizione che il paziente può cambiare liberamente senza dolore",
+        "La posizione che il paziente assume spontaneamente per alleviare i sintomi, ma ne può assumere altre",
+        "La posizione che il paziente è costretto a mantenere perché ogni altra provoca intenso dolore",
+        "La posizione dei pazienti in coma profondo"
+      ],
+      correctIndex: 2,
+      explanation: "Nel decubito obbligato il paziente non può cambiare posizione per l’aumento marcato del dolore (es. peritoniti acute)."
+    },
+    {
+      id: 32,
+      topic: "Esame obiettivo / decubito",
+      question: "Un decubito ortopnoico (seduto, busto eretto, spesso appoggiato in avanti) è tipico di:",
+      options: [
+        "Peritonite diffusa",
+        "Insufficienza cardiaca con dispnea e edema polmonare",
+        "Colica renale",
+        "Appendicite acuta"
+      ],
+      correctIndex: 1,
+      explanation: "I pazienti con dispnea grave preferiscono stare seduti o semiseduti per facilitare la respirazione."
+    },
+    {
+      id: 33,
+      topic: "Esame obiettivo / stato di coscienza",
+      question: "Lo stato di coscienza 'sopore' indica:",
+      options: [
+        "Vigilanza normale",
+        "Risveglio solo con stimoli vigorosi e risposta lenta",
+        "Assenza completa di risposta a qualsiasi stimolo",
+        "Agitazione psicomotoria intensa"
+      ],
+      correctIndex: 1,
+      explanation: "Nel sopore il paziente è assopito ma si risveglia con stimoli energici; nel coma non risponde neppure a stimoli intensi."
+    },
+    {
+      id: 34,
+      topic: "Esame obiettivo / stato di sanguificazione",
+      question: "Il pallore congiuntivale è un segno tipico di:",
+      options: [
+        "Iperbilirubinemia",
+        "Anemia",
+        "Iperpigmentazione addisoniana",
+        "Ipotiroidismo"
+      ],
+      correctIndex: 1,
+      explanation: "Pallore delle congiuntive è un segno relativamente obiettivo di anemia."
+    },
+    {
+      id: 35,
+      topic: "Esame obiettivo / pigmentazione",
+      question: "L’iperpigmentazione bruno-brunastra delle pieghe cutanee e delle zone fotoesposte è tipica di:",
+      options: [
+        "Morbo di Addison",
+        "Morbo di Basedow",
+        "Morbo di Cushing",
+        "Ipotiroidismo"
+      ],
+      correctIndex: 0,
+      explanation: "Nel morbo di Addison l’eccesso di ACTH stimola i recettori melanocitari, causando iperpigmentazione."
+    },
+
+    // --- DIURESI E ALVO ---
+    {
+      id: 36,
+      topic: "Diuresi e alvo / diuresi",
+      question: "In un adulto, la diuresi giornaliera normale è approssimativamente:",
+      options: [
+        "100–300 mL/die",
+        "0,3–0,8 L/die",
+        "1–2 L/die",
+        "3–5 L/die"
+      ],
+      correctIndex: 2,
+      explanation: "Negli adulti si considera normale una produzione urinaria tra 1 e 2 litri al giorno."
+    },
+    {
+      id: 37,
+      topic: "Diuresi e alvo / diuresi",
+      question: "La poliuria è definita come:",
+      options: [
+        "Produzione di meno di 500 mL/die di urine",
+        "Produzione di più di 2 L/die di urine",
+        "Assenza completa di urine",
+        "Emissione dolorosa di piccole quantità di urine"
+      ],
+      correctIndex: 1,
+      explanation: "Poliuria: produzione > 2 L/die. Non va confusa con pollachiuria (aumento della frequenza di minzioni)."
+    },
+    {
+      id: 38,
+      topic: "Diuresi e alvo / diuresi",
+      question: "Quale tra le seguenti è una possibile causa di poliuria?",
+      options: [
+        "Insufficienza renale acuta con anuria",
+        "Diabete mellito con glicosuria osmotica",
+        "Ipertensione arteriosa essenziale non trattata",
+        "Colica renale da calcolo senza ostruzione"
+      ],
+      correctIndex: 1,
+      explanation: "Nel diabete mellito il glucosio nelle urine richiama acqua per effetto osmotico determinando poliuria."
+    },
+    {
+      id: 39,
+      topic: "Diuresi e alvo / diuresi",
+      question: "L’oliguria viene definita come:",
+      options: [
+        "Diuresi > 3 L/die",
+        "Produzione tra 1 e 2 L/die",
+        "Produzione < 1 L/die",
+        "Assenza completa di urine"
+      ],
+      correctIndex: 2,
+      explanation: "Oliguria: diuresi inferiore a circa 1 L al giorno."
+    },
+    {
+      id: 40,
+      topic: "Diuresi e alvo / diuresi",
+      question: "L’anuria è:",
+      options: [
+        "Diuresi normale",
+        "Produzione di meno di 1 L/die",
+        "Assenza di emissione di urina o pochissimi mL",
+        "Emissione frequente di piccole quantità di urina"
+      ],
+      correctIndex: 2,
+      explanation: "Anuria = assenza di urine o pochi millilitri; può essere dovuta a shock, grave insufficienza renale o ostruzione completa delle vie urinarie."
+    },
+    {
+      id: 41,
+      topic: "Diuresi e alvo / minzione",
+      question: "La nicturia è definita come:",
+      options: [
+        "Emissione di sangue nelle urine",
+        "Diuresi notturna quantitativamente maggiore di quella diurna, con frequenti risvegli per urinare",
+        "Dolore durante la minzione",
+        "Assenza completa di urine"
+      ],
+      correctIndex: 1,
+      explanation: "Nicturia: aumento della quantità e/o della frequenza della minzione notturna rispetto al giorno."
+    },
+    {
+      id: 42,
+      topic: "Diuresi e alvo / minzione",
+      question: "La pollachiuria indica:",
+      options: [
+        "Aumento della frequenza della minzione con piccole quantità di urina",
+        "Aumento del volume urinario oltre 3 L/die",
+        "Emissione dolorosa di urina",
+        "Emissione notturna prevalente di urina"
+      ],
+      correctIndex: 0,
+      explanation: "Pollachiuria = minzioni frequenti con piccoli volumi, tipica di infezioni urinarie e ipertrofia prostatica."
+    },
+    {
+      id: 43,
+      topic: "Diuresi e alvo / minzione",
+      question: "La ritenzione urinaria si distingue dall’anuria perché:",
+      options: [
+        "Nel paziente con ritenzione la vescica è piena di urina ma non riesce a svuotarsi",
+        "Nel paziente con ritenzione non c’è produzione renale di urina",
+        "Sono due termini sinonimi",
+        "In entrambe non è mai presente dolore"
+      ],
+      correctIndex: 0,
+      explanation: "Nella ritenzione urinaria il rene produce urine, ma queste non vengono emesse (vescica piena); nell’anuria manca la produzione."
+    },
+    {
+      id: 44,
+      topic: "Diuresi e alvo / minzione",
+      question: "La stranguria è:",
+      options: [
+        "Emissione dolorosa di urina spesso goccia a goccia",
+        "Assenza totale di minzione",
+        "Emissione di urine solo di notte",
+        "Perdita involontaria di urine"
+      ],
+      correctIndex: 0,
+      explanation: "Stranguria = minzione dolorosa spesso associata a uretriti o cistiti."
+    },
+    {
+      id: 45,
+      topic: "Diuresi e alvo / minzione",
+      question: "L’ematuria è:",
+      options: [
+        "Presenza di sangue nelle urine",
+        "Presenza di feci nelle urine",
+        "Presenza di pus nelle urine",
+        "Presenza di aria nelle urine"
+      ],
+      correctIndex: 0,
+      explanation: "Ematuria = sangue nelle urine; il colore può variare dal rosato al rosso intenso."
+    },
+    {
+      id: 46,
+      topic: "Diuresi e alvo / alvo",
+      question: "In condizioni normali l’alvo in un adulto sano è:",
+      options: [
+        "Obbligatoriamente una evacuazione al giorno",
+        "Da 3 evacuazioni al giorno a 3 alla settimana, senza sforzo e senza sangue",
+        "Una sola evacuazione alla settimana",
+        "Sempre molle e acquoso"
+      ],
+      correctIndex: 1,
+      explanation: "Si considera normale un range abbastanza ampio, purché non ci siano sforzo, dolore o sangue."
+    },
+    {
+      id: 47,
+      topic: "Diuresi e alvo / alvo",
+      question: "La diarrea è definita come:",
+      options: [
+        "Evacuazione rara di feci molto dure",
+        "Aumento della frequenza delle evacuazioni con feci liquide o semiliquide",
+        "Evacuazioni normali ma con odore intenso",
+        "Emissione di sangue vivo"
+      ],
+      correctIndex: 1,
+      explanation: "Diarrea = aumento della frequenza con riduzione della consistenza (feci liquide o poltacee)."
+    },
+    {
+      id: 48,
+      topic: "Diuresi e alvo / alvo",
+      question: "La stipsi è:",
+      options: [
+        "Solo riduzione del volume delle feci",
+        "Riduzione della frequenza e/o difficoltà evacuativa con feci dure e frammentate",
+        "Emissione di feci liquide",
+        "Emissione involontaria di feci"
+      ],
+      correctIndex: 1,
+      explanation: "Stipsi = evacuazioni rare o difficoltose, con feci dure/spesso a 'palline'."
+    },
+    {
+      id: 49,
+      topic: "Diuresi e alvo / alvo",
+      question: "Per alvo alterno si intende:",
+      options: [
+        "Alvo normalmente regolare",
+        "Alternanza di periodi di stipsi e periodi di diarrea",
+        "Solo stipsi grave",
+        "Solo diarrea grave"
+      ],
+      correctIndex: 1,
+      explanation: "Tipico di patologie del colon (es. colon irritabile, neoplasie…)."
+    },
+    {
+      id: 50,
+      topic: "Diuresi e alvo / feci",
+      question: "La melena è:",
+      options: [
+        "Emissione di sangue rosso vivo con le feci",
+        "Emissione di feci nere, picee, lucide, maleodoranti per sangue digerito",
+        "Presenza di muco nelle feci",
+        "Emissione di gas maleodoranti"
+      ],
+      correctIndex: 1,
+      explanation: "Melena = feci nere lucide per sangue digerito, indicativa di sanguinamento del tratto gastrointestinale superiore."
+    },
+    {
+      id: 51,
+      topic: "Diuresi e alvo / feci",
+      question: "L’ematochezia è:",
+      options: [
+        "Emissione di sangue digerito con feci nere",
+        "Emissione di sangue rosso vivo con o senza feci",
+        "Presenza di pus nelle feci",
+        "Emissione di muco chiaro"
+      ],
+      correctIndex: 1,
+      explanation: "Ematochezia = sangue rosso vivo, tipicamente da emorragia del tratto distale (colon, retto, ano)."
+    },
+    {
+      id: 52,
+      topic: "Diuresi e alvo / feci",
+      question: "La steatorrea si presenta come:",
+      options: [
+        "Feci dure e caprine",
+        "Feci chiare, voluminose, untuose, maleodoranti per eccesso di grassi",
+        "Feci nere e picee",
+        "Feci con sangue rosso vivo"
+      ],
+      correctIndex: 1,
+      explanation: "Steatorrea = feci grasse, untuose, voluminose, spesso da malassorbimento o insufficienza pancreatica."
+    },
+    {
+      id: 53,
+      topic: "Diuresi e alvo / alvo",
+      question: "Il tenesmo rettale è definito come:",
+      options: [
+        "Dolore al fianco durante la minzione",
+        "Senso doloroso di bisogno di defecare con emissione scarsa o nulla di feci",
+        "Perdita involontaria di feci durante il sonno",
+        "Emissione di gas maleodoranti"
+      ],
+      correctIndex: 1,
+      explanation: "Tipico di proctiti, neoplasie rettali, patologie infiammatorie distalmente."
+    },
+
+    // --- DOLORE E ADDOME ---
+    {
+      id: 54,
+      topic: "Dolore / definizioni",
+      question: "Il dolore, in semeiotica chirurgica, è descritto come:",
+      options: [
+        "Una sensazione priva di utilità clinica",
+        "Una modalità specifica di sensazione corporea con recettori e vie proprie, campanello d’allarme",
+        "Una semplice percezione psicologica senza basi organiche",
+        "Unicamente correlato ai tessuti cutanei"
+      ],
+      correctIndex: 1,
+      explanation: "Ha recettori e vie proprie ed è un importante segnale di allarme per l’organismo."
+    },
+    {
+      id: 55,
+      topic: "Dolore / tipi di dolore",
+      question: "Il dolore viscerale è tipicamente:",
+      options: [
+        "Ben localizzato, acuto, esacerbato dal movimento della parete addominale",
+        "Scarsamente localizzato, spesso ondulante (colico), evocabile con manovre palpatorie",
+        "Sempre superficiale e puntorio",
+        "Assente negli organi addominali"
+      ],
+      correctIndex: 1,
+      explanation: "Il dolore viscerale è poco definito, spesso a tipo colica ed evocabile comprimendo specifici punti addominali."
+    },
+    {
+      id: 56,
+      topic: "Dolore / tipi di dolore",
+      question: "Il dolore somatico addominale origina principalmente da:",
+      options: [
+        "Mucosa intestinale",
+        "Peritoneo parietale, parete addominale, radice dei mesenteri, diaframma",
+        "Solo dal colon discendente",
+        "Unicamente dal fegato"
+      ],
+      correctIndex: 1,
+      explanation: "Queste strutture sono ricche di recettori dolorifici somatici, il dolore è ben localizzato e accentuato dai movimenti."
+    },
+    {
+      id: 57,
+      topic: "Dolore / riferito",
+      question: "Il dolore da infarto miocardico (IMA) è classicamente riferito:",
+      options: [
+        "Alla gamba destra",
+        "Alla regione lombare",
+        "All’arto superiore sinistro e talvolta al collo/mandibola",
+        "Solo in sede epigastrica"
+      ],
+      correctIndex: 2,
+      explanation: "Stimoli algogeni cardiaci vengono proiettati ai dermatomeri C3–T5, con dolore al braccio sinistro, spalla, collo."
+    },
+    {
+      id: 58,
+      topic: "Dolore / coliche",
+      question: "La colica biliare insorge tipicamente:",
+      options: [
+        "A digiuno, senza correlazione con il cibo",
+        "2–4 ore dopo un pasto ricco di grassi, in ipocondrio destro",
+        "Solo dopo sforzo fisico intenso",
+        "Esclusivamente di notte"
+      ],
+      correctIndex: 1,
+      explanation: "Il calcolo nel dotto cistico/coledoco impedisce il deflusso di bile dopo pasti grassi, scatenando la colica."
+    },
+    {
+      id: 59,
+      topic: "Dolore / coliche",
+      question: "La colica renale si localizza e irradia tipicamente:",
+      options: [
+        "In sede epigastrica con irradiazione alla scapola destra",
+        "In ipocondrio sinistro con irradiazione al collo",
+        "In sede lombare, lungo il decorso dell’uretere fino a genitali e coscia",
+        "Solo in fossa iliaca destra"
+      ],
+      correctIndex: 2,
+      explanation: "Il dolore segue il decorso dell’uretere: lombare → fianco → fossa iliaca → regione inguinale/genitale."
+    },
+    {
+      id: 60,
+      topic: "Dolore / pancreatite",
+      question: "Nella pancreatite acuta il dolore è tipicamente:",
+      options: [
+        "Puntorio in fossa iliaca destra",
+        "A barra epigastrica irradiata a cintura verso il dorso",
+        "Solo in ipocondrio sinistro",
+        "Solo periombelicale"
+      ],
+      correctIndex: 1,
+      explanation: "Il dolore a 'sbarra' epigastrica che si irradia posteriormente a cintura è molto suggestivo di pancreatite."
+    },
+    {
+      id: 61,
+      topic: "Dolore / appendicite",
+      question: "Nell’appendicite classica, l’evoluzione tipica del dolore è:",
+      options: [
+        "Insorgenza subito in fossa iliaca destra",
+        "Insorgenza periombelicale/epigastrica, poi migrazione in fossa iliaca destra",
+        "Solo dolore lombare",
+        "Dolore diffuso sin dall’inizio"
+      ],
+      correctIndex: 1,
+      explanation: "Inizialmente dolore viscerale periombelicale, poi localizzazione somatica in fossa iliaca destra quando si infiamma il peritoneo parietale."
+    },
+
+    // --- ESAME OBIETTIVO ADDOME ---
+    {
+      id: 62,
+      topic: "Esame obiettivo addome / fasi",
+      question: "Qual è la corretta sequenza classica dell’esame obiettivo addominale?",
+      options: [
+        "Palpazione – Ispezione – Auscultazione – Percussione",
+        "Ispezione – Palpazione – Percussione – Auscultazione",
+        "Auscultazione – Ispezione – Palpazione – Percussione",
+        "Percussione – Palpazione – Auscultazione – Ispezione"
+      ],
+      correctIndex: 1,
+      explanation: "Tradizionalmente si procede con ispezione, palpazione (superficiale e profonda), percussione, auscultazione."
+    },
+    {
+      id: 63,
+      topic: "Esame obiettivo addome / ispezione",
+      question: "L’“addome a tavola di legno” suggerisce:",
+      options: [
+        "Rilassamento completo della parete addominale",
+        "Assenza di patologie rilevanti",
+        "Rigidità marcata della parete addominale, tipica di peritonite",
+        "Obesità ginoide"
+      ],
+      correctIndex: 2,
+      explanation: "Nella peritonite la parete addominale può essere estremamente rigida, 'a tavola di legno', e l’addome risulta non trattabile."
+    },
+    {
+      id: 64,
+      topic: "Esame obiettivo addome / percussione",
+      question: "Alla percussione, un suono timpanico in addome è espressione di:",
+      options: [
+        "Presenza di gas (visceri cavi pieni d’aria)",
+        "Presenza di liquido",
+        "Presenza di tessuto solido",
+        "Cicatrice chirurgica"
+      ],
+      correctIndex: 0,
+      explanation: "Il timpanismo indica aria (come nelle anse intestinali distese), mentre il suono ottuso suggerisce tessuto solido o liquido."
+    },
+    {
+      id: 65,
+      topic: "Esame obiettivo addome / quadranti",
+      question: "La suddivisione in 9 quadranti addominali serve a:",
+      options: [
+        "Motivi estetici nella descrizione del paziente",
+        "Migliorare la localizzazione dei sintomi e correlarla agli organi sottostanti",
+        "Scegliere il tipo di anestesia",
+        "Valutare il BMI"
+      ],
+      correctIndex: 1,
+      explanation: "Dividere l’addome in regioni consente di correlare sede del dolore e organi sottostanti per indirizzare la diagnosi."
+    },
+    {
+      id: 66,
+      topic: "Esame obiettivo addome / addome globoso",
+      question: "Un addome globoso e uniforme può essere causato da:",
+      options: [
+        "Solo obesità",
+        "Obesità, meteorismo, ascite o pneumoperitoneo",
+        "Solo ascite",
+        "Solo meteorismo"
+      ],
+      correctIndex: 1,
+      explanation: "Addome globoso si può vedere in obesità, accumulo di gas nelle anse (meteorismo), liquido libero (ascite, emoperitoneo, chiloperitoneo) o gas libero (pneumoperitoneo)."
+    },
+
+    // --- PUNTI DOLOROSI E SEGNI ---
+    {
+      id: 67,
+      topic: "Punti dolorosi / colecisti",
+      question: "Il segno di Murphy è utilizzato per:",
+      options: [
+        "Valutare la presenza di appendicite acuta",
+        "Valutare una potenziale colecistite o colica biliare",
+        "Valutare una colica renale",
+        "Ricercare la peritonite generalizzata"
+      ],
+      correctIndex: 1,
+      explanation: "Palpazione sottocostale destra durante inspirazione profonda: l’interruzione dell’inspirazione per dolore suggerisce colecistite."
+    },
+    {
+      id: 68,
+      topic: "Punti dolorosi / appendice",
+      question: "Il punto di McBurney si localizza:",
+      options: [
+        "Sulla linea bisiliaca al confine tra 1/3 di destra e 2/3 di sinistra",
+        "Sulla linea spino-ombelicale destra tra il terzo laterale e i 2/3 mediali",
+        "Tra l’ombelico e la sinfisi pubica",
+        "Al quadrante superiore sinistro"
+      ],
+      correctIndex: 1,
+      explanation: "È sulla linea tra spina iliaca anteriore superiore destra e ombelico, nel passaggio tra terzo laterale e due terzi mediali."
+    },
+    {
+      id: 69,
+      topic: "Punti dolorosi / appendice",
+      question: "Il punto di Lanz è:",
+      options: [
+        "Situato sulla linea bisiliaca, tra 1/3 di destra e 2/3 di sinistra",
+        "Il punto di massima dolorabilità della colecisti",
+        "Un punto per la valutazione del rene",
+        "Il punto di emergenza dell’uretere superiore"
+      ],
+      correctIndex: 0,
+      explanation: "Si trova sulla linea tra le due spine iliache anteriori superiori (bisiliaca), al confine tra il terzo di destra e i due terzi di sinistra."
+    },
+    {
+      id: 70,
+      topic: "Segni / appendice",
+      question: "Nel segno di Rovsing:",
+      options: [
+        "Si palpa direttamente la fossa iliaca destra",
+        "Si comprime il colon sigmoideo a sinistra evocando dolore in fossa iliaca destra",
+        "Si colpisce la regione lombare con il bordo della mano",
+        "Si esegue la flessione attiva della coscia contro resistenza"
+      ],
+      correctIndex: 1,
+      explanation: "La colonna d’aria compressa a sinistra distende il cieco a destra, evocando dolore in FID se l’appendice è infiammata."
+    },
+    {
+      id: 71,
+      topic: "Segni / appendice",
+      question: "Il segno dello psoas (ileopsoas) è positivo quando:",
+      options: [
+        "La flessione della coscia destra contro resistenza evoca dolore in fossa iliaca destra",
+        "La percussione della regione lombare è dolorosa",
+        "La pressione subcostale destra in inspirazione è dolorosa",
+        "Il rilasciamento brusco dell’addome è indolore"
+      ],
+      correctIndex: 0,
+      explanation: "Con il paziente supino si fa flettere la coscia destra contro resistenza; dolore in FID suggerisce appendicite retrocecale con interessamento dello psoas."
+    },
+    {
+      id: 72,
+      topic: "Segni / appendice",
+      question: "Il segno di Blumberg consiste in:",
+      options: [
+        "Palpare profondamente e mantenere la pressione",
+        "Applicare un colpo di taglio alla regione lombare",
+        "Premere l’addome e rilasciare bruscamente valutando il dolore da rimbalzo",
+        "Percuotere l’addome ascoltando il suono timpanico"
+      ],
+      correctIndex: 2,
+      explanation: "Il dolore al rimbalzo è suggestivo di irritazione peritoneale/peritonite."
+    },
+    {
+      id: 73,
+      topic: "Segni / rene",
+      question: "La manovra di Giordano serve per:",
+      options: [
+        "Valutare la peritonite generalizzata",
+        "Mettere in evidenza patologie renali (es. pielonefrite)",
+        "Diagnosticare appendicite acuta",
+        "Individuare la posizione della colecisti"
+      ],
+      correctIndex: 1,
+      explanation: "Si colpisce con il bordo della mano la regione lombare: dolore evoca interessamento renale (pielonefrite, litiasi…)."
+    },
+    {
+      id: 74,
+      topic: "Segni / uretere",
+      question: "I punti ureterali sono utili per:",
+      options: [
+        "Ricercare coliche ureterali da calcoli",
+        "Valutare la mobilità diaframmatica",
+        "Stimare il volume della vescica",
+        "Individuare la sede della colecisti"
+      ],
+      correctIndex: 0,
+      explanation: "La compressione dei punti ureterali (superiore, medio, inferiore) può evocare dolore in presenza di calcoli ureterali."
+    },
+
+    // --- ALTRO DOLORE / PERITONITE ---
+    {
+      id: 75,
+      topic: "Peritoneo / peritonite",
+      question: "Quale triade è più suggestiva di peritonite acuta?",
+      options: [
+        "Dolore diffuso, rigidità addominale, Blumberg positivo",
+        "Dolore diffuso, alvo diarroico, tosse secca",
+        "Solo febbre e brividi",
+        "Dolore lombare irradiato all’inguine"
+      ],
+      correctIndex: 0,
+      explanation: "Peritonite: dolore intenso, addome rigido/non trattabile, segno di Blumberg positivo, spesso febbre e alterazione indici infiammatori."
+    },
+    {
+      id: 76,
+      topic: "Peritoneo / peristalsi",
+      question: "In presenza di peritonite, la peristalsi intestinale tende a:",
+      options: [
+        "Aumentare con rumori vivaci",
+        "Ridursi fino ad arrestarsi (ileo paralitico)",
+        "Restare invariata",
+        "Diventare rumorosissima con borborigmi"
+      ],
+      correctIndex: 1,
+      explanation: "L’infiammazione peritoneale blocca la peristalsi: rumori intestinali ridotti o assenti."
+    },
+
+    // --- CASO CLINICO (LOGICA CLINICA) ---
+    {
+      id: 77,
+      topic: "Metodologia / probabilità",
+      question: "La probabilità pre-test di una malattia dipende principalmente da:",
+      options: [
+        "La simpatia del paziente",
+        "La prevalenza della malattia nella popolazione e le caratteristiche del caso",
+        "Il numero di esami già richiesti",
+        "L’esito del test diagnostico"
+      ],
+      correctIndex: 1,
+      explanation: "La probabilità pre-test è legata alla prevalenza e alle caratteristiche cliniche del paziente prima di fare il test."
+    },
+    {
+      id: 78,
+      topic: "Metodologia / D-dimero",
+      question: "Il D-dimero positivo in un sospetto tromboembolismo indica:",
+      options: [
+        "Assenza di trombosi",
+        "Attivazione della coagulazione e fibrinolisi, ma non è specifico per trombi venosi",
+        "Anemia grave",
+        "Necessità immediata di intervento chirurgico"
+      ],
+      correctIndex: 1,
+      explanation: "Il D-dimero è un prodotto di degradazione della fibrina: se elevato indica attivazione coagulativa, ma non è specifico."
+    },
+
+    // --- EXTRA SU FACIES / CUTE ---
+    {
+      id: 79,
+      topic: "Esame obiettivo / cute",
+      question: "L’ittero si manifesta principalmente con:",
+      options: [
+        "Colorazione giallastra della cute e delle sclere",
+        "Colorazione bluastra delle labbra",
+        "Colorazione bruna delle pieghe",
+        "Colorazione pallida e cerea"
+      ],
+      correctIndex: 0,
+      explanation: "L’ittero è la colorazione giallastra di cute e soprattutto sclere, per aumento della bilirubina."
+    },
+    {
+      id: 80,
+      topic: "Esame obiettivo / cute",
+      question: "La cianosi centrale è più evidente:",
+      options: [
+        "Alle estremità delle mani",
+        "Alle labbra e alla lingua",
+        "Alle guance",
+        "Alle ginocchia"
+      ],
+      correctIndex: 1,
+      explanation: "Cianosi centrale: labbra e mucosa linguale violacee, indice di ridotta ossigenazione del sangue arterioso."
+    },
+
+    // --- ALTRO SU ANDATURA / ROMBERG ---
+    {
+      id: 81,
+      topic: "Esame obiettivo / Romberg",
+      question: "Il segno di Romberg si valuta chiedendo al paziente di:",
+      options: [
+        "Camminare sui talloni",
+        "Stare in piedi unendo i piedi e chiudendo gli occhi, osservando eventuali oscillazioni",
+        "Flettere la coscia contro resistenza",
+        "Salire e scendere le scale"
+      ],
+      correctIndex: 1,
+      explanation: "Serve a valutare la propriocettività e l’integrità cerebellare/vestibolare."
+    },
+
+    // --- ALTRO SU ALVO / OCCLUSIONE ---
+    {
+      id: 82,
+      topic: "Alvo / occlusione",
+      question: "Il vomito fecaloide è tipico di:",
+      options: [
+        "Gastrite acuta semplice",
+        "Occlusione intestinale bassa e stagnante",
+        "Colica renale",
+        "Colecistite acuta"
+      ],
+      correctIndex: 1,
+      explanation: "In occlusioni distali del piccolo o grosso intestino il ristagno può causare vomito di materiale fecaloide."
+    },
+
+    // --- EXTRA SU DIURESI / INCONTINENZA ---
+    {
+      id: 83,
+      topic: "Diuresi / incontinenza",
+      question: "L’incontinenza urinaria da sforzo è definita come:",
+      options: [
+        "Perdita di urine associata a impellente e improvviso stimolo minzionale",
+        "Perdita involontaria di urina durante colpi di tosse, starnuti, sforzi",
+        "Perdita continua di piccole quantità di urina",
+        "Assenza completa di minzione"
+      ],
+      correctIndex: 1,
+      explanation: "Da sforzo = perdita di urina quando aumenta la pressione addominale (tosse, risata, sollevamento pesi)."
+    },
+
+    // --- ALTRO SU DOLORE / RIFLESSI AUTONOMI ---
+    {
+      id: 84,
+      topic: "Dolore viscerale / riflessi",
+      question: "Il dolore viscerale è spesso accompagnato da:",
+      options: [
+        "Solo febbre",
+        "Riflessi autonomi come nausea, vomito, sudorazione, ipotensione",
+        "Nessun sintomo associato",
+        "Solo bradicardia"
+      ],
+      correctIndex: 1,
+      explanation: "La stimolazione delle vie vegetative determina spesso nausea, vomito, ipotensione, sudorazione."
+    },
+
+    // --- EXTRA SU METODOLOGIA / APPROPRIATEZZA ---
+    {
+      id: 85,
+      topic: "Metodologia / appropriatezza",
+      question: "Richiedere molti esami in modo indiscriminato (criterio possibilistico) comporta:",
+      options: [
+        "Riduzione dei costi e nessun rischio aggiuntivo",
+        "Aumento dei costi, possibile aumento dei rischi per il paziente e rischio di esami inutili",
+        "Miglioramento garantito della prognosi",
+        "Maggiore rapidità diagnostica senza svantaggi"
+      ],
+      correctIndex: 1,
+      explanation: "Molti esami inutili aumentano costi, rischi iatrogeni, falsi positivi e complessità gestionale."
+    },
+
+    // --- EXTRA SU DIURESI / FECALURIA ---
+    {
+      id: 86,
+      topic: "Diuresi / comunicazioni anomale",
+      question: "La fecaluria è tipica di:",
+      options: [
+        "Nefrolitiasi",
+        "Fistola tra intestino e vescica",
+        "Cistite semplice",
+        "Glomerulonefrite"
+      ],
+      correctIndex: 1,
+      explanation: "La presenza di materiale fecale nelle urine indica comunicazione patologica tra tratto intestinale e vie urinarie."
+    },
+
+    // --- EXTRA SU ALVO / CARATTERISTICHE FECI ---
+    {
+      id: 87,
+      topic: "Alvo / feci caprine",
+      question: "Feci dure in piccoli frammenti ('a palline caprine') sono tipiche di:",
+      options: [
+        "Diarrea secretoria",
+        "Stipsi",
+        "Melena",
+        "Steatorrea"
+      ],
+      correctIndex: 1,
+      explanation: "Aspetto molto frequente nelle forme di stipsi cronica."
+    },
+
+    // --- EXTRA SU ADDOME / ERNIE ---
+    {
+      id: 88,
+      topic: "Esame obiettivo addome / ernie",
+      question: "Le ernie addominali si definiscono come:",
+      options: [
+        "Accumuli di liquido libero in addome",
+        "Protrusioni di viscere attraverso orifizi o zone di debolezza della parete",
+        "Aderenze fibrose post-chirurgiche",
+        "Tumori solidi intraperitoneali"
+      ],
+      correctIndex: 1,
+      explanation: "Ernie = protrusione di contenuto addominale (es. anse intestinali) attraverso aperture naturali o acquisite."
+    },
+
+    // --- EXTRA SU DECUBITO / COLICA ---
+    {
+      id: 89,
+      topic: "Dolore / colica biliare",
+      question: "Durante la colica biliare il paziente tende a:",
+      options: [
+        "Assumere una posizione antalgica stabile che riduce il dolore",
+        "Non trovare una vera posizione antalgica, muovendosi spesso nel letto",
+        "Stare immobile supino perché i movimenti non cambiano il dolore",
+        "Mettersi in posizione seduta con busto flesso in avanti"
+      ],
+      correctIndex: 1,
+      explanation: "Nella colica biliare classica il dolore è così intenso che il paziente non trova posizione antalgica."
+    },
+
+    // --- EXTRA SU ANDATURA / PARKINSON ---
+    {
+      id: 90,
+      topic: "Esame obiettivo / andatura parkinsoniana",
+      question: "Caratteristica principale dell’andatura parkinsoniana:",
+      options: [
+        "Passi lunghi con iperestensione",
+        "Passi corti e strisciati, tronco flesso in avanti, difficoltà ad avviare il passo",
+        "Andatura saltellante",
+        "Deambulazione solo all’indietro"
+      ],
+      correctIndex: 1,
+      explanation: "Tipico del morbo di Parkinson: passi corti, tronco in avanti, difficoltà all’inizio della marcia."
+    },
+
+    // --- EXTRA SU SEMEIOTICA / CARTELLA CLINICA ---
+    {
+      id: 91,
+      topic: "Introduzione / cartella clinica",
+      question: "Tra gli obiettivi del corso vi è anche:",
+      options: [
+        "Compilare la cartella clinica in tutte le sue sezioni usando corretta terminologia medica",
+        "Compilare solo il consenso informato",
+        "Compilare solo la parte di terapia",
+        "Compilare esclusivamente il foglio di dimissione"
+      ],
+      correctIndex: 0,
+      explanation: "Il corso insiste sull’uso corretto della terminologia e sulla compilazione accurata della cartella clinica."
+    },
+
+    // --- EXTRA SU ANAMNESI / TIPI ---
+    {
+      id: 92,
+      topic: "Anamnesi / tipi",
+      question: "L’anamnesi patologica remota indaga:",
+      options: [
+        "Solo i sintomi attuali",
+        "Malattie precedenti e pregresse patologie del paziente",
+        "Solo le abitudini voluttuarie",
+        "Solo le malattie dei familiari"
+      ],
+      correctIndex: 1,
+      explanation: "Remota = storia clinica passata del paziente (malattie, interventi, ricoveri…)."
+    },
+
+    // --- EXTRA SU DOLORE / VISCERALE VS SOMATICO ---
+    {
+      id: 93,
+      topic: "Dolore / confronto",
+      question: "Quale tra le seguenti coppie descrive correttamente dolore viscerale vs somatico?",
+      options: [
+        "Viscerale ben localizzato – Somatico mal localizzato",
+        "Viscerale spesso diffuso e mal localizzato – Somatico ben localizzato e accentuato dai movimenti",
+        "Viscerale sempre acuto – Somatico sempre cronico",
+        "Viscerale solo cutaneo – Somatico solo muscolare"
+      ],
+      correctIndex: 1,
+      explanation: "Il dolore somatico è più preciso nella sede, il viscerale è più confuso e diffuso."
+    },
+
+    // --- EXTRA SU SEMEIOTICA / RADIOLOGICA ---
+    {
+      id: 94,
+      topic: "Introduzione / semeiotica radiologica",
+      question: "La TC spirale o multistrato è particolarmente utile perché:",
+      options: [
+        "È l’unica indagine disponibile in pronto soccorso",
+        "Permette acquisizioni rapide e ricostruzioni multiplanari dell’area studiata",
+        "Non usa radiazioni ionizzanti",
+        "Sostituisce completamente l’esame obiettivo"
+      ],
+      correctIndex: 1,
+      explanation: "La TC consente esami rapidi con immagini su più piani, utilissima in urgenza."
+    },
+
+    // --- EXTRA SU ADDOME / ASCITE ---
+    {
+      id: 95,
+      topic: "Addome / ascite",
+      question: "In caso di ascite importante, alla percussione dell’addome in posizione supina si rileva:",
+      options: [
+        "Timpanismo diffuso in tutte le regioni",
+        "Ottusità ai fianchi con timpanismo periombelicale (liquido declive)",
+        "Ottusità solo in ipocondrio destro",
+        "Nessuna modifica del suono"
+      ],
+      correctIndex: 1,
+      explanation: "Il liquido libero si dispone declive: ai fianchi ottusità, centralmente timpanismo intestinale."
+    },
+
+    // --- EXTRA SU DOLORE / REGIONI ADDOMINALI ---
+    {
+      id: 96,
+      topic: "Dolore / regioni addome",
+      question: "Un dolore in ipocondrio destro può essere dovuto a TUTTI i seguenti tranne:",
+      options: [
+        "Colecistite/calcolosi biliare",
+        "Ascesso epatico",
+        "Pancreatite della coda pancreatica",
+        "Colangite"
+      ],
+      correctIndex: 2,
+      explanation: "La coda del pancreas si trova più a sinistra; ipocondrio destro è tipico per fegato, colecisti, via biliare."
+    },
+
+    // --- EXTRA SU DOLORE / DIAFRAMMA ---
+    {
+      id: 97,
+      topic: "Dolore / diaframma",
+      question: "Il dolore diaframmatico (es. da irritazione subfrenica) può essere riferito:",
+      options: [
+        "Alla regione scapolare e alla spalla",
+        "Alla coscia destra",
+        "Alla punta del naso",
+        "Alla caviglia sinistra"
+      ],
+      correctIndex: 0,
+      explanation: "Il nervo frenico (C3–C5) può proiettare dolore alla spalla/trapezio."
+    },
+
+    // --- EXTRA SU DIURESI / NICTURIA ---
+    {
+      id: 98,
+      topic: "Diuresi / nicturia cause",
+      question: "Una causa frequente di nicturia negli anziani è:",
+      options: [
+        "Solo aumento della sudorazione",
+        "Iperplasia prostatica benigna",
+        "Colica biliare",
+        "Appendicite acuta"
+      ],
+      correctIndex: 1,
+      explanation: "I disturbi minzionali da ipertrofia prostatica portano a minzioni frequenti, soprattutto notturne."
+    },
+
+    // --- EXTRA SU METODOLOGIA / IPOTESI DIAGNOSTICHE ---
+    {
+      id: 99,
+      topic: "Metodologia / scelta ipotesi",
+      question: "Tra più diagnosi possibili, secondo il criterio prognostico si indaga per prima:",
+      options: [
+        "La più frequente",
+        "La più grave se non diagnosticata o trattata",
+        "La meno costosa da trattare",
+        "La meno probabile"
+      ],
+      correctIndex: 1,
+      explanation: "Si parte dalla diagnosi che, se mancata, avrebbe conseguenze peggiori per il paziente."
+    },
+
+    // --- EXTRA SU ALVO / DOMANDE ANAMNESTICHE ---
+    {
+      id: 100,
+      topic: "Anamnesi / alvo",
+      question: "Nell’anamnesi dell’alvo è importante chiedere TUTTO tranne:",
+      options: [
+        "Frequenza delle evacuazioni",
+        "Consistenza delle feci",
+        "Presenza di sangue, muco, dolore",
+        "Marca del detergente usato in bagno"
+      ],
+      correctIndex: 3,
+      explanation: "Si indagano ritmo, frequenza, consistenza, colore, sangue, muco, dolore alla defecazione, ecc."
+    }
+  ];
+
+  // ==========================
+  // LOGICA DEL QUIZ
+  // ==========================
+
+  let currentQuestions = [];
+
+  function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function generateQuiz() {
+    const numInput = document.getElementById("numQuestions");
+    let requested = parseInt(numInput.value, 10);
+    if (isNaN(requested) || requested <= 0) {
+      requested = 10;
+      numInput.value = requested;
+    }
+    const max = questionBank.length;
+    if (requested > max) {
+      requested = max;
+      numInput.value = requested;
+    }
+
+    const shuffled = shuffle(questionBank);
+    currentQuestions = shuffled.slice(0, requested);
+    renderQuestions();
+    document.getElementById("result").innerHTML = "";
+    updateStats();
+  }
+
+  function renderQuestions() {
+    const container = document.getElementById("questionsContainer");
+    container.innerHTML = "";
+
+    currentQuestions.forEach((q, index) => {
+      const card = document.createElement("div");
+      card.className = "question-card";
+      card.id = `question-${index}`;
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const numberSpan = document.createElement("span");
+      numberSpan.className = "question-number";
+      numberSpan.textContent = `Domanda ${index + 1}`;
+
+      const topicSpan = document.createElement("span");
+      topicSpan.className = "question-topic";
+      topicSpan.textContent = q.topic;
+
+      header.appendChild(numberSpan);
+      header.appendChild(topicSpan);
+
+      const qText = document.createElement("div");
+      qText.className = "question-text";
+      qText.textContent = q.question;
+
+      const optionsList = document.createElement("ul");
+      optionsList.className = "options";
+
+      q.options.forEach((opt, optIndex) => {
+        const li = document.createElement("li");
+        const label = document.createElement("label");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q-${index}`;
+        radio.value = String(optIndex);
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(opt));
+        li.appendChild(label);
+        optionsList.appendChild(li);
+      });
+
+      const feedback = document.createElement("div");
+      feedback.className = "feedback";
+
+      card.appendChild(header);
+      card.appendChild(qText);
+      card.appendChild(optionsList);
+      card.appendChild(feedback);
+
+      container.appendChild(card);
+    });
+  }
+
+  function gradeQuiz() {
+    if (!currentQuestions.length) {
+      alert("Per prima cosa genera il quiz.");
+      return;
+    }
+
+    let correct = 0;
+    let unanswered = 0;
+
+    currentQuestions.forEach((q, index) => {
+      const card = document.getElementById(`question-${index}`);
+      if (!card) return;
+      card.classList.remove("correct", "incorrect");
+
+      const selected = document.querySelector(`input[name="q-${index}"]:checked`);
+      const feedback = card.querySelector(".feedback");
+
+      if (!feedback) return;
+
+      if (!selected) {
+        unanswered++;
+        feedback.textContent = "Nessuna risposta selezionata. Risposta corretta: " +
+          q.options[q.correctIndex] + ". " + q.explanation;
+        feedback.classList.add("show");
+        return;
+      }
+
+      const selectedIndex = parseInt(selected.value, 10);
+
+      if (selectedIndex === q.correctIndex) {
+        correct++;
+        card.classList.add("correct");
+        feedback.textContent = "Corretto! " + q.explanation;
+      } else {
+        card.classList.add("incorrect");
+        feedback.textContent = "Errato. Risposta corretta: " +
+          q.options[q.correctIndex] + ". " + q.explanation;
+      }
+
+      feedback.classList.add("show");
+    });
+
+    const total = currentQuestions.length;
+    const percent = Math.round((correct / total) * 100);
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML =
+      `<strong>Risultato:</strong> ${correct} / ${total} domande corrette (${percent}%).` +
+      (unanswered ? `<br>Domande senza risposta: ${unanswered}.` : "") +
+      `<br><span class="tag">Suggerimento</span> rigenera il quiz per allenarti su combinazioni diverse o concentrati sulle domande che hai sbagliato.`;
+
+    updateStats();
+  }
+
+  function updateStats() {
+    const stats = document.getElementById("stats");
+    stats.textContent = `Database: ${questionBank.length} domande totali`;
+  }
+
+  document.getElementById("generateBtn").addEventListener("click", generateQuiz);
+  document.getElementById("gradeBtn").addEventListener("click", gradeQuiz);
+
+  // Genera un primo quiz di default all'apertura
+  updateStats();
+  generateQuiz();
+</script>
+</body>
+</html>

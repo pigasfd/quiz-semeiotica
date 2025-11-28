@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Semeiotica – Respiratorio & Cardiovascolare (4 PDF, 100 domande)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050609;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: radial-gradient(circle at top, #1f2833, #050609);
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    h1 {
+      margin: 0 0 5px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    header p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    main {
+      max-width: 1050px;
+      margin: 20px auto 40px;
+      padding: 0 15px 30px;
+      background: rgba(10, 14, 22, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 15px 15px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+    .controls input[type="number"] {
+      width: 90px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 16px;
+      margin: 4px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #45a29e, #66fcf1);
+      color: #0b0c10;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.secondary {
+      background: linear-gradient(135deg, #c5c6c7, #9fa6b2);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      opacity: 0.96;
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    #quizContainer {
+      padding: 10px 15px 20px;
+    }
+    .question-block {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top left, rgba(102,252,241,0.07), rgba(0,0,0,0.85));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+      gap: 10px;
+    }
+    .question-text {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .question-topic {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+      white-space: nowrap;
+    }
+    .options {
+      margin-top: 6px;
+    }
+    .option-item {
+      margin: 3px 0;
+    }
+    .option-item input[type="radio"] {
+      margin-right: 6px;
+    }
+    .option-item label {
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 8px;
+      display: inline-block;
+      transition: background 0.12s ease, box-shadow 0.12s ease, border-bottom-color 0.12s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .correct-selected {
+      background: rgba(76, 175, 80, 0.16);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.7);
+    }
+    .incorrect-selected {
+      background: rgba(244, 67, 54, 0.18);
+      box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.7);
+    }
+    .correct-answer {
+      border-bottom-color: rgba(102, 252, 241, 0.9);
+    }
+    #result {
+      padding: 12px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.96rem;
+    }
+    #result strong {
+      color: #66fcf1;
+    }
+    .small-note {
+      font-size: 0.76rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      main {
+        margin: 15px 8px 30px;
+        padding: 0 10px 20px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Quiz Semeiotica – Respiratorio & Cardiovascolare</h1>
+  <p>Basato su 4 PDF: Respirazione, Respiratorio II, Toni/Soffi cardiaci, Valutazione sistema cardiovascolare</p>
+</header>
+
+<main>
+  <section class="controls">
+    <label for="numQuestions">
+      Numero di domande per quiz (1–100):
+    </label>
+    <input type="number" id="numQuestions" min="1" max="100" value="30">
+    <button type="button" onclick="generateQuiz()">Genera nuovo quiz</button>
+    <button type="button" class="secondary" onclick="gradeQuiz()">Correggi</button>
+    <div class="small-note">
+      Ogni quiz estrae casualmente dal database di 100 domande basate sui 4 PDF.
+    </div>
+  </section>
+
+  <section id="quizContainer"></section>
+  <section id="result"></section>
+</main>
+
+<script>
+  const questionBank = [
+    /* ===== 1–25: RESPIRAZIONE / EMOGAS / IR (PDF 13) ===== */
+    {
+      id: 1,
+      text: `L'emogasanalisi arteriosa misura direttamente:`,
+      options: [
+        `PaO2, PaCO2, pH, bicarbonati`,
+        `Solo saturazione periferica`,
+        `Solo emoglobina e ematocrito`,
+        `Solo glicemia e creatinina`
+      ],
+      correctIndex: 0,
+      topic: `Emogasanalisi`
+    },
+    {
+      id: 2,
+      text: `Per ipossiemia si intende:`,
+      options: [
+        `Riduzione della PaO2 arteriosa sotto i valori normali`,
+        `Riduzione della PaCO2 arteriosa`,
+        `Riduzione dell'emoglobina totale`,
+        `Riduzione della saturazione venosa`
+      ],
+      correctIndex: 0,
+      topic: `Ipossiemia`
+    },
+    {
+      id: 3,
+      text: `In genere si parla di insufficienza respiratoria quando la PaO2 è:`,
+      options: [
+        `< 80 mmHg`,
+        `< 60 mmHg`,
+        `< 40 mmHg`,
+        `< 20 mmHg`
+      ],
+      correctIndex: 1,
+      topic: `Insufficienza respiratoria`
+    },
+    {
+      id: 4,
+      text: `Per ipercapnia si intende:`,
+      options: [
+        `PaCO2 > 45 mmHg`,
+        `PaCO2 < 35 mmHg`,
+        `PaCO2 = 40 mmHg`,
+        `PaO2 < 60 mmHg`
+      ],
+      correctIndex: 0,
+      topic: `Ipercapnia`
+    },
+    {
+      id: 5,
+      text: `L'insufficienza respiratoria di tipo I (ipossiemica) è caratterizzata da:`,
+      options: [
+        `PaO2 ↓, PaCO2 normale o ↓`,
+        `PaO2 ↓, PaCO2 ↑`,
+        `PaO2 ↑, PaCO2 ↓`,
+        `PaO2 e PaCO2 normali`
+      ],
+      correctIndex: 0,
+      topic: `IR tipo I`
+    },
+    {
+      id: 6,
+      text: `L'insufficienza respiratoria di tipo II (ipercapnica) è caratterizzata da:`,
+      options: [
+        `PaO2 ↓, PaCO2 ↑`,
+        `PaO2 ↓, PaCO2 normale`,
+        `PaO2 ↑, PaCO2 ↓`,
+        `PaO2 normalissima, PaCO2 ↑`
+      ],
+      correctIndex: 0,
+      topic: `IR tipo II`
+    },
+    {
+      id: 7,
+      text: `L'insufficienza respiratoria "acuta" si distingue dalla "cronica" principalmente per:`,
+      options: [
+        `Decorso temporale e adattamento (compenso)`,
+        `Età del paziente`,
+        `Valori di saturazione sempre peggiori`,
+        `Solo il tipo di malattia di base`
+      ],
+      correctIndex: 0,
+      topic: `IR acuta vs cronica`
+    },
+    {
+      id: 8,
+      text: `Esempio tipico di causa di insufficienza respiratoria cronica:`,
+      options: [
+        `Embolia polmonare massiva`,
+        `BPCO avanzata`,
+        `Pneumotorace iperteso`,
+        `Asma acuta grave`
+      ],
+      correctIndex: 1,
+      topic: `IR cronica`
+    },
+    {
+      id: 9,
+      text: `Esempio tipico di causa di insufficienza respiratoria acuta:`,
+      options: [
+        `Cifoscoliosi severa di lunga data`,
+        `Ostruzione acuta delle vie aeree da corpo estraneo`,
+        `BPCO stabile`,
+        `Apnee ostruttive del sonno croniche`
+      ],
+      correctIndex: 1,
+      topic: `IR acuta`
+    },
+    {
+      id: 10,
+      text: `Una causa iatrogena frequente di ipoventilazione acuta è:`,
+      options: [
+        `Antistaminici di prima generazione`,
+        `Oppiacei e sedativi a dosi elevate`,
+        `Paracetamolo`,
+        `FANS`
+      ],
+      correctIndex: 1,
+      topic: `IR iatrogena`
+    },
+    {
+      id: 11,
+      text: `La pulsossimetria misura:`,
+      options: [
+        `La saturazione periferica di O2 dell'emoglobina`,
+        `La PaO2 arteriosa`,
+        `La PaCO2`,
+        `Il pH`
+      ],
+      correctIndex: 0,
+      topic: `Pulsossimetria`
+    },
+    {
+      id: 12,
+      text: `La pulsossimetria NON fornisce informazioni su:`,
+      options: [
+        `Tendenza della saturazione nel tempo`,
+        `Frequenza cardiaca (in molti apparecchi)`,
+        `PaCO2 e pH`,
+        `Saturazione periferica di O2`
+      ],
+      correctIndex: 2,
+      topic: `Pulsossimetria`
+    },
+    {
+      id: 13,
+      text: `La pulsossimetria può essere falsata da tutti i seguenti tranne:`,
+      options: [
+        `Vasocostrizione periferica severa`,
+        `Movimenti/tremori`,
+        `Unghie con smalto scuro`,
+        `Colesterolo alto`
+      ],
+      correctIndex: 3,
+      topic: `Pulsossimetria`
+    },
+    {
+      id: 14,
+      text: `La FiO2 in aria ambiente a livello del mare è circa:`,
+      options: [
+        `0,10`,
+        `0,21`,
+        `0,40`,
+        `0,80`
+      ],
+      correctIndex: 1,
+      topic: `FiO2`
+    },
+    {
+      id: 15,
+      text: `Nel soggetto sano, il rapporto PaO2/FiO2 è approssimativamente:`,
+      options: [
+        `100`,
+        `200`,
+        `400–450`,
+        `> 800`
+      ],
+      correctIndex: 2,
+      topic: `PaO2/FiO2`
+    },
+    {
+      id: 16,
+      text: `Un rapporto PaO2/FiO2 < 200 suggerisce:`,
+      options: [
+        `Funzione respiratoria normale`,
+        `Insufficienza respiratoria grave`,
+        `Solo anemia`,
+        `Solo iperventilazione psicogena`
+      ],
+      correctIndex: 1,
+      topic: `PaO2/FiO2`
+    },
+    {
+      id: 17,
+      text: `In acidosi respiratoria acuta si osserva:`,
+      options: [
+        `PaCO2 ↑, pH ↓`,
+        `PaCO2 ↓, pH ↑`,
+        `PaCO2 ↑, pH ↑`,
+        `PaCO2 ↓, pH ↓`
+      ],
+      correctIndex: 0,
+      topic: `Acidosi respiratoria`
+    },
+    {
+      id: 18,
+      text: `In alcalosi respiratoria primaria si osserva:`,
+      options: [
+        `PaCO2 ↑, pH ↓`,
+        `PaCO2 ↓, pH ↑`,
+        `PaCO2 normale, pH normale`,
+        `PaCO2 ↑, pH ↑`
+      ],
+      correctIndex: 1,
+      topic: `Alcalosi respiratoria`
+    },
+    {
+      id: 19,
+      text: `In acidosi metabolica primaria (es. chetoacidosi diabetica):`,
+      options: [
+        `pH ↓ e bicarbonati ↑`,
+        `pH ↓ e bicarbonati ↓`,
+        `pH ↑ e bicarbonati ↑`,
+        `pH ↑ e bicarbonati ↓`
+      ],
+      correctIndex: 1,
+      topic: `Acidosi metabolica`
+    },
+    {
+      id: 20,
+      text: `Il compenso respiratorio nell'acidosi metabolica avviene tramite:`,
+      options: [
+        `Iperventilazione con riduzione della PaCO2`,
+        `Ipoventilazione con aumento della PaCO2`,
+        `Tachicardia sinusale`,
+        `Aumento dell'emoglobina`
+      ],
+      correctIndex: 0,
+      topic: `Compenso respiratorio`
+    },
+    {
+      id: 21,
+      text: `Un paziente con IR cronica da BPCO può presentare:`,
+      options: [
+        `PaO2 ↓, PaCO2 ↑, pH relativamente normalizzato per compenso renale`,
+        `PaO2 ↑, PaCO2 ↓`,
+        `Emogas completamente normale`,
+        `Solo ipocapnia`
+      ],
+      correctIndex: 0,
+      topic: `IR cronica BPCO`
+    },
+    {
+      id: 22,
+      text: `Una saturazione periferica di O2 al 100%:`,
+      options: [
+        `Esclude qualunque patologia respiratoria`,
+        `Non esclude anemia grave o ipoperfusione tessutale`,
+        `Garantisce sempre PaO2 normale`,
+        `Esclude lo shock`
+      ],
+      correctIndex: 1,
+      topic: `Saturazione`
+    },
+    {
+      id: 23,
+      text: `Il pH arterioso normale è compreso tra:`,
+      options: [
+        `7,10–7,20`,
+        `7,35–7,45`,
+        `7,50–7,80`,
+        `6,90–7,00`
+      ],
+      correctIndex: 1,
+      topic: `pH`
+    },
+    {
+      id: 24,
+      text: `Valori di pH > 7,45 indicano:`,
+      options: [
+        `Acidosi`,
+        `Alcalosi`,
+        `Condizione sempre normale`,
+        `Dato non interpretabile`
+      ],
+      correctIndex: 1,
+      topic: `Equilibrio acido-base`
+    },
+    {
+      id: 25,
+      text: `Per capire se un disturbo acido-base è respiratorio o metabolico si guardano soprattutto:`,
+      options: [
+        `PaO2 e saturazione`,
+        `PaCO2 e bicarbonati`,
+        `Solo il pH`,
+        `Solo l'emoglobina`
+      ],
+      correctIndex: 1,
+      topic: `Interpretazione emogas`
+    },
+
+    /* ===== 26–45: RESPIRATORIO II / IMAGING / ECO (PDF 14) ===== */
+    {
+      id: 26,
+      text: `La radiografia del torace è:`,
+      options: [
+        `Un esame di primo livello, economico, a bassa dose di radiazioni`,
+        `Un esame di secondo livello riservato alla terapia intensiva`,
+        `Un esame ormai abbandonato`,
+        `Un esame che non mostra le strutture polmonari`
+      ],
+      correctIndex: 0,
+      topic: `RX torace`
+    },
+    {
+      id: 27,
+      text: `La TC del torace rispetto all'RX:`,
+      options: [
+        `Ha sempre minore sensibilità`,
+        `Permette studio dettagliato di parenchima, vasi, mediastino, con maggiore sensibilità`,
+        `Non usa radiazioni ionizzanti`,
+        `Non si usa mai in urgenza`
+      ],
+      correctIndex: 1,
+      topic: `TC torace`
+    },
+    {
+      id: 28,
+      text: `L'angio-TC polmonare è l'esame di elezione per:`,
+      options: [
+        `Pneumotorace spontaneo`,
+        `Embolia polmonare`,
+        `Asma bronchiale`,
+        `BPCO lieve`
+      ],
+      correctIndex: 1,
+      topic: `Angio-TC`
+    },
+    {
+      id: 29,
+      text: `In caso di sospetta embolia polmonare, oltre all'angio-TC sono utili:`,
+      options: [
+        `D-dimero, emogas, ecografia arti inferiori`,
+        `Solo RX addome`,
+        `Solo glicemia`,
+        `Solo esame urine`
+      ],
+      correctIndex: 0,
+      topic: `Embolia polmonare`
+    },
+    {
+      id: 30,
+      text: `La PET (spesso PET-TC) è particolarmente utile per:`,
+      options: [
+        `Valutare reflusso gastro-esofageo`,
+        `Ricerca e stadiazione di neoplasie a elevato metabolismo`,
+        `Studiare fratture costali`,
+        `Valutare la pressione arteriosa`
+      ],
+      correctIndex: 1,
+      topic: `PET`
+    },
+    {
+      id: 31,
+      text: `In una polmonite interstiziale virale (es. Covid-19) l'RX può mostrare:`,
+      options: [
+        `Polmone completamente nero`,
+        `Polmone con addensamenti diffusi, aspetto "biancastro" interstiziale`,
+        `Un singolo nodulo periferico`,
+        `Solo versamento pleurico massivo`
+      ],
+      correctIndex: 1,
+      topic: `Polmonite interstiziale`
+    },
+    {
+      id: 32,
+      text: `L'ecografia del torace è particolarmente utile per evidenziare:`,
+      options: [
+        `Versamenti pleurici e condizioni subpleuriche`,
+        `Solo la trachea`,
+        `Solo le coste`,
+        `Solo il mediastino posteriore`
+      ],
+      correctIndex: 0,
+      topic: `Ecografia torace`
+    },
+    {
+      id: 33,
+      text: `L'ecografia è il gold standard per:`,
+      options: [
+        `Diagnosi di versamento pleurico`,
+        `Diagnosi di asma bronchiale`,
+        `Diagnosi certa di pneumotorace`,
+        `Diagnosi di bronchite cronica`
+      ],
+      correctIndex: 0,
+      topic: `Versamento pleurico`
+    },
+    {
+      id: 34,
+      text: `Un emitorace completamente opaco ("white lung") alla RX può essere dovuto a:`,
+      options: [
+        `Versamento pleurico massivo o atelettasia totale`,
+        `Solo asma lieve`,
+        `Solo pneumotorace`,
+        `Solo scoliosi`
+      ],
+      correctIndex: 0,
+      topic: `White lung`
+    },
+    {
+      id: 35,
+      text: `All'ecografia, un empiema pleurico appare come:`,
+      options: [
+        `Liquido perfettamente anecogeno senza setti`,
+        `Cavità con setti, materiale corpuscolato, pluricamerazione`,
+        `Aria libera a bolle`,
+        `Solido omogeneo`
+      ],
+      correctIndex: 1,
+      topic: `Empiema`
+    },
+    {
+      id: 36,
+      text: `In un'atelettasia totale, all'ecografia si osserva:`,
+      options: [
+        `Solo liquido`,
+        `Polmone collassato, compatto, non aerato`,
+        `Artefatti di aria libera`,
+        `Nessuna struttura visibile`
+      ],
+      correctIndex: 1,
+      topic: `Atelettasia`
+    },
+    {
+      id: 37,
+      text: `In presenza di atelettasia da ostruzione bronchiale, è indicata:`,
+      options: [
+        `Toracentesi evacuativa`,
+        `Broncoscopia per ricerca di neoplasia o corpo estraneo`,
+        `Solo terapia antibiotica`,
+        `Nessuna indagine ulteriore`
+      ],
+      correctIndex: 1,
+      topic: `Broncoscopia`
+    },
+    {
+      id: 38,
+      text: `Le linee A all'ecografia polmonare rappresentano:`,
+      options: [
+        `Artefatti orizzontali paralleli alla pleura, segno di polmone areato`,
+        `Artefatti verticali da edema`,
+        `Liquido pleurico`,
+        `Neoplasia solida`
+      ],
+      correctIndex: 0,
+      topic: `Linee A`
+    },
+    {
+      id: 39,
+      text: `Le linee B all'ecografia polmonare sono:`,
+      options: [
+        `Artefatti verticali iperecogeni che indicano polmone imbibito di liquidi`,
+        `Artefatti orizzontali innocui`,
+        `Immagini di neoplasia`,
+        `Segno di pneumotorace sicuro`
+      ],
+      correctIndex: 0,
+      topic: `Linee B`
+    },
+    {
+      id: 40,
+      text: `Numerose linee B bilaterali sono tipiche di:`,
+      options: [
+        `Polmone asciutto`,
+        `Edema polmonare acuto cardiogeno`,
+        `Pneumotorace completo`,
+        `Asma senza secrezioni`
+      ],
+      correctIndex: 1,
+      topic: `Edema polmonare`
+    },
+    {
+      id: 41,
+      text: `In un paziente dispnoico, polmone "dry" all'eco (assenza di linee B) orienta più verso:`,
+      options: [
+        `Scompenso cardiaco con edema`,
+        `Cause non cardiogene (BPCO, embolia, asma)`,
+        `Polmonite batterica lobare`,
+        `Empiema pleurico`
+      ],
+      correctIndex: 1,
+      topic: `Dispnea non cardiogena`
+    },
+    {
+      id: 42,
+      text: `L'ecografia toracica sfrutta spesso la "finestra" di:`,
+      options: [
+        `Milza a sinistra e fegato a destra`,
+        `Solo stomaco`,
+        `Solo colon`,
+        `Pancreas e reni`
+      ],
+      correctIndex: 0,
+      topic: `Finestra addominale`
+    },
+    {
+      id: 43,
+      text: `Per il drenaggio di un versamento pleurico, l'eco serve a:`,
+      options: [
+        `Nulla`,
+        `Guidare il punto di puntura e valutare eventuali setti`,
+        `Solo a vedere il mediastino`,
+        `Solo a valutare il diaframma`
+      ],
+      correctIndex: 1,
+      topic: `Toracentesi eco-guidata`
+    },
+    {
+      id: 44,
+      text: `In urgenza, la TC del torace è indicata per:`,
+      options: [
+        `Traumi, embolia, sospetta dissezione aortica, neoplasie`,
+        `Solo controllo routinario del check-up`,
+        `Solo valutare le coste`,
+        `Solo vedere la trachea`
+      ],
+      correctIndex: 0,
+      topic: `TC in urgenza`
+    },
+    {
+      id: 45,
+      text: `In caso di sospetta embolia polmonare e grave insufficienza renale:`,
+      options: [
+        `Si esegue sempre angio-TC con contrasto`,
+        `Si valutano alternative (scintigrafia, ecografia arti inferiori, clínica)`,
+        `Non si fa alcun esame`,
+        `È sufficiente una RX torace`
+      ],
+      correctIndex: 1,
+      topic: `Embolia & rene`
+    },
+
+    /* ===== 46–70: TONI E SOFFI CARDIACI (PDF 15) ===== */
+    {
+      id: 46,
+      text: `Il primo tono cardiaco (S1) corrisponde alla chiusura di:`,
+      options: [
+        `Valvole semilunari aortica e polmonare`,
+        `Valvole atrioventricolari mitrale e tricuspide`,
+        `Forame ovale`,
+        `Valvole venose periferiche`
+      ],
+      correctIndex: 1,
+      topic: `Toni cardiaci`
+    },
+    {
+      id: 47,
+      text: `Il secondo tono cardiaco (S2) corrisponde principalmente alla chiusura di:`,
+      options: [
+        `Mitrale e tricuspide`,
+        `Aortica e polmonare`,
+        `Valvole venose`,
+        `Nessuna struttura specifica`
+      ],
+      correctIndex: 1,
+      topic: `Toni cardiaci`
+    },
+    {
+      id: 48,
+      text: `Il normale sdoppiamento fisiologico di S2:`,
+      options: [
+        `È inspiratorio, con ritardo della componente polmonare (P2)`,
+        `È espiratorio`,
+        `È patologico in ogni caso`,
+        `Non esiste mai`
+      ],
+      correctIndex: 0,
+      topic: `Sdoppiamento fisiologico`
+    },
+    {
+      id: 49,
+      text: `Lo sdoppiamento "fisso" di S2 è tipico di:`,
+      options: [
+        `Difetto del setto interatriale (ASD)`,
+        `Ipertensione arteriosa essenziale`,
+        `Pericardite costrittiva`,
+        `Tamponamento cardiaco`
+      ],
+      correctIndex: 0,
+      topic: `Sdoppiamento fisso`
+    },
+    {
+      id: 50,
+      text: `Lo sdoppiamento "paradosso" di S2 è:`,
+      options: [
+        `Anticipazione di P2 rispetto ad A2`,
+        `Ritardo di A2, con sdoppiamento evidente in espirio e fuso in inspiro`,
+        `Sempre fisiologico nei giovani`,
+        `Tipico solo dell'asma`
+      ],
+      correctIndex: 1,
+      topic: `Sdoppiamento paradosso`
+    },
+    {
+      id: 51,
+      text: `Un soffio "sistolico eiettivo" è tipicamente:`,
+      options: [
+        `Un soffio da rigurgito`,
+        `Un soffio da stenosi valvolare (es. stenosi aortica)`,
+        `Un soffio continuo`,
+        `Un soffio diastolico puro`
+      ],
+      correctIndex: 1,
+      topic: `Soffi sistolici`
+    },
+    {
+      id: 52,
+      text: `Un soffio "olosistolico" è più tipicamente:`,
+      options: [
+        `Un soffio da rigurgito (es. insufficienza mitralica)`,
+        `Un soffio di espulsione`,
+        `Un soffio da stenosi aortica`,
+        `Un soffio tricuspidale diastolico`
+      ],
+      correctIndex: 0,
+      topic: `Soffi olosistolici`
+    },
+    {
+      id: 53,
+      text: `Il soffio da insufficienza mitralica:`,
+      options: [
+        `È diastolico`,
+        `È olosistolico, con punto di massima intensità all'apice, irradiato in genere all'ascella`,
+        `È sistolico eiettivo sul focolaio aortico`,
+        `È continuo, macchina a getto`
+      ],
+      correctIndex: 1,
+      topic: `Insufficienza mitralica`
+    },
+    {
+      id: 54,
+      text: `Il soffio da stenosi aortica tipicamente:`,
+      options: [
+        `È un soffio sistolico eiettivo rude, meglio udibile al focolaio aortico, irradiato ai vasi del collo`,
+        `È diastolico dolce a rullio`,
+        `È olosistolico apicale`,
+        `È continuo tipo "macchina a getto"`
+      ],
+      correctIndex: 0,
+      topic: `Stenosi aortica`
+    },
+    {
+      id: 55,
+      text: `Il soffio da insufficienza aortica è:`,
+      options: [
+        `Sistolico eiettivo`,
+        `Diastolico decrescente, meglio udibile al terzo spazio intercostale sinistro parasternale`,
+        `Olosistolico apicale`,
+        `Continuo in fossa sopraclaveare`
+      ],
+      correctIndex: 1,
+      topic: `Insufficienza aortica`
+    },
+    {
+      id: 56,
+      text: `Il soffio diastolico a rullio, meglio udibile all'apice in decubito laterale sinistro, è tipico di:`,
+      options: [
+        `Stenosi mitralica`,
+        `Insufficienza aortica`,
+        `Stenosi polmonare`,
+        `Difetto del setto atriale`
+      ],
+      correctIndex: 0,
+      topic: `Stenosi mitralica`
+    },
+    {
+      id: 57,
+      text: `Una manovra che AUMENTA il soffio da insufficienza mitralica è:`,
+      options: [
+        `Ispirazione profonda`,
+        `Handgrip isometrico (stretta di mano contro resistenza)`,
+        `Squatting seguita da rapido raddrizzamento`,
+        `Valsalva in fase di strain`
+      ],
+      correctIndex: 1,
+      topic: `Manovre emodinamiche`
+    },
+    {
+      id: 58,
+      text: `La manovra di Valsalva (fase di strain) in genere:`,
+      options: [
+        `Aumenta tutti i soffi cardiaci`,
+        `Riduce molti soffi ad eccezione di alcuni (es. cardiomiopatia ipertrofica)`,
+        `Non modifica nessun soffio`,
+        `Elimina completamente S1 e S2`
+      ],
+      correctIndex: 1,
+      topic: `Valsalva`
+    },
+    {
+      id: 59,
+      text: `Il terzo tono cardiaco (S3) in un adulto può indicare:`,
+      options: [
+        `Sempre normalità`,
+        `Sovraccarico di volume, scompenso cardiaco`,
+        `Blocco di branca sinistra banale`,
+        `Esclusivamente aritmia sinusale respiratoria`
+      ],
+      correctIndex: 1,
+      topic: `S3`
+    },
+    {
+      id: 60,
+      text: `Il quarto tono cardiaco (S4) è associato a:`,
+      options: [
+        `Rilassamento diastolico normale`,
+        `Contrazione atriale contro ventricolo rigido (ipertrofia, ischemia)`,
+        `Tachicardia sinusale fisiologica`,
+        `Difetto del setto atriale`
+      ],
+      correctIndex: 1,
+      topic: `S4`
+    },
+    {
+      id: 61,
+      text: `Nel blocco di branca sinistra, il secondo tono può apparire:`,
+      options: [
+        `Con sdoppiamento paradosso (ritardo di A2)`,
+        `Sempre fuso`,
+        `Normale in ogni caso`,
+        `Solo sdoppiato in inspirazione`
+      ],
+      correctIndex: 0,
+      topic: `Blocco di branca SX`
+    },
+    {
+      id: 62,
+      text: `Nel blocco di branca destra, il secondo tono può presentare:`,
+      options: [
+        `Sdoppiamento paradosso`,
+        `Ampio sdoppiamento con ritardo di P2`,
+        `Scomparsa di A2`,
+        `Riduzione di S1`
+      ],
+      correctIndex: 1,
+      topic: `Blocco di branca DX`
+    },
+    {
+      id: 63,
+      text: `Il soffio continuo "a macchina a getto" in regione sottoclavicolare è tipico di:`,
+      options: [
+        `Difetto del setto ventricolare`,
+        `Pervietà del dotto arterioso (PDA)`,
+        `Stenosi mitralica`,
+        `Insufficienza tricuspidale`
+      ],
+      correctIndex: 1,
+      topic: `Dotto arterioso`
+    },
+    {
+      id: 64,
+      text: `Il miglior focolaio per auscultare la valvola mitrale è:`,
+      options: [
+        `Secondo spazio intercostale destro parasternale`,
+        `Apice cardiaco (5° spazio intercostale, linea emiclaveare sinistra)`,
+        `Focolaio polmonare`,
+        `Focolaio epatico`
+      ],
+      correctIndex: 1,
+      topic: `Focolai`
+    },
+    {
+      id: 65,
+      text: `Il focolaio aortico classico corrisponde a:`,
+      options: [
+        `Secondo spazio intercostale destro parasternale`,
+        `Secondo spazio intercostale sinistro parasternale`,
+        `Apice`,
+        `Fossa giugulare`
+      ],
+      correctIndex: 0,
+      topic: `Focolai`
+    },
+    {
+      id: 66,
+      text: `Il soffio da insufficienza tricuspidale tende ad aumentare con:`,
+      options: [
+        `Apnea in inspirazione`,
+        `Ispirazione profonda (manovra di Rivero-Carvallo)`,
+        `Espirazione forzata`,
+        `Valsalva fase di strain`
+      ],
+      correctIndex: 1,
+      topic: `Insufficienza tricuspidale`
+    },
+    {
+      id: 67,
+      text: `I soffi cardiaci si classificano in base a:`,
+      options: [
+        `Solo l'intensità`,
+        `Fase del ciclo (sistolici, diastolici, continui), punto di massima intensità, irradiazione, timbro, variazioni con manovre`,
+        `Solo il timbro`,
+        `Solo la durata`
+      ],
+      correctIndex: 1,
+      topic: `Classificazione soffi`
+    },
+    {
+      id: 68,
+      text: `Il gradiente del soffio si valuta:`,
+      options: [
+        `Misurando i decibel`,
+        `Classificando l'intensità da 1/6 a 6/6`,
+        `Osservando solo l'ECG`,
+        `Solo con l'ecografia`
+      ],
+      correctIndex: 1,
+      topic: `Intensità soffi`
+    },
+    {
+      id: 69,
+      text: `I soffi diastolici sono:`,
+      options: [
+        `Sempre innocenti`,
+        `Più spesso patologici e meritevoli di approfondimento`,
+        `Sempre da stenosi aortica`,
+        `Sempre fisiologici nei giovani`
+      ],
+      correctIndex: 1,
+      topic: `Soffi diastolici`
+    },
+    {
+      id: 70,
+      text: `Quanto alla tecnica, l'auscultazione cardiaca andrebbe eseguita:`,
+      options: [
+        `Solo in piedi`,
+        `In ambiente silenzioso, pz supino o seduto, usando diaframma e campana del fonendoscopio a seconda dei suoni`,
+        `Solo con pz in posizione prona`,
+        `Solo dopo esercizio fisico intenso`
+      ],
+      correctIndex: 1,
+      topic: `Tecnica auscultazione`
+    },
+
+    /* ===== 71–100: VALUTAZIONE SISTEMA CARDIOVASCOLARE (PDF 16) ===== */
+    {
+      id: 71,
+      text: `La pressione arteriosa si misura preferibilmente:`,
+      options: [
+        `Dopo almeno qualche minuto di riposo, paziente seduto o supino`,
+        `Subito dopo uno sforzo`,
+        `Solo in ortostatismo`,
+        `Solo in decubito laterale destro`
+      ],
+      correctIndex: 0,
+      topic: `Pressione arteriosa`
+    },
+    {
+      id: 72,
+      text: `Per ipertensione arteriosa si considera (in generale, in adulto):`,
+      options: [
+        `PA ≥ 140/90 mmHg in più misurazioni`,
+        `PA ≥ 120/80 mmHg in una sola misurazione`,
+        `PA ≥ 100/60 mmHg`,
+        `PA ≤ 90/60 mmHg`
+      ],
+      correctIndex: 0,
+      topic: `Ipertensione`
+    },
+    {
+      id: 73,
+      text: `Il polso paradosso di Kussmaul consiste in:`,
+      options: [
+        `Aumento della PAS in inspirazione`,
+        `Caduta eccessiva (>10–20 mmHg) della PAS in inspirazione`,
+        `Scomparsa del polso in clinostatismo`,
+        `Aumento del polso in ortostatismo`
+      ],
+      correctIndex: 1,
+      topic: `Polso paradosso`
+    },
+    {
+      id: 74,
+      text: `Il polso paradosso si può osservare in:`,
+      options: [
+        `Asma grave, tamponamento cardiaco, versamento pericardico importante`,
+        `Appendicite acuta`,
+        `Anemia sideropenica`,
+        `Emicrania`
+      ],
+      correctIndex: 0,
+      topic: `Polso paradosso`
+    },
+    {
+      id: 75,
+      text: `Un polso filiforme indica:`,
+      options: [
+        `Shock o collasso circolatorio`,
+        `Sportivo allenato`,
+        `Ipertensione severa stabile`,
+        `Nessuna rilevanza clinica`
+      ],
+      correctIndex: 0,
+      topic: `Polso filiforme`
+    },
+    {
+      id: 76,
+      text: `Il polso alternante (alternans) è:`,
+      options: [
+        `Alternanza di battiti forti e deboli a frequenza regolare, spesso nello scompenso grave`,
+        `Alternanza di bradicardia e tachicardia`,
+        `Caratteristico solo della FA`,
+        `Esclusivamente fisiologico`
+      ],
+      correctIndex: 0,
+      topic: `Pulsus alternans`
+    },
+    {
+      id: 77,
+      text: `Un'anisosfigmia (differenza tra polsi periferici) può indicare:`,
+      options: [
+        `Dissecazione aortica, stenosi subclavia o patologia vascolare locale`,
+        `Solo anemia`,
+        `Solo ipotiroidismo`,
+        `Solo febbre`
+      ],
+      correctIndex: 0,
+      topic: `Anisosfigmia`
+    },
+    {
+      id: 78,
+      text: `La pressione venosa giugulare (PVG) elevata si osserva tipicamente in:`,
+      options: [
+        `Insufficienza cardiaca destra, sovraccarico di volume, pericardite costrittiva`,
+        `Anemia`,
+        `Cefalea tensiva`,
+        `Polmonite lobare`
+      ],
+      correctIndex: 0,
+      topic: `PVG`
+    },
+    {
+      id: 79,
+      text: `Per valutare la PVG si osserva:`,
+      options: [
+        `La giugulare interna/esterna con paziente semiseduto a 30–45°`,
+        `Solo la carotide in piedi`,
+        `Le vene degli arti inferiori`,
+        `Solo l'ECG`
+      ],
+      correctIndex: 0,
+      topic: `PVG tecnica`
+    },
+    {
+      id: 80,
+      text: `Edemi periferici declivi (tibie, caviglie, sacro) sono tipici di:`,
+      options: [
+        `Scompenso cardiaco, sindromi nefrosiche, cirrosi con iperaldosteronismo`,
+        `Otite media`,
+        `Anemia sideropenica isolata`,
+        `Asma bronchiale`
+      ],
+      correctIndex: 0,
+      topic: `Edemi`
+    },
+    {
+      id: 81,
+      text: `L'edema cardiaco tipico è:`,
+      options: [
+        `Duro, non godronabile`,
+        `Molle, godronabile, declive, bilaterale`,
+        `Localizzato in un solo arto superiore`,
+        `Caldo, arrossato, molto doloroso`
+      ],
+      correctIndex: 1,
+      topic: `Edema cardiaco`
+    },
+    {
+      id: 82,
+      text: `Il segno della fovea (godron) consiste in:`,
+      options: [
+        `Dolore alla palpazione epatica`,
+        `Depressione persistente cutanea dopo pressione con il dito in zona edematosa`,
+        `Soffio udibile al collo`,
+        `Rumore di sfregamento pleurico`
+      ],
+      correctIndex: 1,
+      topic: `Godron`
+    },
+    {
+      id: 83,
+      text: `Per valutare il circolo periferico si osservano:`,
+      options: [
+        `Colorito cutaneo, temperatura, riempimento capillare, polsi periferici`,
+        `Solo saturazione`,
+        `Solo la pressione arteriosa`,
+        `Solo la frequenza cardiaca`
+      ],
+      correctIndex: 0,
+      topic: `Circolo periferico`
+    },
+    {
+      id: 84,
+      text: `Il tempo di riempimento capillare si valuta:`,
+      options: [
+        `Comprimendo un'unghia o la cute e misurando il tempo di ricolorazione (<2 s normale)`,
+        `Misurando la pressione arteriosa`,
+        `Contando i battiti cardiaci`,
+        `Misurando la saturazione`
+      ],
+      correctIndex: 0,
+      topic: `Riempimento capillare`
+    },
+    {
+      id: 85,
+      text: `L'indice caviglia-braccio (ABI) serve per:`,
+      options: [
+        `Valutare insufficienza cardiaca`,
+        `Valutare la presenza di arteriopatia periferica agli arti inferiori`,
+        `Valutare reflusso venoso`,
+        `Valutare insufficienza respiratoria`
+      ],
+      correctIndex: 1,
+      topic: `ABI`
+    },
+    {
+      id: 86,
+      text: `Un valore di ABI < 0,9 indica:`,
+      options: [
+        `Arteriopatia periferica`,
+        `Circolo periferico normale`,
+        `Ipertensione essenziale`,
+        `Solo insufficienza venosa`
+      ],
+      correctIndex: 0,
+      topic: `ABI`
+    },
+    {
+      id: 87,
+      text: `La palpazione dell'itto della punta (apice cardiaco) permette di valutare:`,
+      options: [
+        `Solo la frequenza cardiaca`,
+        `Sede, estensione, forza, che riflettono dimensioni e contrattilità del ventricolo sinistro`,
+        `Solo la pressione arteriosa`,
+        `Solo la presenza di versamento pleurico`
+      ],
+      correctIndex: 1,
+      topic: `Itto della punta`
+    },
+    {
+      id: 88,
+      text: `Uno spostamento dell'itto della punta verso il basso e a sinistra suggerisce:`,
+      options: [
+        `Ventricolo sinistro dilatato (cardiomegalia)`,
+        `Collasso polmonare`,
+        `Versamento pleurico destro`,
+        `Ernia diaframmatica`
+      ],
+      correctIndex: 0,
+      topic: `Cardiomegalia`
+    },
+    {
+      id: 89,
+      text: `Il soffio sistolico funzionale (innocente) si osserva spesso in:`,
+      options: [
+        `Anziano in scompenso`,
+        `Giovane, in presenza di ipercinetismo circolatorio (febbre, anemia)`,
+        `Sempre nella stenosi aortica severa`,
+        `Tamponamento cardiaco`
+      ],
+      correctIndex: 1,
+      topic: `Soffi funzionali`
+    },
+    {
+      id: 90,
+      text: `L'ECG nella semeiotica cardiovascolare è utile per:`,
+      options: [
+        `Valutare ritmo, conduzione, ischemia, ipertrofie`,
+        `Valutare direttamente la forza di contrazione`,
+        `Valutare la pressione arteriosa`,
+        `Valutare la saturazione`
+      ],
+      correctIndex: 0,
+      topic: `ECG`
+    },
+    {
+      id: 91,
+      text: `Il test da sforzo cardiologico serve soprattutto per:`,
+      options: [
+        `Valutare la risposta pressoria allo sforzo e la comparsa di segni di ischemia miocardica`,
+        `Valutare la funzione renale`,
+        `Valutare la saturazione a riposo`,
+        `Valutare solo la frequenza a riposo`
+      ],
+      correctIndex: 0,
+      topic: `Test da sforzo`
+    },
+    {
+      id: 92,
+      text: `L'ecocardiogramma Doppler valuta:`,
+      options: [
+        `Strutture cardiache, funzione sistolica/diastolica, valvole, flussi e gradienti`,
+        `Solo la pressione arteriosa`,
+        `Solo la saturazione`,
+        `Solo la dimensione dei linfonodi`
+      ],
+      correctIndex: 0,
+      topic: `Ecocardiogramma`
+    },
+    {
+      id: 93,
+      text: `Nello scompenso cardiaco, all'esame obiettivo respiratorio si possono trovare:`,
+      options: [
+        `Crepitii alle basi, MV ridotto in caso di versamento pleurico, dispnea, ortopnea`,
+        `Solo respiro di Cheyne-Stokes`,
+        `Solo sibili espiratori isolati`,
+        `Solo MV abolito apicale`
+      ],
+      correctIndex: 0,
+      topic: `Scompenso & polmone`
+    },
+    {
+      id: 94,
+      text: `La dispnea parossistica notturna (DPN) è:`,
+      options: [
+        `Comparsa notturna improvvisa di forte dispnea che sveglia il paziente, tipica dello scompenso`,
+        `Solo un disturbo d'ansia`,
+        `Tipica dell'appendicite`,
+        `Tipica della rinite allergica`
+      ],
+      correctIndex: 0,
+      topic: `DPN`
+    },
+    {
+      id: 95,
+      text: `Nell'esame obiettivo cardiaco, la palpazione dei polsi periferici va eseguita:`,
+      options: [
+        `Solo su un lato`,
+        `In modo bilaterale e comparativo (radiale, femorale, pedidio, tibiale posteriore)`,
+        `Solo al polso radiale destro`,
+        `Solo all'arteria carotide`
+      ],
+      correctIndex: 1,
+      topic: `Polsi periferici`
+    },
+    {
+      id: 96,
+      text: `Un paziente con dolore toracico, pallore, sudorazione fredda e ipotensione può presentare all'esame cardiovascolare:`,
+      options: [
+        `Polso pieno e regolare`,
+        `Polso filiforme, tachicardia, possibili rumori aggiunti cardiaci`,
+        `Nessuna alterazione`,
+        `Solo bradicardia marcata`
+      ],
+      correctIndex: 1,
+      topic: `Dolore toracico & cuore`
+    },
+    {
+      id: 97,
+      text: `Nel tamponamento cardiaco acuto la triade classica di Beck comprende:`,
+      options: [
+        `Ipotensione, turgore giugulare, toni cardiaci ovattati`,
+        `Ipertensione, tachicardia, rantoli`,
+        `Ipotermia, bradicardia, ipotensione`,
+        `Cianosi periferica, bradicardia, ipertensione`
+      ],
+      correctIndex: 0,
+      topic: `Tamponamento cardiaco`
+    },
+    {
+      id: 98,
+      text: `In pericardite acuta all'auscultazione si può udire:`,
+      options: [
+        `Sfregamento pericardico, rumore ruvido che non scompare trattenendo il respiro`,
+        `Solo un soffio sistolico eiettivo`,
+        `Solo rumori respiratori alterati`,
+        `Nessuna alterazione acustica`
+      ],
+      correctIndex: 0,
+      topic: `Pericardite`
+    },
+    {
+      id: 99,
+      text: `La semeiotica cardiovascolare integra:`,
+      options: [
+        `Solo anamnesi`,
+        `Anamnesi, EO generale, EO cardiovascolare, esami strumentali (ECG, eco, test)`,
+        `Solo RX torace`,
+        `Solo esame ematico`
+      ],
+      correctIndex: 1,
+      topic: `Approccio globale`
+    },
+    {
+      id: 100,
+      text: `Per una valutazione completa del paziente dispnoico con sospetto cardiaco è utile combinare:`,
+      options: [
+        `Solo saturazione e PA`,
+        `EO respiratorio, EO cardiaco, eco polmonare, eco cardiaco, RX/TC se indicato, emogas e markers`,
+        `Solo ECG`,
+        `Solo esami di laboratorio`
+      ],
+      correctIndex: 1,
+      topic: `Dispnea cardiaca`
+    }
+  ];
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  let currentQuestions = [];
+
+  function generateQuiz() {
+    const input = document.getElementById('numQuestions');
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) n = 30;
+    if (n < 1) n = 1;
+    if (n > questionBank.length) n = questionBank.length;
+    input.value = n;
+
+    const shuffled = shuffle([...questionBank]);
+    currentQuestions = shuffled.slice(0, n);
+    renderQuiz();
+    document.getElementById('result').innerHTML = '';
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    currentQuestions.forEach((q, qIndex) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.textContent = (qIndex + 1) + '. ' + q.text;
+
+      const topic = document.createElement('div');
+      topic.className = 'question-topic';
+      topic.textContent = q.topic;
+
+      header.appendChild(title);
+      header.appendChild(topic);
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+
+      const indices = q.options.map((_, i) => i);
+      shuffle(indices);
+
+      indices.forEach((optIndex, optPos) => {
+        const optWrapper = document.createElement('div');
+        optWrapper.className = 'option-item';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'q' + qIndex;
+        input.id = 'q' + qIndex + '_opt' + optPos;
+        input.dataset.correct = (optIndex === q.correctIndex) ? 'true' : 'false';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = q.options[optIndex];
+
+        optWrapper.appendChild(input);
+        optWrapper.appendChild(label);
+        optionsDiv.appendChild(optWrapper);
+      });
+
+      block.appendChild(header);
+      block.appendChild(optionsDiv);
+      container.appendChild(block);
+    });
+  }
+
+  function gradeQuiz() {
+    if (currentQuestions.length === 0) {
+      alert('Genera prima il quiz.');
+      return;
+    }
+
+    let correctCount = 0;
+
+    currentQuestions.forEach((q, qIndex) => {
+      const options = document.querySelectorAll('input[name="q' + qIndex + '"]');
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        label.classList.remove('correct-selected', 'incorrect-selected', 'correct-answer');
+      });
+
+      options.forEach(input => {
+        const label = document.querySelector('label[for="' + input.id + '"]');
+        if (input.dataset.correct === 'true') {
+          label.classList.add('correct-answer');
+        }
+        if (input.checked) {
+          if (input.dataset.correct === 'true') {
+            correctCount++;
+            label.classList.add('correct-selected');
+          } else {
+            label.classList.add('incorrect-selected');
+          }
+        }
+      });
+    });
+
+    const total = currentQuestions.length;
+    const perc = Math.round((correctCount / total) * 100);
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML =
+      `Hai risposto correttamente a <strong>${correctCount}</strong> su <strong>${total}</strong> domande (${perc}%).`;
+  }
+
+  window.addEventListener('DOMContentLoaded', generateQuiz);
+</script>
+</body>
+</html>
